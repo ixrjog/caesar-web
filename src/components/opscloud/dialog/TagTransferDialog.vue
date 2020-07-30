@@ -5,7 +5,7 @@
       <el-transfer v-model="tagTransfer.tagIds"
                    :props="{ key: 'id', label: 'tagKey' }"
                    :data="tagTransfer.tagOptions"
-                   :titles="['所有标签', '服务器标签']">
+                   :titles="['所有标签', '当前标签']">
       </el-transfer>
     </el-form>
     <div slot="footer" class="dialog-footer">

@@ -170,7 +170,9 @@
         this.serverData = serverData
         this.serverGroupOptions = serverGroupOptions
         this.getEnvType()
-        this.setAccountSetting()
+        if (this.serverData.loginUser === '') {
+          this.setAccountSetting()
+        }
         // 尝试选择匹配服务器组
         if (JSON.stringify(this.serverData.serverGroup) === '{}') {
           let queryName = this.serverData.name.replace(new RegExp('-[0-9]+$'), '')

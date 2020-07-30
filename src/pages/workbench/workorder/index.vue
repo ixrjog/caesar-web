@@ -45,7 +45,6 @@
       <TicketServerGroupDialog ref="ticketServerGroupDialog" :formStatus="formServerGroupStatus" @closeDialog="fetchData"></TicketServerGroupDialog>
       <TicketUserGroupDialog ref="ticketUserGroupDialog" :formStatus="formUserGroupStatus" @closeDialog="fetchData"></TicketUserGroupDialog>
       <TicketAuthRoleDialog ref="ticketAuthRoleDialog" :formStatus="formAuthRoleStatus" @closeDialog="fetchData"></TicketAuthRoleDialog>
-      <TicketRAMPolicyDialog ref="ticketRAMPolicyDialog" :formStatus="formRAMPolicyStatus" @closeDialog="fetchData"></TicketRAMPolicyDialog>
     </template>
   </d2-container>
 </template>
@@ -57,7 +56,6 @@
   import TicketServerGroupDialog from '@/components/opscloud/workorder/TicketServerGroupDialog'
   import TicketUserGroupDialog from '@/components/opscloud/workorder/TicketUserGroupDialog'
   import TicketAuthRoleDialog from '@/components/opscloud/workorder/TicketAuthRoleDialog'
-  import TicketRAMPolicyDialog from '@/components/opscloud/workorder/TicketRAMPolicyDialog'
   // doc
   import DocDialog from '@/components/opscloud/doc/DocDialog.vue'
 
@@ -106,8 +104,7 @@
       TicketMgmtTable,
       TicketServerGroupDialog,
       TicketUserGroupDialog,
-      TicketAuthRoleDialog,
-      TicketRAMPolicyDialog
+      TicketAuthRoleDialog
     },
     mounted () {
       this.getWorkbenchWorkorderGroup()

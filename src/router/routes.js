@@ -92,6 +92,61 @@ const frameIn = [
           title: '全局参数'
         }
       },
+      // jenkins
+      {
+        path: '/jenkins/instance',
+        name: 'jenkins-instance',
+        component: () => import('@/pages/jenkins/instance'),
+        meta: {
+          auth: true,
+          title: 'Jenkins实例管理'
+        }
+      },
+      {
+        path: '/jenkins/job/template',
+        name: 'jenkins-job-template',
+        component: () => import('@/pages/jenkins/job/template'),
+        meta: {
+          auth: true,
+          title: 'Jenkins任务模版'
+        }
+      },
+      {
+        path: '/gitlab/instance',
+        name: 'gitlab-instance',
+        component: () => import('@/pages/gitlab/instance'),
+        meta: {
+          auth: true,
+          title: 'Gitlab实例管理'
+        }
+      },
+      {
+        path: '/gitlab/project',
+        name: 'gitlab-project',
+        component: () => import('@/pages/gitlab/project'),
+        meta: {
+          auth: true,
+          title: 'Gitlab项目管理'
+        }
+      },
+      {
+        path: '/application',
+        name: 'application',
+        component: () => import('@/pages/application'),
+        meta: {
+          auth: true,
+          title: '应用管理'
+        }
+      },
+      {
+        path: '/dingtalk',
+        name: 'dingtalk',
+        component: () => import('@/pages/dingtalk'),
+        meta: {
+          auth: true,
+          title: '钉钉配置'
+        }
+      },
       // server(group)
       {
         path: '/server',
@@ -155,106 +210,6 @@ const frameIn = [
         meta: {
           auth: true,
           title: '用户角色管理'
-        }
-      },
-      {
-        path: '/cloud/server/ecs',
-        name: 'cloud-server-ecs',
-        component: () => import('@/pages/cloud/server/ecs'),
-        meta: {
-          auth: true,
-          title: 'ECS主机管理'
-        }
-      },
-      {
-        path: '/cloud/server/ec2',
-        name: 'cloud-server-ec2',
-        component: () => import('@/pages/cloud/server/ec2'),
-        meta: {
-          auth: true,
-          title: 'EC2主机管理'
-        }
-      },
-      {
-        path: '/cloud/server/cvm',
-        name: 'cloud-server-cvm',
-        component: () => import('@/pages/cloud/server/cvm'),
-        meta: {
-          auth: true,
-          title: 'CVM主机管理'
-        }
-      },
-      {
-        path: '/cloud/server/esxi',
-        name: 'cloud-server-esxi',
-        component: () => import('@/pages/cloud/server/esxi'),
-        meta: {
-          auth: true,
-          title: 'ESXi主机管理'
-        }
-      },
-      {
-        path: '/cloud/server/vm',
-        name: 'cloud-server-vm',
-        component: () => import('@/pages/cloud/server/vm'),
-        meta: {
-          auth: true,
-          title: 'VM主机管理'
-        }
-      },
-      {
-        path: '/cloud/server/zabbixhost',
-        name: 'cloud-server-zabbixhost',
-        component: () => import('@/pages/cloud/server/zabbixhost'),
-        meta: {
-          auth: true,
-          title: 'ZabbixHost主机管理'
-        }
-      },
-      // cloudDB
-      {
-        path: '/cloud/db/instance',
-        name: 'cloud-db-instance',
-        component: () => import('@/pages/cloud/db/instance'),
-        meta: {
-          auth: true,
-          title: '数据库实例详情'
-        }
-      },
-      {
-        path: '/cloud/db/database',
-        name: 'cloud-db-database',
-        component: () => import('@/pages/cloud/db/database'),
-        meta: {
-          auth: true,
-          title: '数据库'
-        }
-      },
-      {
-        path: '/cloud/db/database/slowlog',
-        name: 'cloud-db-database-slowlog',
-        component: () => import('@/pages/cloud/db/database/slowlog'),
-        meta: {
-          auth: true,
-          title: '慢日志'
-        }
-      },
-      {
-        path: '/cloud/aliyun/ram',
-        name: 'cloud-aliyun-ram',
-        component: () => import('@/pages/cloud/aliyun/ram'),
-        meta: {
-          auth: true,
-          title: '访问控制'
-        }
-      },
-      {
-        path: '/cloud/aliyun/log',
-        name: 'cloud-aliyun-log',
-        component: () => import('@/pages/cloud/aliyun/log'),
-        meta: {
-          auth: true,
-          title: '日志服务'
         }
       },
       {
@@ -345,6 +300,16 @@ const frameIn = [
         meta: {
           auth: true,
           title: 'Web终端会话管理'
+        }
+      },
+      // continuousIntegration
+      {
+        path: '/workbench/continuous-integration',
+        name: 'workbench-continuous-integration',
+        component: () => import('@/pages/workbench/continuous-integration'),
+        meta: {
+          auth: true,
+          title: '工作台-持续集成'
         }
       },
       {

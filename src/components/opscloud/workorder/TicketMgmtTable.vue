@@ -54,7 +54,6 @@
     <TicketServerGroupDialog ref="ticketServerGroupDialog" :formStatus="formServerGroupStatus" @closeDialog="fetchData"></TicketServerGroupDialog>
     <TicketUserGroupDialog ref="ticketUserGroupDialog" :formStatus="formUserGroupStatus" @closeDialog="fetchData"></TicketUserGroupDialog>
     <TicketAuthRoleDialog ref="ticketAuthRoleDialog" :formStatus="formAuthRoleStatus" @closeDialog="fetchData"></TicketAuthRoleDialog>
-    <TicketRAMPolicyDialog ref="ticketRAMPolicyDialog" :formStatus="formRAMPolicyStatus" @closeDialog="fetchData"></TicketRAMPolicyDialog>
   </div>
 </template>
 
@@ -62,7 +61,6 @@
   import TicketServerGroupDialog from '@/components/opscloud/workorder/TicketServerGroupDialog'
   import TicketUserGroupDialog from '@/components/opscloud/workorder/TicketUserGroupDialog'
   import TicketAuthRoleDialog from '@/components/opscloud/workorder/TicketAuthRoleDialog'
-  import TicketRAMPolicyDialog from '@/components/opscloud/workorder/TicketRAMPolicyDialog'
 
   // Filters
   import { getPhaseText, getPhaseType } from '@/filters/ticket.js'
@@ -139,8 +137,7 @@
     components: {
       TicketServerGroupDialog,
       TicketUserGroupDialog,
-      TicketAuthRoleDialog,
-      TicketRAMPolicyDialog
+      TicketAuthRoleDialog
     },
     filters: {
       getPhaseText,

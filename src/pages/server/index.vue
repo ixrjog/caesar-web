@@ -395,7 +395,7 @@
   }
 </script>
 
-<style scoped>
+<style>
   .table-expand {
     font-size: 0;
   }
