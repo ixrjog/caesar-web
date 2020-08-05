@@ -61,3 +61,24 @@ export function queryApplicationSCMMemberBranch (data) {
     data
   })
 }
+
+export function queryApplicationEngine (applicationId) {
+  return request({
+    url: baseUrl + '/engine/query?applicationId=' + applicationId,
+    method: 'get'
+  })
+}
+
+export function addApplicationEngine (applicationId, jenkinsInstanceId) {
+  return request({
+    url: baseUrl + '/engine/add?applicationId=' + applicationId + '&jenkinsInstanceId=' + jenkinsInstanceId,
+    method: 'put'
+  })
+}
+
+export function removeApplicationEngine (id) {
+  return request({
+    url: baseUrl + '/engine/remove?id=' + id,
+    method: 'delete'
+  })
+}

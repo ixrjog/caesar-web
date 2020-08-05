@@ -130,6 +130,15 @@ const frameIn = [
         }
       },
       {
+        path: '/storage/oss',
+        name: 'storage-oss',
+        component: () => import('@/pages/storage/oss'),
+        meta: {
+          auth: true,
+          title: '存储-对象存储'
+        }
+      },
+      {
         path: '/application',
         name: 'application',
         component: () => import('@/pages/application'),

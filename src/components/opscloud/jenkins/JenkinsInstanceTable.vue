@@ -136,6 +136,7 @@
           isActive: true,
           serverId: '',
           nodeServerGroupId: '',
+          instanceStatus: 0,
           comment: ''
         }
         this.$refs.jenkinsInstanceDialog.initData(instance)

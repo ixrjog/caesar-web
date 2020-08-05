@@ -4,7 +4,7 @@
     <el-form :model="jobTpl">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="模版配置" name="template">
-          <el-form-item label="jenkins实例" :label-width="labelWidth" :required="true">
+          <el-form-item label="jenkins实例" :label-width="labelWidth" required>
             <el-select v-model.trim="jobTpl.jenkinsInstanceId" filterable clearable @change="handlerSelInstance"
                        :disabled="jobTpl.id !== ''"
                        remote reserve-keyword placeholder="输入关键词搜索" :remote-method="getJenkinsInstance"
@@ -16,7 +16,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择模版" :label-width="labelWidth" :required="true" v-if="jobTpl.id === ''">
+          <el-form-item label="选择模版" :label-width="labelWidth" required v-if="jobTpl.id === ''">
             <el-table :data="tplOptions" style="width: 100%" v-loading="tplLoading">
               <el-table-column prop="name" label="模版名称"></el-table-column>
               <el-table-column prop="url" label="url"></el-table-column>
@@ -27,13 +27,13 @@
               </el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item label="名称" :label-width="labelWidth" :required="true">
+          <el-form-item label="名称" :label-width="labelWidth" required>
             <el-input v-model="jobTpl.name" placeholder="请输入内容"></el-input>
           </el-form-item>
-          <el-form-item label="模版名称" :label-width="labelWidth" :required="true">
+          <el-form-item label="模版名称" :label-width="labelWidth" required>
             <el-input v-model="jobTpl.tplName" disabled></el-input>
           </el-form-item>
-          <el-form-item label="模版类型" :label-width="labelWidth" :required="true">
+          <el-form-item label="模版类型" :label-width="labelWidth" required>
             <el-select v-model.trim="jobTpl.tplType" clearable>
               <el-option
                 v-for="item in tplTypeOptions"
@@ -44,7 +44,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="模版版本" :label-width="labelWidth">
-            <el-input v-model="jobTpl.tplVersion" :disabled="true"></el-input>
+            <el-input v-model="jobTpl.tplVersion" disabled></el-input>
           </el-form-item>
           <el-form-item label="描述" :label-width="labelWidth">
             <el-input v-model="jobTpl.comment" placeholder="请输入内容"></el-input>
@@ -55,7 +55,7 @@
             <el-button align="center" type="primary" plain size="mini" @click="handlerReadTplContent()">读取模版</el-button>
             <el-button align="center" type="primary" plain size="mini" @click="handlerSaveTplContent()">写入模版</el-button>
           </div>
-          <el-form-item label="模版详情" :label-width="labelWidth" :required="true">
+          <el-form-item label="模版详情" :label-width="labelWidth" required>
             <editor v-model="jobTpl.tplContent" @init="editorInit" lang="xml" theme="chrome"
                     width="100%" height="500"></editor>
           </el-form-item>

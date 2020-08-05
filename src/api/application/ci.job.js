@@ -32,3 +32,17 @@ export function delCiJobById (id) {
     method: 'delete'
   })
 }
+
+export function createCiJobEngine (ciJobId) {
+  return request({
+    url: baseUrl + '/engine/create?ciJobId=' + ciJobId,
+    method: 'put'
+  })
+}
+
+export function queryCiJobEngine (ciJobId) {
+  return request({
+    url: baseUrl + '/engine/query?ciJobId=' + ciJobId,
+    method: 'get'
+  })
+}

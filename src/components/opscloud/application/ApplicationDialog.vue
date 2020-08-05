@@ -18,16 +18,18 @@
       </el-tab-pane>
       <el-tab-pane label="SCM配置" name="scm" v-if="application.id !== ''">
         <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
-          <el-select v-model="queryParam.instanceId" filterable clearable class="select" @change="handlerSelInstance"
-                     remote reserve-keyword placeholder="搜索实例" :remote-method="getInstance">
+          <el-select v-model="queryGitlabParam.instanceId" filterable clearable class="select"
+                     @change="handlerSelGitlabInstance"
+                     remote reserve-keyword placeholder="搜索实例" :remote-method="getGitlabInstance">
             <el-option
-              v-for="item in instanceOptions"
+              v-for="item in gitlabInstanceOptions"
               :key="item.id"
               :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
-          <el-select v-model="projectId" filterable clearable class="select" :disabled="queryParam.instanceId === ''"
+          <el-select v-model="projectId" filterable clearable class="select"
+                     :disabled="queryGitlabParam.instanceId === ''"
                      remote reserve-keyword placeholder="搜索项目" :remote-method="getProject">
             <el-option
               v-for="item in projectOptions"
@@ -56,9 +58,52 @@
               </template>
             </el-table-column>
             <el-table-column prop="comment" label="描述"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="80">
+            <el-table-column fixed="right" label="操作" width="200">
               <template slot-scope="scope">
                 <el-button type="danger" plain size="mini" @click="handlerScmMemberRowRemove(scope.row)">移除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="工作引擎" name="engine" v-if="application.id !== ''">
+        <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
+          <el-select v-model="application.engineType" clearable placeholder="引擎类型" class="select">
+            <el-option
+              v-for="item in engineTypeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-select v-model="jenkinsInstanceId" filterable clearable class="select"
+                     v-show="application.engineType === 1"
+                     remote reserve-keyword placeholder="搜索实例" :remote-method="getJenkinsInstance">
+            <el-option
+              v-for="item in jenkinsInstanceOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-button size="mini" type="primary" :disabled="jenkinsInstanceId === ''" @click="handlerEngineAdd">添加
+          </el-button>
+        </el-row>
+        <el-row :gutter="24" style="margin-bottom: 5px;margin-left: 5px" v-show="application.engineType === 1">
+          <el-table :data="engines" v-loading="engineLoading">
+            <el-table-column prop="instance" label="实例名称">
+              <template slot-scope="scope">
+                <span>{{scope.row.instance.name}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="instance" label="描述">
+              <template slot-scope="scope">
+                <span>{{scope.row.instance.comment}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button type="danger" plain size="mini" @click="handlerEngineRowRemove(scope.row)">移除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -76,11 +121,21 @@
   // API
   import { queryGitlabInstancePage } from '@api/gitlab/gitlab.instance.js'
   import { queryGitlabProjectPage } from '@api/gitlab/gitlab.project.js'
+  import { queryJenkinsInstancePage } from '@api/jenkins/jenkins.instance.js'
 
   import {
     addApplication, updateApplication, queryApplicationSCMMember,
-    addApplicationSCMMember, removeApplicationSCMMember
+    addApplicationSCMMember, removeApplicationSCMMember,
+    queryApplicationEngine, addApplicationEngine, removeApplicationEngine
   } from '@api/application/application.js'
+
+  const engineTypeOptions = [{
+    value: 0,
+    label: '所有引擎'
+  }, {
+    value: 1,
+    label: '指定引擎'
+  }]
 
   export default {
     data () {
@@ -95,13 +150,21 @@
         serverOptions: [],
         scmMembers: [],
         scmMemberLoading: false,
-        instanceOptions: [],
-        queryParam: {
+        gitlabInstanceOptions: [],
+        queryGitlabParam: {
           instanceId: '',
           queryName: ''
         },
         projectId: '',
-        projectOptions: []
+        projectOptions: [],
+        queryJenkinsParam: {
+          queryName: ''
+        },
+        jenkinsInstanceId: '',
+        engineLoading: false,
+        engines: [],
+        engineTypeOptions: engineTypeOptions,
+        jenkinsInstanceOptions: []
       }
     },
     name: 'ApplicationDialog',
@@ -114,11 +177,30 @@
         this.application = application
         if (application.id !== '') {
           this.getScmMember()
-          this.getInstance('')
+          this.getGitlabInstance('')
+          if (this.application.engineType === 1) {
+            this.getEngine()
+          }
         }
       },
       handleClick () {
         this.$emit('input', !this.value)
+      },
+      getEngine () {
+        if (this.application.engineType === 0) {
+          this.engines = []
+        } else {
+          this.engineLoading = true
+          queryApplicationEngine(this.application.id)
+            .then(res => {
+              if (res.success) {
+                this.engines = res.body
+              } else {
+                this.$message.error(res.msg)
+              }
+              this.engineLoading = false
+            })
+        }
       },
       getScmMember () {
         this.scmMemberLoading = true
@@ -132,7 +214,20 @@
             this.scmMemberLoading = false
           })
       },
-      getInstance (queryName) {
+      getJenkinsInstance (queryName) {
+        this.loading = true
+        let requestBody = {
+          'queryName': queryName,
+          'extend': 1,
+          'page': 1,
+          'length': 10
+        }
+        queryJenkinsInstancePage(requestBody)
+          .then(res => {
+            this.jenkinsInstanceOptions = res.body.data
+          })
+      },
+      getGitlabInstance (queryName) {
         let requestBody = {
           'queryName': queryName,
           'extend': 0,
@@ -141,15 +236,15 @@
         }
         queryGitlabInstancePage(requestBody)
           .then(res => {
-            this.instanceOptions = res.body.data
+            this.gitlabInstanceOptions = res.body.data
           })
       },
-      handlerSelInstance () {
+      handlerSelGitlabInstance () {
         this.getProject('')
       },
       getProject (queryName) {
         let requestBody = {
-          'instanceId': this.queryParam.instanceId,
+          'instanceId': this.queryGitlabParam.instanceId,
           'queryName': queryName,
           'extend': 1,
           'page': 1,
@@ -158,6 +253,21 @@
         queryGitlabProjectPage(requestBody)
           .then(res => {
             this.projectOptions = res.body.data
+          })
+      },
+      handlerEngineAdd () {
+        addApplicationEngine(this.application.id, this.jenkinsInstanceId)
+          .then(res => {
+            if (res.success) {
+              this.$message({
+                message: '成功',
+                type: 'success'
+              })
+              this.jenkinsInstanceId = ''
+              this.getEngine()
+            } else {
+              this.$message.error(res.msg)
+            }
           })
       },
       handlerScmMemberAdd () {
@@ -173,6 +283,17 @@
             } else {
               this.$message.error(res.msg)
             }
+          })
+      },
+      handlerEngineRowRemove (row) {
+        removeApplicationEngine(row.id)
+          .then(res => {
+            // 返回数据
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.getEngine()
           })
       },
       handlerScmMemberRowRemove (row) {
@@ -217,3 +338,20 @@
     }
   }
 </script>
+
+<style>
+
+  .input {
+    display: inline-block;
+    max-width: 200px;
+    margin-left: 10px;
+  }
+
+  .select {
+    margin-left: 5px;
+  }
+
+  .button {
+    margin-left: 5px;
+  }
+</style>
