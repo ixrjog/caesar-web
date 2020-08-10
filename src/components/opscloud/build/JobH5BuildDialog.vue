@@ -68,7 +68,7 @@
               <div>开始时间: {{scope.row.startTime}}</div>
               <div>结束时间: {{scope.row.endTime}}</div>
               <el-divider><i class="fa fa-comment-o" aria-hidden="true"></i></el-divider>
-<!--              变更详情-->
+<!--              变更详情11-->
               <div class="tag-group">
                 <div v-for="item in scope.row.changes" :key="item.id">
                   <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
