@@ -68,8 +68,19 @@
               <div>开始时间: {{scope.row.startTime}}</div>
               <div>结束时间: {{scope.row.endTime}}</div>
               <el-divider><i class="fa fa-comment-o" aria-hidden="true"></i></el-divider>
-              <span>1111</span>
+<!--              变更详情-->
+              <div class="tag-group">
+                <div v-for="item in scope.row.changes" :key="item.id">
+                  <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
+                    <el-tag style="margin-left: 5px" type="primary">{{ item.artifactFileName }}</el-tag>
+                  </el-tooltip>
+                  <el-tooltip class="item" effect="light" content="文件大小" placement="top-start">
+                    <el-tag style="margin-left: 5px" type="primary">{{ item.artifactFileSize }}</el-tag>
+                  </el-tooltip>
+                </div>
+              </div>
               <el-divider><i class="el-icon-folder" aria-hidden="true"></i></el-divider>
+<!--              产出物详情-->
               <div class="tag-group">
                 <div v-for="item in scope.row.artifacts" :key="item.id">
                   <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
