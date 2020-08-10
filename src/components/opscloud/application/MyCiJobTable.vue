@@ -61,7 +61,8 @@
           <el-dropdown split-button type="primary" @click="handlerRowEdit(scope.row)">
             <i class="el-icon-edit"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="fa fa-plane"><span @click="handlerRowEngineEdit(scope.row)">工作引擎</span></el-dropdown-item>
+              <el-dropdown-item icon="fa fa-plane"><span @click="handlerRowEngineEdit(scope.row)">工作引擎</span>
+              </el-dropdown-item>
               <el-dropdown-item icon="fa fa-user">权限配置</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -189,11 +190,11 @@
         switch (row.jobType) {
           case 'HTML5':
             this.formH5BuildStatus.visible = true
-            this.$refs.jobH5BuildDialog.initData(this.application,row)
+            this.$refs.jobH5BuildDialog.initData(this.application, row)
             break
           case 'IOS':
             this.formH5BuildStatus.visible = true
-            this.$refs.jobH5BuildDialog.initData(this.application,row)
+            this.$refs.jobH5BuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('任务类型配置错误!')
