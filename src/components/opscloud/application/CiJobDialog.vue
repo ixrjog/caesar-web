@@ -200,15 +200,18 @@
   }, {
     value: 'ANDROID',
     label: 'Android'
+  }, {
+    value: 'JAVA',
+    label: 'Java'
   }]
 
   export default {
     data () {
       return {
         activeName: 'job',
-        application: '',
-        ciJob: '',
-        jobTpl: '',
+        application: {},
+        ciJob: {},
+        jobTpl: {},
         labelWidth: '150px',
         options: {
           stripe: true
@@ -241,6 +244,8 @@
     mounted () {
       this.getEnvType()
     },
+    beforeDestroy () {
+    },
     methods: {
       editorInit: function () {
         // language extension prerequsite...
@@ -254,34 +259,36 @@
         require('brace/snippets/xml')
       },
       closeDialog () {
-        this.branchOptions = []
-        this.dingtalkOptions = []
-        this.jobTplOptions = []
-        this.bucketOptions = []
+        this.ciJob = {}
         this.formStatus.visible = false
         this.$emit('closeDialog')
       },
       initData (application, ciJob) {
+        this.ciJob = {}
+        this.branchOptions = []
+        this.dingtalkOptions = []
+        this.jobTplOptions = []
+        this.bucketOptions = []
         this.activeName = 'job'
         this.application = application
         this.ciJob = ciJob
         if (!this.formStatus.operationType) {
           this.getBranches()
         }
-        if (this.ciJob.dingtalkId === null || this.ciJob.dingtalkId === '') {
+        if (this.ciJob.dingtalk === null) {
           this.getDingtalk('')
         } else {
-          this.dingtalkOptions.push(ciJob.dingtalk)
+          this.dingtalkOptions.push(this.ciJob.dingtalk)
         }
-        if (this.ciJob.jobTplId === null || this.ciJob.jobTplId === '') {
+        if (this.ciJob.jobTpl === null) {
           this.getJobTpl('')
         } else {
-          this.jobTplOptions.push(ciJob.jobTpl)
+          this.jobTplOptions.push(this.ciJob.jobTpl)
         }
-        if (this.ciJob.ossBucketId === null || this.ciJob.ossBucketId === '') {
+        if (this.ciJob.bucket === null) {
           this.getOSSBucket('')
         } else {
-          this.bucketOptions.push(ciJob.bucket)
+          this.bucketOptions.push(this.ciJob.bucket)
         }
       },
       getOSSBucket (queryName) {

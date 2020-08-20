@@ -17,3 +17,10 @@ export function buildCiJob (data) {
     data
   })
 }
+
+export function queryCiJobBuildByBuildId (buildId) {
+  return request({
+    url: baseUrl + '/ci/build/query?buildId=' + buildId,
+    method: 'get'
+  })
+}

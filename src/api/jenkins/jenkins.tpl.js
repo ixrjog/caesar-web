@@ -26,6 +26,14 @@ export function updateJobTpl (data) {
   })
 }
 
+export function writeJobTpl (data) {
+  return request({
+    url: baseUrl + '/write',
+    method: 'put',
+    data
+  })
+}
+
 export function delJobTplById (id) {
   return request({
     url: baseUrl + '/del?id=' + id,

@@ -10,6 +10,14 @@ export function queryApplicationPage (data) {
   })
 }
 
+export function queryMyApplicationPage (data) {
+  return request({
+    url: baseUrl + '/my/page/query',
+    method: 'post',
+    data
+  })
+}
+
 export function addApplication (data) {
   return request({
     url: baseUrl + '/add',
@@ -80,5 +88,26 @@ export function removeApplicationEngine (id) {
   return request({
     url: baseUrl + '/engine/remove?id=' + id,
     method: 'delete'
+  })
+}
+
+export function grantUserApplication (applicationId, userId) {
+  return request({
+    url: baseUrl + '/user/grant?applicationId=' + applicationId + '&userId=' + userId,
+    method: 'put'
+  })
+}
+
+export function revokeUserApplication (applicationId, userId) {
+  return request({
+    url: baseUrl + '/user/revoke?applicationId=' + applicationId + '&userId=' + userId,
+    method: 'delete'
+  })
+}
+
+export function updateUserApplicationPermission (applicationId, userId) {
+  return request({
+    url: baseUrl + '/user/permission/update?applicationId=' + applicationId + '&userId=' + userId,
+    method: 'put'
   })
 }

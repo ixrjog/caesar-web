@@ -78,7 +78,13 @@
 <script>
   // API
   import { queryJenkinsInstancePage } from '@api/jenkins/jenkins.instance.js'
-  import { addJobTpl, updateJobTpl, queryJobTplByInstanceId, readJobTplById } from '@api/jenkins/jenkins.tpl.js'
+  import {
+    addJobTpl,
+    updateJobTpl,
+    writeJobTpl,
+    queryJobTplByInstanceId,
+    readJobTplById
+  } from '@api/jenkins/jenkins.tpl.js'
 
   const tplTypeOptions = [
     {
@@ -91,6 +97,10 @@
     {
       value: 'H5',
       label: 'H5'
+    },
+    {
+      value: 'JAVA',
+      label: 'JAVA'
     }
   ]
 
@@ -189,6 +199,22 @@
       },
       handlerRowSelTpl (row) {
         this.jobTpl.tplName = row.name
+      },
+      handlerSaveTplContent () {
+        setTimeout(() => {
+          let requestBody = Object.assign({}, this.jobTpl)
+          writeJobTpl(requestBody)
+            .then(res => {
+              if (res.success) {
+                this.$message({
+                  message: '成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message.error(res.msg)
+              }
+            })
+        }, 600)
       },
       handlerSave () {
         setTimeout(() => {

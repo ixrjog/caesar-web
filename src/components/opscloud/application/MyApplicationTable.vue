@@ -18,7 +18,7 @@
       <el-table-column prop="name" label="应用名称">
         <template slot-scope="props">
           <el-tooltip class="item" effect="light" :content="props.row.comment" placement="top-start">
-          <span>{{ props.row.name }}</span>
+            <span>{{ props.row.name }}</span>
           </el-tooltip>
           <span class="tag-group">
               <span v-for="item in props.row.tags" :key="item.id">
@@ -34,15 +34,16 @@
           <el-dropdown split-button type="primary" plain @click="handlerRowSel(scope.row)">
             <i class="el-icon-search"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item> 权限 </el-dropdown-item>
+              <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span>
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-<!--          -->
-<!--          <el-button-group>-->
-<!--            <el-button type="primary" plain size="mini" icon="el-icon-search" @click="handlerSelRow(scope.row)"></el-button>-->
-<!--            <el-button type="primary" plain size="mini" icon="el-icon-search" @click="handlerSelRow(scope.row)"></el-button>-->
-<!--          </el-button-group>-->
-<!--          <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>-->
+          <!--          -->
+          <!--          <el-button-group>-->
+          <!--            <el-button type="primary" plain size="mini" icon="el-icon-search" @click="handlerSelRow(scope.row)"></el-button>-->
+          <!--            <el-button type="primary" plain size="mini" icon="el-icon-search" @click="handlerSelRow(scope.row)"></el-button>-->
+          <!--          </el-button-group>-->
+          <!--          <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -54,6 +55,8 @@
     <!-- application编辑对话框 -->
     <ApplicationDialog ref="applicationDialog" :formStatus="formStatus"
                        @closeDialog="fetchData"></ApplicationDialog>
+    <ApplicationPermissionDialog ref="applicationPermissionDialog" :formStatus="formPermissionStatus"
+                           @closeDialog="fetchData"></ApplicationPermissionDialog>
   </div>
 </template>
 
@@ -62,8 +65,9 @@
 
   // Component
   import ApplicationDialog from '@/components/opscloud/application/ApplicationDialog'
+  import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
 
-  import { queryApplicationPage } from '@api/application/application.js'
+  import { queryMyApplicationPage } from '@api/application/application.js'
 
   export default {
     name: 'MyApplicationTable',
@@ -89,6 +93,9 @@
           operationType: true,
           addTitle: '新增应用配置',
           updateTitle: '更新应用配置'
+        },
+        formPermissionStatus: {
+          visible: false
         }
       }
     },
@@ -102,7 +109,8 @@
       this.fetchData()
     },
     components: {
-      ApplicationDialog
+      ApplicationDialog,
+      ApplicationPermissionDialog
     },
     methods: {
       ...mapActions({
@@ -127,6 +135,10 @@
         this.formStatus.visible = true
         this.$refs.applicationDialog.initData(Object.assign({}, row))
       },
+      handlerRowPermissionEdit (row) {
+        this.formPermissionStatus.visible = true
+        this.$refs.applicationPermissionDialog.initData(Object.assign({}, row))
+      },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage
         this.fetchData()
@@ -139,7 +151,7 @@
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
-        queryApplicationPage(requestBody)
+        queryMyApplicationPage(requestBody)
           .then(res => {
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum
@@ -169,9 +181,11 @@
   .el-dropdown {
     vertical-align: top;
   }
+
   .el-dropdown + .el-dropdown {
     margin-left: 15px;
   }
+
   .el-icon-arrow-down {
     font-size: 12px;
   }

@@ -41,16 +41,33 @@
           <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="最新任务">
+      <el-table-column prop="name" label="最新构建">
         <template slot-scope="props">
           <el-button-group>
-            <el-button type="warning"><i class="el-icon-loading"></i><b>3</b></el-button>
-            <el-button type="success"><b>2</b></el-button>
-            <el-button type="danger"><b>1</b></el-button>
+            <el-button v-for="item in props.row.buildViews" :key="item.buildNumber"
+                       :style="{ backgroundColor: item.color, color: '#FFFFFF' }">
+              <el-popover placement="top-start" trigger="hover">
+                <el-form>
+                  <span v-show="item.executors.length > 0">
+                            <div v-for="executor in item.executors" :key="executor.id">
+                      <el-tag type="primary">{{ executor.nodeName }}:{{ executor.privateIp}}
+                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
+                                   @click="handlerOpenXTerm(executor)"><span
+                          style="color: #535353">打开终端</span></el-button>
+                      </el-tag>
+                    </div>
+                  </span>
+                  <span v-show="item.executors.length === 0">
+                    No Executors
+                  </span>
+                </el-form>
+                <span slot="reference"><i class="el-icon-loading" v-if="item.building"></i>{{item.buildNumber}}</span>
+              </el-popover>
+            </el-button>
           </el-button-group>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="280">
+      <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button-group style="margin-right: 5px">
             <el-button type="primary" icon="fa fa-play"
@@ -79,6 +96,9 @@
     <!-- 任务引擎编辑对话框 -->
     <CiJobEngineDialog ref="ciJobEngineDialog" :formStatus="formEngineStatus"></CiJobEngineDialog>
     <JobH5BuildDialog ref="jobH5BuildDialog" :formStatus="formH5BuildStatus"></JobH5BuildDialog>
+    <JobJavaBuildDialog ref="jobJavaBuildDialog" :formStatus="formJavaBuildStatus"></JobJavaBuildDialog>
+    <JobIOSBuildDialog ref="jobIOSBuildDialog" :formStatus="formIOSBuildStatus"></JobIOSBuildDialog>
+    <JenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></JenkinsNodeXTerm>
   </div>
 </template>
 
@@ -86,10 +106,14 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
+  // XTerm
+  import JenkinsNodeXTerm from '@/components/opscloud/xterm/JenkinsNodeXTerm'
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CiJobEngineDialog from '@/components/opscloud/application/CiJobEngineDialog'
   // Component Build
   import JobH5BuildDialog from '@/components/opscloud/build/JobH5BuildDialog'
+  import JobJavaBuildDialog from '@/components/opscloud/build/JobJavaBuildDialog'
+  import JobIOSBuildDialog from '@/components/opscloud/build/JobIOSBuildDialog'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
 
@@ -123,7 +147,17 @@
         },
         formH5BuildStatus: {
           visible: false
-        }
+        },
+        formJavaBuildStatus: {
+          visible: false
+        },
+        formIOSBuildStatus: {
+          visible: false
+        },
+        formXtermStatus: {
+          visible: false
+        },
+        timer: null // 查询定时器
       }
     },
     computed: {
@@ -134,10 +168,16 @@
     mounted () {
       this.initPageSize()
     },
+    beforeDestroy () {
+      clearInterval(this.timer) // 销毁定时器
+    },
     components: {
+      JenkinsNodeXTerm,
       CiJobDialog,
       CiJobEngineDialog,
-      JobH5BuildDialog
+      JobH5BuildDialog,
+      JobJavaBuildDialog,
+      JobIOSBuildDialog
     },
     methods: {
       ...mapActions({
@@ -154,9 +194,20 @@
           this.pagination.pageSize = this.info.pageSize
         }
       },
+      setTimer () {
+        if (this.timer !== null) {
+          return
+        }
+        this.timer = setInterval(() => {
+          this.fetchData()
+          // console.log('开始定时...每8秒执行一次')
+        }, 8000)
+      },
       initData (application) {
         this.application = application
         this.fetchData()
+        this.setTimer()
+        // this.fetchData()
       },
       handlerRowSel (row) {
         this.$emit('handlerSelApplication', row)
@@ -165,7 +216,7 @@
         let ciJob = {
           id: '',
           applicationId: this.application.id,
-          jobTpl: {},
+          jobTpl: null,
           name: '',
           jobKey: '',
           branch: '',
@@ -178,7 +229,10 @@
           hide: false,
           deploymentJobId: 0,
           atAll: false,
+          dingtalk: null,
           dingtalkId: '',
+          bucket: null,
+          ossBucketId: '',
           scmMemberId: '',
           comment: ''
         }
@@ -192,9 +246,13 @@
             this.formH5BuildStatus.visible = true
             this.$refs.jobH5BuildDialog.initData(this.application, row)
             break
+          case 'JAVA':
+            this.formJavaBuildStatus.visible = true
+            this.$refs.jobJavaBuildDialog.initData(this.application, row)
+            break
           case 'IOS':
-            this.formH5BuildStatus.visible = true
-            this.$refs.jobH5BuildDialog.initData(this.application, row)
+            this.formIOSBuildStatus.visible = true
+            this.$refs.jobIOSBuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('任务类型配置错误!')
@@ -209,12 +267,18 @@
         this.formStatus.visible = true
         this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
       },
+      handlerOpenXTerm (executor) {
+        this.formXtermStatus.visible = true
+        this.$refs.xtermDialog.initData(executor)
+      },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage
         this.fetchData()
       },
       fetchData () {
-        this.loading = true
+        if (this.tableData.length === 0) {
+          this.loading = true
+        }
         let requestBody = {
           'applicationId': this.application.id,
           'queryName': this.queryParam.queryName,

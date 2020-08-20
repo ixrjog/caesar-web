@@ -8,6 +8,7 @@
         <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
                   class="input"/>
         <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
+        <el-button style="margin-left: 5px" @click="handlerAdd">新增</el-button>
       </el-row>
       <el-table :data="tableData" style="width: 100%" v-loading="loading">
         <el-table-column prop="name" label="应用名称"></el-table-column>
@@ -28,8 +29,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="180">
+        <el-table-column fixed="right" label="操作" width="280">
           <template slot-scope="scope">
+            <el-button type="primary" plain size="mini" @click="handlerRowPermissionEdit(scope.row)">权限</el-button>
             <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>
             <el-button type="danger" plain size="mini" @click="handlerRowDel(scope.row)">删除</el-button>
           </template>
@@ -43,6 +45,8 @@
       <!-- application编辑对话框 -->
       <ApplicationDialog ref="applicationDialog" :formStatus="formStatus"
                          @closeDialog="fetchData"></ApplicationDialog>
+      <ApplicationPermissionDialog ref="applicationPermissionDialog" :formStatus="formPermissionStatus"
+                                   @closeDialog="fetchData"></ApplicationPermissionDialog>
     </template>
   </d2-container>
 </template>
@@ -51,6 +55,7 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
+  import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
   import ApplicationDialog from '@/components/opscloud/application/ApplicationDialog'
 
   import { queryApplicationPage, delApplicationById } from '@api/application/application.js'
@@ -79,6 +84,9 @@
           operationType: true,
           addTitle: '新增应用配置',
           updateTitle: '更新应用配置'
+        },
+        formPermissionStatus: {
+          visible: false
         }
       }
     },
@@ -92,7 +100,8 @@
       this.fetchData()
     },
     components: {
-      ApplicationDialog
+      ApplicationDialog,
+      ApplicationPermissionDialog
     },
     methods: {
       ...mapActions({
@@ -108,6 +117,19 @@
         if (typeof (this.info.pageSize) !== 'undefined') {
           this.pagination.pageSize = this.info.pageSize
         }
+      },
+      handlerAdd () {
+        this.formStatus.operationType = true
+        let application = {
+          id: '',
+          name: '',
+          applicationKey: '',
+          kubernetesApplicationId: '',
+          engineType: 0,
+          comment: ''
+        }
+        this.$refs.applicationDialog.initData(application)
+        this.formStatus.visible = true
       },
       handlerRowEdit (row) {
         this.formStatus.operationType = false
@@ -133,6 +155,10 @@
             message: '已取消删除'
           })
         })
+      },
+      handlerRowPermissionEdit (row) {
+        this.formPermissionStatus.visible = true
+        this.$refs.applicationPermissionDialog.initData(Object.assign({}, row))
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage

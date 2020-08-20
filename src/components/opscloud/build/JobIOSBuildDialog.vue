@@ -35,6 +35,12 @@
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
           </el-form-item>
+          <el-form-item label="版本名称" :label-width="labelWidth">
+            <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号"></el-input>
+          </el-form-item>
+          <el-form-item label="版本说明" :label-width="labelWidth">
+            <el-input v-model="buildParam.versionDesc"></el-input>
+          </el-form-item>
         </el-form>
         <div style="width:100%;text-align:center">
           <el-button size="mini" type="primary" @click="handlerBuild" icon="fa fa-play" :loading="building"
@@ -183,7 +189,6 @@
     <el-divider></el-divider>
     <div slot="footer" class="dialog-footer">
       <el-button size="mini" @click="closeDialog">关闭</el-button>
-      <!--      <el-button size="mini" type="primary" @click="handlerBuild">确定</el-button>-->
     </div>
   </el-dialog>
 </template>
@@ -200,7 +205,7 @@
   export default {
     data () {
       return {
-        title: 'HTML5构建',
+        title: 'iOS构建',
         activeName: 'build',
         application: '',
         ciJob: '',
@@ -210,6 +215,11 @@
         },
         queryParam: {
           queryName: ''
+        },
+        buildParam: {
+          versionName: '',
+          versionDesc: '',
+          paramMap: {}
         },
         branchOptions: [],
         branchesLoading: false,
@@ -224,7 +234,7 @@
         timer: null // 查询定时器
       }
     },
-    name: 'JobH5BuildDialog',
+    name: 'JobIOSBuildDialog',
     props: ['formStatus'],
     components: {},
     filters: {
@@ -243,7 +253,7 @@
         this.$emit('closeDialog')
       },
       setTimer () {
-        if(this.timer !== null) return
+        if (this.timer !== null) return
         this.timer = setInterval(() => {
           if (!this.formStatus.visible) return
           this.fetchData()
@@ -278,8 +288,8 @@
         let requestBody = {
           'ciJobId': this.ciJob.id,
           'branch': this.ciJob.branch,
-          'versionName': '',
-          'versionDesc': '',
+          'versionName': this.buildParam.versionName,
+          'versionDesc': this.buildParam.versionDesc,
           'paramMap': {}
         }
         buildCiJob(requestBody)
