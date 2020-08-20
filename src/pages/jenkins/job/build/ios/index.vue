@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="18">
           <div style="width:100%;text-align:center; margin-top: 50px">
-            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">手机打开后点击安装</a>
+            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">点击安装</a>
           </div>
         </el-col>
       </el-card>
