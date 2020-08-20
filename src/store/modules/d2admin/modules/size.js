@@ -5,7 +5,7 @@ export default {
   namespaced: true,
   state: {
     // 尺寸
-    value: '' // medium small mini
+    value: 'mini' // medium small mini
   },
   actions: {
     /**

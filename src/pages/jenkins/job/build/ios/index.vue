@@ -1,63 +1,118 @@
 <template>
-    <template>
-      <div>
-        <h1>{{title}}</h1>
-      </div>
-      <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
-        <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
-                  class="input"/>
-        <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
-        <el-button @click="handlerAdd" style="margin-left: 5px">新增</el-button>
-      </el-row>
-      <el-table :data="tableData" style="width: 100%" v-loading="loading">
-        <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="tplName" label="模版名称"></el-table-column>
-        <el-table-column prop="tplType" label="模版类型" width="180">
-          <template slot-scope="props">
-            <el-tag disable-transitions type="primary" plain size="mini">{{props.row.tplType}}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="tplVersion" label="模版版本"></el-table-column>
-        <el-table-column prop="comment" label="描述"></el-table-column>
-        <el-table-column prop="tags" label="标签">
-          <template slot-scope="props">
-            <div class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
+  <div>
+    <div>
+      <h1>{{title}}</h1>
+    </div>
+    <el-col :span="10">
+      <el-card shadow="never">
+        <vue-qr :logoSrc="imageUrl" :text="pageUrl" :size="150"></vue-qr>
+      </el-card>
+      <el-card shadow="never" style="margin-top: 10px">
+        <el-row>
+          <el-col :span="22">
+            <el-tooltip class="item" effect="light" :content="build.user.email" placement="top-start">
+              <el-tag disable-transitions type="primary">{{build.user.displayName}}
+              </el-tag>
+            </el-tooltip>
+            <span style="margin-left: 5px">{{build.ago}}</span>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="light" content="执行人" placement="top-start">
+              <i class="el-icon-user" aria-hidden="true"></i>
+            </el-tooltip>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
+        <el-row>
+          <el-col :span="22">
+            <div>构建时长: {{build.buildTime}}</div>
+            <div>开始时间: {{build.startTime}}</div>
+            <div>结束时间: {{build.endTime}}</div>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="light" content="构建时间" placement="top-start">
+              <i class="el-icon-time" aria-hidden="true"></i>
+            </el-tooltip>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
+        <!--              变更详情11-->
+        <el-row>
+          <el-col :span="22">
+            <div class="tag-group" v-show="build.changes.length > 0">
+              <div v-for="item in build.changes" :key="item.id">
+                <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
+                  <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
                 </el-tooltip>
-              </span>
+                <el-tag style="margin-left: 5px" type="primary">{{ item.commitMsg }}</el-tag>
+              </div>
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" width="280">
-          <template slot-scope="scope">
-            <el-button type="primary" plain size="mini" @click="handlerRowTagEdit(scope.row)">标签</el-button>
-            <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>
-            <el-button type="danger" plain size="mini" @click="handlerRowDel(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination background @current-change="paginationCurrentChange"
-                     :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
-                     layout="sizes, prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
-                     :page-size="pagination.pageSize">
-      </el-pagination>
-      <TagTransferDialog :formStatus="formTagTransferStatus" ref="tagTransferDialog"
-                         @closeDialog="fetchData"></TagTransferDialog>
-      <JobTplDialog ref="jobTplDialog" :formStatus="formStatus"
-                    @closeDialog="fetchData"></JobTplDialog>
-    </template>
+            <span v-show="build.changes.length === 0">No Changes</span>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="light" content="变更详情" placement="top-start">
+              <i class="fa fa-comment-o" aria-hidden="true"></i>
+            </el-tooltip>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
+        <!--              产出物详情-->
+        <el-row>
+          <el-col :span="22">
+            <div class="tag-group" v-show="build.artifacts.length > 0">
+              <div v-for="item in build.artifacts" :key="item.id">
+                <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
+                  <el-tag type="primary">{{ item.artifactFileName }}</el-tag>
+                </el-tooltip>
+                <el-tooltip class="item" effect="light" content="文件大小" placement="top-start">
+                  <el-tag style="margin-left: 5px" type="primary">{{ item.artifactFileSize }}</el-tag>
+                </el-tooltip>
+              </div>
+            </div>
+            <span v-show="build.artifacts.length === 0">No Artifacts</span>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="light" content="产出物" placement="top-start">
+              <i class="el-icon-folder" aria-hidden="true"></i>
+            </el-tooltip>
+          </el-col>
+        </el-row>
+        <el-divider></el-divider>
+        <!--              工作节点-->
+        <el-row>
+          <el-col :span="22">
+            <div class="tag-group" v-show="build.executors.length > 0">
+              <div v-for="item in build.executors" :key="item.id">
+                <el-tag type="primary">{{ item.nodeName }}:{{ item.privateIp}}</el-tag>
+              </div>
+            </div>
+            <span v-show="build.executors.length === 0">No Executors</span>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="light" content="工作节点" placement="top-start">
+              <i class="fa fa-television" aria-hidden="true"></i>
+            </el-tooltip>
+          </el-col>
+        </el-row>
+      </el-card>
+    </el-col>
+
+  </div>
 </template>
 
 <script>
 
-  // Component
-  import TagTransferDialog from '@/components/opscloud/dialog/TagTransferDialog'
-  import JobTplDialog from '@/components/opscloud/jenkins/JobTplDialog'
 
-  import { queryBusinessTag, queryTagPage } from '@api/tag/tag.js'
-  import { queryJobTplPage, delJobTplById } from '@api/jenkins/jenkins.tpl.js'
+  import VueQr from 'vue-qr'
+  import { queryCiJobBuildByBuildId } from '@api/build/job.build.js'
+
+  const build = {
+    user: { email: '' },
+    ago: '',
+    artifacts: [],
+    changes: [],
+    executors: []
+  }
 
   export default {
     name: 'IosBuildDetails',
@@ -65,33 +120,30 @@
       return {
         title: 'iOS构建任务详情',
         buildId: '',
-        tableData: [],
+        build: build,
         options: {
           stripe: true
         },
-        loading: false
+        imageUrl: require('@/static/icons/iOS.svg'),
+        pageUrl: ''
       }
     },
     mounted () {
       this.buildId = this.$route.query.buildId
       this.fetchData()
+      this.initPageURL()
     },
     components: {
+      VueQr
     },
     methods: {
+      initPageURL () {
+        this.pageUrl = window.location.href
+      },
       fetchData () {
-        this.loading = true
-        let requestBody = {
-          'queryName': this.queryParam.queryName,
-          'extend': 1,
-          'page': this.pagination.currentPage,
-          'length': this.pagination.pageSize
-        }
-        queryJobTplPage(requestBody)
+        queryCiJobBuildByBuildId(this.buildId)
           .then(res => {
-            this.tableData = res.body.data
-            this.pagination.total = res.body.totalNum
-            this.loading = false
+            this.build = res.body
           })
       }
     }

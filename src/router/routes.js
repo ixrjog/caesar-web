@@ -322,6 +322,15 @@ const frameIn = [
         }
       },
       {
+        path: '/job/build/ios',
+        name: 'job-build-ios',
+        component: () => import('@/pages/jenkins/job/build/ios'),
+        meta: {
+          auth: true,
+          title: 'iOS持续集成构建详情'
+        }
+      },
+      {
         path: '/workbench/workorder',
         name: 'workbench-workorder',
         component: () => import('@/pages/workbench/workorder'),
