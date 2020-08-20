@@ -5,7 +5,14 @@
     </div>
     <el-col :span="10">
       <el-card shadow="never">
-        <vue-qr :logoSrc="imageUrl" :text="pageUrl" :size="150"></vue-qr>
+        <el-col :span="6">
+          <vue-qr :logoSrc="imageUrl" :text="pageUrl" :size="150"></vue-qr>
+        </el-col>
+        <el-col :span="18">
+          <div style="width:100%;text-align:center; margin-top: 50px">
+            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">手机打开后点击安装</a>
+          </div>
+        </el-col>
       </el-card>
       <el-card shadow="never" style="margin-top: 10px">
         <el-row>
@@ -125,7 +132,8 @@
           stripe: true
         },
         imageUrl: require('@/static/icons/iOS.svg'),
-        pageUrl: ''
+        pageUrl: '',
+        downloadHref: ''
       }
     },
     mounted () {
@@ -140,10 +148,20 @@
       initPageURL () {
         this.pageUrl = window.location.href
       },
+      initDownloadHref () {
+        let h = 'itms-services://?action=download-manifest&amp;url='
+        for (let i = 0; i < this.build.artifacts.length; i++) {
+          if (this.build.artifacts[i].artifactFileName === 'manifest.plist') {
+            this.downloadHref = h + this.build.artifacts[i].ossUrl
+            break
+          }
+        }
+      },
       fetchData () {
         queryCiJobBuildByBuildId(this.buildId)
           .then(res => {
             this.build = res.body
+            this.initDownloadHref()
           })
       }
     }
