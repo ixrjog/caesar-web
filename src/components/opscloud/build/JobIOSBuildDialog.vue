@@ -35,6 +35,17 @@
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
           </el-form-item>
+
+          <el-form-item label="更新pod" :label-width="labelWidth">
+            <el-select v-model.trim="buildParam.paramMap.podUpdate" placeholder="选择类型">
+              <el-option
+                v-for="item in podUpdateOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="版本名称" :label-width="labelWidth">
             <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号"></el-input>
           </el-form-item>
@@ -167,7 +178,7 @@
               </el-row>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="120">
+          <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
               <el-button-group style="float: right; padding: 3px 0">
                 <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
@@ -201,7 +212,14 @@
 
   import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
   import { queryApplicationSCMMemberBranch } from '@api/application/application.js'
-  // import { addCiJob, updateCiJob } from '@api/application/ci.job.js'
+
+  const podUpdateOptions = [{
+    value: true,
+    label: '更新'
+  }, {
+    value: false,
+    label: '跳过'
+  }]
 
   export default {
     data () {
@@ -222,6 +240,7 @@
           versionDesc: '',
           paramMap: {}
         },
+        podUpdateOptions: podUpdateOptions,
         branchOptions: [],
         branchesLoading: false,
         tableData: [],
@@ -265,6 +284,11 @@
         this.activeName = 'build'
         this.application = application
         this.ciJob = ciJob
+        if(this.ciJob.parameters['podUpdate'] === 'true'){
+          this.buildParam.paramMap['podUpdate'] = true
+        }else{
+          this.buildParam.paramMap['podUpdate'] = false
+        }
         this.getBranches()
         this.setTimer()
         this.fetchData()
@@ -297,7 +321,7 @@
           'branch': this.ciJob.branch,
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
-          'paramMap': {}
+          'paramMap': this.buildParam.paramMap
         }
         buildCiJob(requestBody)
           .then(res => {

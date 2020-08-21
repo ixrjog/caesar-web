@@ -167,7 +167,7 @@
               </el-row>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="120">
+          <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
               <el-button-group style="float: right; padding: 3px 0">
                 <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"

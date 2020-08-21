@@ -159,8 +159,8 @@
         let requestBody = {
           'queryName': this.queryParam.queryName,
           'applicationId': this.application.id,
-          'page': 1,
-          'length': 10
+          'page': this.pagination.currentPage,
+          'length': this.pagination.pageSize
         }
         queryApplicationIncludeUserPage(requestBody)
           .then(res => {
