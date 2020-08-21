@@ -9,7 +9,13 @@
           </el-form-item>
           <el-form-item label="应用key" :label-width="labelWidth" :required="true">
             <el-input v-model="application.applicationKey" placeholder="请输入内容"
-                      :disabled="!formStatus.operationType"></el-input>
+                      :disabled="!formStatus.operationType">
+
+              <template slot="append">
+                <el-button size="mini" type="primary" @click="handlerBuildKey"><i class="fa fa-arrow-up"
+                                                                                  aria-hidden="true"></i></el-button>
+              </template>
+            </el-input>
           </el-form-item>
           <el-form-item label="描述" :label-width="labelWidth">
             <el-input v-model="application.comment" placeholder="请输入内容"></el-input>
@@ -254,6 +260,9 @@
           .then(res => {
             this.projectOptions = res.body.data
           })
+      },
+      handlerBuildKey () {
+        this.application.applicationKey = this.application.name.toUpperCase()
       },
       handlerEngineAdd () {
         addApplicationEngine(this.application.id, this.jenkinsInstanceId)
