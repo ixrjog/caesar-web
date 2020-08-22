@@ -95,9 +95,10 @@
     <CiJobDialog ref="ciJobDialog" :formStatus="formStatus" @closeDialog="fetchData"></CiJobDialog>
     <!-- 任务引擎编辑对话框 -->
     <CiJobEngineDialog ref="ciJobEngineDialog" :formStatus="formEngineStatus"></CiJobEngineDialog>
-    <JobH5BuildDialog ref="jobH5BuildDialog" :formStatus="formH5BuildStatus"></JobH5BuildDialog>
-    <JobJavaBuildDialog ref="jobJavaBuildDialog" :formStatus="formJavaBuildStatus"></JobJavaBuildDialog>
-    <JobIOSBuildDialog ref="jobIOSBuildDialog" :formStatus="formIOSBuildStatus"></JobIOSBuildDialog>
+    <h5JobBuildDialog ref="h5JobBuildDialog" :formStatus="formH5BuildStatus"></h5JobBuildDialog>
+    <javaJobBuildDialog ref="javaJobBuildDialog" :formStatus="formJavaBuildStatus"></javaJobBuildDialog>
+    <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formIOSBuildStatus"></iOSJobBuildDialog>
+    <pythonJobBuildDialog ref="pythonJobBuildDialog" :formStatus="formPythonBuildStatus"></pythonJobBuildDialog>
     <JenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></JenkinsNodeXTerm>
   </div>
 </template>
@@ -111,9 +112,10 @@
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CiJobEngineDialog from '@/components/opscloud/application/CiJobEngineDialog'
   // Component Build
-  import JobH5BuildDialog from '@/components/opscloud/build/JobH5BuildDialog'
-  import JobJavaBuildDialog from '@/components/opscloud/build/JobJavaBuildDialog'
-  import JobIOSBuildDialog from '@/components/opscloud/build/JobIOSBuildDialog'
+  import H5JobBuildDialog from '@/components/opscloud/build/H5JobBuildDialog'
+  import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
+  import IOSJobBuildDialog from '@/components/opscloud/build/IOSJobBuildDialog'
+  import PythonJobBuildDialog from '@/components/opscloud/build/PythonJobBuildDialog'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
 
@@ -154,6 +156,9 @@
         formIOSBuildStatus: {
           visible: false
         },
+        formPythonBuildStatus: {
+          visible: false
+        },
         formXtermStatus: {
           visible: false
         },
@@ -175,9 +180,10 @@
       JenkinsNodeXTerm,
       CiJobDialog,
       CiJobEngineDialog,
-      JobH5BuildDialog,
-      JobJavaBuildDialog,
-      JobIOSBuildDialog
+      H5JobBuildDialog,
+      JavaJobBuildDialog,
+      IOSJobBuildDialog,
+      PythonJobBuildDialog
     },
     methods: {
       ...mapActions({
@@ -244,15 +250,19 @@
         switch (row.jobType) {
           case 'HTML5':
             this.formH5BuildStatus.visible = true
-            this.$refs.jobH5BuildDialog.initData(this.application, row)
+            this.$refs.h5JobBuildDialog.initData(this.application, row)
             break
           case 'JAVA':
             this.formJavaBuildStatus.visible = true
-            this.$refs.jobJavaBuildDialog.initData(this.application, row)
+            this.$refs.javaJobBuildDialog.initData(this.application, row)
             break
           case 'IOS':
             this.formIOSBuildStatus.visible = true
-            this.$refs.jobIOSBuildDialog.initData(this.application, row)
+            this.$refs.iOSJobBuildDialog.initData(this.application, row)
+            break
+          case 'PYTHON':
+            this.formPythonBuildStatus.visible = true
+            this.$refs.pythonJobBuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('任务类型配置错误!')

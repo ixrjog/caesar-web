@@ -101,6 +101,10 @@
     {
       value: 'JAVA',
       label: 'JAVA'
+    },
+    {
+      value: 'PYTHON',
+      label: 'PYTHON'
     }
   ]
 

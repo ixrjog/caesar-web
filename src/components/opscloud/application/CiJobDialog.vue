@@ -203,6 +203,9 @@
   }, {
     value: 'JAVA',
     label: 'Java'
+  }, {
+    value: 'PYTHON',
+    label: 'Python'
   }]
 
   export default {
