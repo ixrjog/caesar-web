@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
+    <el-row style="margin-bottom: 5px" :gutter="24">
       <el-input v-model.trim="application.name" disabled placeholder="应用名称" class="input"></el-input>
       <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
       <!--      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"-->
@@ -214,9 +214,6 @@
         this.fetchData()
         this.setTimer()
         // this.fetchData()
-      },
-      handlerRowSel (row) {
-        this.$emit('handlerSelApplication', row)
       },
       handlerAdd () {
         let ciJob = {

@@ -54,3 +54,18 @@ export function readJobTplById (id) {
     method: 'get'
   })
 }
+
+export function queryCiJobTplPage (data) {
+  return request({
+    url: baseUrl + '/job/page/query',
+    method: 'post',
+    data
+  })
+}
+
+export function upgradeCiJobTplByJobId (jobId) {
+  return request({
+    url: baseUrl + '/job/upgrade?jobId=' + jobId,
+    method: 'get'
+  })
+}

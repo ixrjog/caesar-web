@@ -112,6 +112,15 @@ const frameIn = [
         }
       },
       {
+        path: '/jenkins/job/template/version',
+        name: 'jenkins-job-template-version',
+        component: () => import('@/pages/jenkins/job/template/version'),
+        meta: {
+          auth: true,
+          title: 'Jenkins任务模版版本管理'
+        }
+      },
+      {
         path: '/gitlab/instance',
         name: 'gitlab-instance',
         component: () => import('@/pages/gitlab/instance'),

@@ -4,13 +4,13 @@
     <el-row :gutter="10">
       <el-col :span="8">
         <el-card shadow="never">
-          <myApplicationTable ref="myApplicationTable"
-                                        @handlerSelApplication="handlerSelApplication"></myApplicationTable>
+          <jobTplTable ref="jobTplTable"
+                       @handlerSelTemplate="handlerSelTemplate"></jobTplTable>
         </el-card>
       </el-col>
       <el-col :span="16">
         <el-card shadow="never">
-          <myCiJobTable ref="myCiJobTable"></myCiJobTable>
+          <jobTable ref="jobTable"></jobTable>
         </el-card>
       </el-col>
     </el-row>
@@ -19,24 +19,24 @@
 
 <script>
 
-  import MyApplicationTable from '@/components/opscloud/application/MyApplicationTable.vue'
-  import MyCiJobTable from '@/components/opscloud/application/MyCiJobTable.vue'
+  import JobTplTable from '@/components/opscloud/jenkins/JobTplTable.vue'
+  import JobTable from '@/components/opscloud/jenkins/JobTable.vue'
 
   export default {
     data () {
       return {
-        title: '我的应用'
+        title: '模版版本管理'
       }
     },
     components: {
-      MyApplicationTable,
-      MyCiJobTable
+      JobTplTable,
+      JobTable
     },
     mounted () {
     },
     methods: {
-      handlerSelApplication (application) {
-        this.$refs.myCiJobTable.initData(application)
+      handlerSelTemplate (jobTpl) {
+        this.$refs.jobTable.initData(jobTpl)
       }
     }
   }
