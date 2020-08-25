@@ -161,6 +161,7 @@
     mounted () {
       this.setXTermSetting()
       this.initWebSocketURL()
+      this.$store.dispatch('d2admin/menu/asideCollapseSet', true)
     },
     beforeDestroy () {
       try {
