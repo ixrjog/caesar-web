@@ -92,14 +92,15 @@
                    :page-size="pagination.pageSize">
     </el-pagination>
     <!-- 任务编辑对话框 -->
-    <CiJobDialog ref="ciJobDialog" :formStatus="formStatus" @closeDialog="fetchData"></CiJobDialog>
+    <ciJobDialog ref="ciJobDialog" :formStatus="formStatus" @closeDialog="fetchData"></ciJobDialog>
     <!-- 任务引擎编辑对话框 -->
-    <CiJobEngineDialog ref="ciJobEngineDialog" :formStatus="formEngineStatus"></CiJobEngineDialog>
+    <ciJobEngineDialog ref="ciJobEngineDialog" :formStatus="formEngineStatus"></ciJobEngineDialog>
     <h5JobBuildDialog ref="h5JobBuildDialog" :formStatus="formH5BuildStatus"></h5JobBuildDialog>
     <javaJobBuildDialog ref="javaJobBuildDialog" :formStatus="formJavaBuildStatus"></javaJobBuildDialog>
     <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formIOSBuildStatus"></iOSJobBuildDialog>
     <pythonJobBuildDialog ref="pythonJobBuildDialog" :formStatus="formPythonBuildStatus"></pythonJobBuildDialog>
-    <JenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></JenkinsNodeXTerm>
+    <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
+    <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
   </div>
 </template>
 
@@ -116,6 +117,7 @@
   import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
   import IOSJobBuildDialog from '@/components/opscloud/build/IOSJobBuildDialog'
   import PythonJobBuildDialog from '@/components/opscloud/build/PythonJobBuildDialog'
+  import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
 
@@ -159,6 +161,9 @@
         formPythonBuildStatus: {
           visible: false
         },
+        formAndroidBuildStatus: {
+          visible: false
+        },
         formXtermStatus: {
           visible: false
         },
@@ -183,7 +188,8 @@
       H5JobBuildDialog,
       JavaJobBuildDialog,
       IOSJobBuildDialog,
-      PythonJobBuildDialog
+      PythonJobBuildDialog,
+      AndroidJobBuildDialog
     },
     methods: {
       ...mapActions({
@@ -260,6 +266,10 @@
           case 'PYTHON':
             this.formPythonBuildStatus.visible = true
             this.$refs.pythonJobBuildDialog.initData(this.application, row)
+            break
+          case 'ANDROID':
+            this.formAndroidBuildStatus.visible = true
+            this.$refs.androidJobBuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('任务类型配置错误!')

@@ -35,11 +35,20 @@
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
           </el-form-item>
-
-          <el-form-item label="更新pod" :label-width="labelWidth">
-            <el-select v-model.trim="buildParam.paramMap.podUpdate" placeholder="选择类型">
+          <el-form-item label="构建环境" :label-width="labelWidth">
+            <el-select v-model.trim="buildParam.paramMap.ENVIRONMENT_BUILD" placeholder="选择类型">
               <el-option
-                v-for="item in podUpdateOptions"
+                v-for="item in buildEnvOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="构建渠道" :label-width="labelWidth">
+            <el-select v-model.trim="buildParam.paramMap.PRODUCT_FLAVOR_BUILD" placeholder="选择类型">
+              <el-option
+                v-for="item in buildProductFlavorOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -183,8 +192,9 @@
               <el-button-group style="float: right; padding: 3px 0">
                 <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
                            @click="handlerSelRow(scope.row)"></el-button>
-                <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)"></el-button>
-                  <el-button type="primary" icon="fa fa-download" @click="handlerRowOpenBuildDetails(scope.row)">
+                <el-button type="primary" icon="el-icon-position"
+                           @click="handlerRowOpenBuildUrl(scope.row)"></el-button>
+                <el-button type="primary" icon="fa fa-download" @click="handlerRowOpenBuildDetails(scope.row)">
                 </el-button>
               </el-button-group>
             </template>
@@ -197,7 +207,6 @@
         </el-pagination>
       </el-tab-pane>
     </el-tabs>
-
     <el-divider></el-divider>
     <div slot="footer" class="dialog-footer">
       <el-button size="mini" @click="closeDialog">关闭</el-button>
@@ -213,18 +222,60 @@
   import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
   import { queryApplicationSCMMemberBranch } from '@api/application/application.js'
 
-  const podUpdateOptions = [{
-    value: true,
-    label: '更新'
-  }, {
-    value: false,
-    label: '跳过'
-  }]
+  const buildEnvOptions = [
+    {
+      value: 'beta',
+      label: 'beta'
+    },
+    {
+      value: 'release',
+      label: 'release'
+    },
+    {
+      value: 'debug',
+      label: 'debug'
+    }
+  ]
+
+  const buildProductFlavorOptions = [
+    {
+      value: 'yyb',
+      label: '应用宝'
+    },
+    {
+      value: 'huawei',
+      label: '华为'
+    },
+    {
+      value: 'xiaomi',
+      label: '小米'
+    },
+    {
+      value: 'oppo',
+      label: 'OPPO'
+    },
+    {
+      value: 'vivo',
+      label: 'VIVO'
+    },
+    {
+      value: 'baidu',
+      label: '百度'
+    },
+    {
+      value: 'bmhy',
+      label: '斑马会员'
+    },
+    {
+      value: 'ceshi',
+      label: '测试渠道'
+    }
+  ]
 
   export default {
     data () {
       return {
-        title: 'iOS构建',
+        title: 'Android构建',
         activeName: 'build',
         application: '',
         ciJob: '',
@@ -240,7 +291,8 @@
           versionDesc: '',
           paramMap: {}
         },
-        podUpdateOptions: podUpdateOptions,
+        buildEnvOptions: buildEnvOptions,
+        buildProductFlavorOptions: buildProductFlavorOptions,
         branchOptions: [],
         branchesLoading: false,
         tableData: [],
@@ -254,7 +306,7 @@
         timer: null // 查询定时器
       }
     },
-    name: 'IOSJobBuildDialog',
+    name: 'AndroidJobBuildDialog',
     props: ['formStatus'],
     components: {},
     filters: {
@@ -284,11 +336,9 @@
         this.activeName = 'build'
         this.application = application
         this.ciJob = ciJob
-        if(this.ciJob.parameters['podUpdate'] === 'true'){
-          this.buildParam.paramMap['podUpdate'] = true
-        }else{
-          this.buildParam.paramMap['podUpdate'] = false
-        }
+        // 初始化参数
+        this.buildParam.paramMap['ENVIRONMENT_BUILD'] = ciJob.parameters['ENVIRONMENT_BUILD']
+        this.buildParam.paramMap['PRODUCT_FLAVOR_BUILD'] = ciJob.parameters['PRODUCT_FLAVOR_BUILD']
         this.getBranches()
         this.setTimer()
         this.fetchData()
@@ -308,11 +358,11 @@
       handlerRowOpenBuildUrl (row) {
         window.open(row.jobBuildUrl)
       },
-      handlerRowOpenBuildDetails(row){
+      handlerRowOpenBuildDetails (row) {
         let host = window.location.host
         let httpProtocol = window.location.href.split('://')[0]
         let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/ios?buildId=' + row.id
-        window.open(buildDetailsUrl )
+        window.open(buildDetailsUrl)
       },
       handlerBuild () {
         this.building = true
