@@ -139,6 +139,7 @@
       this.buildId = this.$route.query.buildId
       this.fetchData()
       this.initPageURL()
+      this.$store.dispatch('d2admin/menu/asideCollapseSet', true)
     },
     components: {
       VueQr
