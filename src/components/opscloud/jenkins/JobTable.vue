@@ -2,6 +2,8 @@
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
       <el-input v-model.trim="jobTpl.name" disabled placeholder="应用名称" class="input"></el-input>
+      <el-input v-model.trim="queryParam.queryName" :disabled="jobTpl === ''" placeholder="关键字查询" class="input"></el-input>
+      <el-button @click="fetchData" style="margin-left: 5px" :disabled="jobTpl === ''">查询</el-button>
       <el-button @click="handlerUpgrade" style="margin-left: 5px" :disabled="jobTpl === ''">全部升级</el-button>
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
@@ -12,13 +14,14 @@
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="引擎模版">
+      <el-table-column label="引擎模版" width="550px">
         <template slot-scope="props">
           <div class="tag-group">
               <span v-for="item in props.row.jobEngines" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px">{{ item.jenkinsInstance.name }} - {{ item.name }} [version: {{ item.tplVersion }}]</el-tag>
-                </el-tooltip>
+                  <el-tag effect="dark" :type="item.needUpgrade ? 'warning' : 'success'">{{ item.jenkinsInstance.name }} - {{ item.name }} [version: {{ item.tplVersion }}]
+                   <el-button type="text" style="margin-left: 10px; padding: 3px 0"
+                              @click="handlerOpenJob(item)"><span
+                     style="color: #535353">打开任务</span></el-button></el-tag>
               </span>
           </div>
         </template>
@@ -60,7 +63,6 @@
           total: 0
         },
         queryParam: {
-          instanceId: '',
           queryName: ''
         }
       }
@@ -95,6 +97,9 @@
         this.jobTpl = jobTpl
         this.fetchData()
       },
+      handlerOpenJob (jobEngine) {
+        window.open(jobEngine.jobUrl)
+      },
       handlerUpgrade () {
 
       },
@@ -118,6 +123,7 @@
         }
         let requestBody = {
           'jobTplId': this.jobTpl.id,
+          'queryName': this.queryParam.queryName,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
