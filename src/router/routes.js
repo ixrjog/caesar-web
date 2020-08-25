@@ -340,6 +340,15 @@ const frameIn = [
         }
       },
       {
+        path: '/job/build/android',
+        name: 'job-build-android',
+        component: () => import('@/pages/jenkins/job/build/android'),
+        meta: {
+          auth: true,
+          title: 'Android持续集成构建详情'
+        }
+      },
+      {
         path: '/workbench/workorder',
         name: 'workbench-workorder',
         component: () => import('@/pages/workbench/workorder'),

@@ -361,7 +361,7 @@
       handlerRowOpenBuildDetails (row) {
         let host = window.location.host
         let httpProtocol = window.location.href.split('://')[0]
-        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/ios?buildId=' + row.id
+        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android?buildId=' + row.id
         window.open(buildDetailsUrl)
       },
       handlerBuild () {
