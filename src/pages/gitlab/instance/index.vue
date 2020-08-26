@@ -6,7 +6,7 @@
       </div>
       <el-tabs v-model="activeName">
         <el-tab-pane label="实例" name="instance">
-          <GitlabInstanceTable></GitlabInstanceTable>
+          <gitlabInstanceTable></gitlabInstanceTable>
         </el-tab-pane>
       </el-tabs>
     </template>

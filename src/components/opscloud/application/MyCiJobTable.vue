@@ -41,7 +41,7 @@
           <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="最新构建">
+      <el-table-column prop="name" label="最新构建" width="160">
         <template slot-scope="props">
           <el-button-group>
             <el-button v-for="item in props.row.buildViews" :key="item.buildNumber"

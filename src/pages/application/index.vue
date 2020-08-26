@@ -4,7 +4,7 @@
       <div>
         <h1>{{title}}</h1>
       </div>
-      <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
+      <el-row style="margin-bottom: 5px" :gutter="24">
         <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
                   class="input"/>
         <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
@@ -12,13 +12,13 @@
       </el-row>
       <el-table :data="tableData" style="width: 100%" v-loading="loading">
         <el-table-column prop="name" label="应用名称"></el-table-column>
-        <el-table-column prop="applicationKey" label="key" width="180">
+        <el-table-column prop="applicationKey" label="key">
           <template slot-scope="props">
             <el-tag disable-transitions type="primary" plain size="mini">{{props.row.applicationKey}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="comment" label="描述"></el-table-column>
-        <el-table-column prop="tags" label="标签">
+        <el-table-column prop="tags" label="标签" width="180">
           <template slot-scope="props">
             <div class="tag-group">
               <span v-for="item in props.row.tags" :key="item.id">
@@ -188,6 +188,7 @@
   .input {
     display: inline-block;
     max-width: 200px;
+    margin-left: 10px;
   }
 
   .select {

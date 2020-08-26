@@ -1,8 +1,7 @@
 <template>
   <div>
-    <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
-      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
-                class="input"/>
+    <el-row style="margin-bottom: 5px;margin-left: 0px;" :gutter="24">
+      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询" style="display: inline-block;max-width: 200px;"/>
       <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
       <el-button @click="handlerAdd" style="margin-left: 5px">新建</el-button>
     </el-row>

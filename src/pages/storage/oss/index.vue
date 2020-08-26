@@ -4,7 +4,7 @@
       <div>
         <h1>{{title}}</h1>
       </div>
-      <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
+      <el-row style="margin-bottom: 5px" :gutter="24">
         <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
                   class="input"/>
         <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
@@ -213,6 +213,7 @@
   .input {
     display: inline-block;
     max-width: 200px;
+    margin-left: 10px;
   }
 
   .select {
