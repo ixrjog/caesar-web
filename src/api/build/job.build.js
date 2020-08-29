@@ -24,3 +24,11 @@ export function queryCiJobBuildByBuildId (buildId) {
     method: 'get'
   })
 }
+
+export function queryCiJobBuildArtifact (data) {
+  return request({
+    url: baseUrl + '/ci/build/artifact/query',
+    method: 'post',
+    data
+  })
+}
