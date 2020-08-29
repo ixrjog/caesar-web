@@ -16,7 +16,7 @@
                 :value="item.id">
                 <span style="float: left">{{item.versionName}}</span>
                 <span
-                  style="float: right; color: #8492a6; font-size: 13px; margin-left: 10px">#{{ item.jobBuildNumber}}</span>
+                  style="float: right; color: #8492a6; font-size: 13px; margin-left: 10px">#{{ item.jobBuildNumber}} {{ item.endTime }}({{ item.ago }})</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -204,7 +204,7 @@
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildArtifact } from '@api/build/job.build.js'
+  import { queryCiJobBuildPage, buildCdJob, queryCiJobBuildArtifact } from '@api/build/job.build.js'
 
   const channelTypeOptions = [
     {
@@ -330,6 +330,7 @@
       },
       initData (application, ciJob) {
         this.activeName = 'reinforce'
+        this.buildId = ''
         this.application = application
         this.ciJob = ciJob
         this.cdJob = ciJob.cdJob
@@ -353,16 +354,16 @@
         this.building = true
         this.buildParam.paramMap['channelType'] = this.channelType
         if (this.channelType !== 0) {
-          this.buildParam.paramMap['channelGroup'] = this.channelGroup
+          this.buildParam.paramMap['channelGroup'] = JSON.stringify(this.channelGroup)
         }
         let requestBody = {
-          'ciJobId': this.ciJob.id,
-          'branch': this.ciJob.branch,
+          'cdJobId': this.cdJob.id,
+          'ciBuildId': this.buildId,
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
           'paramMap': this.buildParam.paramMap
         }
-        buildCiJob(requestBody)
+        buildCdJob(requestBody)
           .then(res => {
             if (res.success) {
               this.$message({

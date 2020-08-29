@@ -18,6 +18,14 @@ export function buildCiJob (data) {
   })
 }
 
+export function buildCdJob (data) {
+  return request({
+    url: baseUrl + '/cd/build',
+    method: 'post',
+    data
+  })
+}
+
 export function queryCiJobBuildByBuildId (buildId) {
   return request({
     url: baseUrl + '/ci/build/query?buildId=' + buildId,
