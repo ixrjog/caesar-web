@@ -349,6 +349,15 @@ const frameIn = [
         }
       },
       {
+        path: '/job/build/android/reinforce',
+        name: 'job-build-android-reinforce',
+        component: () => import('@/pages/jenkins/job/build/android/reinforce'),
+        meta: {
+          auth: true,
+          title: 'Android持续集成加固详情'
+        }
+      },
+      {
         path: '/workbench/workorder',
         name: 'workbench-workorder',
         component: () => import('@/pages/workbench/workorder'),

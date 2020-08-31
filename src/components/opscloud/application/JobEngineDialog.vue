@@ -88,8 +88,7 @@
     data () {
       return {
         title: '工作引擎配置详情',
-        ciJob: '',
-        cdJob: '',
+        job: '',
         labelWidth: '150px',
         options: {
           stripe: true
@@ -113,17 +112,19 @@
         this.formStatus.visible = false
         this.$emit('closeDialog')
       },
-      initData (ciJob) {
-        this.ciJob = ciJob
+      initData (data) {
+        this.job = {
+          ciJobId: data.ciJobId,
+          cdJobId: data.cdJobId
+        }
         this.fetchBuildEngineData()
-        if (ciJob.cdJob !== null) {
-          this.cdJob = ciJob.cdJob
+        if (this.job.cdJobId !== null) {
           this.fetchDeploymentEngineData()
         }
       },
       handlerBuildEngineCreate () {
         this.creatingBuildEngine = true
-        createCiJobEngine(this.ciJob.id)
+        createCiJobEngine(this.job.ciJobid)
           .then(res => {
             this.creatingBuildEngine = false
             this.fetchBuildEngineData()
@@ -131,7 +132,7 @@
       },
       handlerDeploymentEngineCreate () {
         this.creatingDeploymentEngine = true
-        createCdJobEngine(this.cdJob.id)
+        createCdJobEngine(this.job.cdJobId)
           .then(res => {
             this.creatingDeploymentEngine = false
             this.fetchDeploymentEngineData()
@@ -142,7 +143,7 @@
       },
       fetchBuildEngineData () {
         this.buildEngineLoading = true
-        queryCiJobEngine(this.ciJob.id)
+        queryCiJobEngine(this.job.ciJobId)
           .then(res => {
             this.buildEngines = res.body
             this.buildEngineLoading = false
@@ -150,7 +151,7 @@
       },
       fetchDeploymentEngineData () {
         this.deploymentEngineLoading = true
-        queryCdJobEngine(this.cdJob.id)
+        queryCdJobEngine(this.job.cdJobId)
           .then(res => {
             this.deploymentEngines = res.body
             this.deploymentEngineLoading = false

@@ -10,6 +10,14 @@ export function queryCiJobBuildPage (data) {
   })
 }
 
+export function queryCdJobBuildPage (data) {
+  return request({
+    url: baseUrl + '/cd/build/page/query',
+    method: 'post',
+    data
+  })
+}
+
 export function buildCiJob (data) {
   return request({
     url: baseUrl + '/ci/build',
@@ -29,6 +37,13 @@ export function buildCdJob (data) {
 export function queryCiJobBuildByBuildId (buildId) {
   return request({
     url: baseUrl + '/ci/build/query?buildId=' + buildId,
+    method: 'get'
+  })
+}
+
+export function queryCdJobBuildByBuildId (buildId) {
+  return request({
+    url: baseUrl + '/cd/build/query?buildId=' + buildId,
     method: 'get'
   })
 }

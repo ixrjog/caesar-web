@@ -2,16 +2,11 @@
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
       <el-input v-model.trim="application.name" disabled placeholder="应用名称" class="input"></el-input>
-      <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
-      <!--      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"-->
-      <!--                class="input"/>-->
-      <!--      <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>-->
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
-            <el-form-item label="仓库">{{props.row.scmMember.scmSshUrl}}</el-form-item>
             <el-form-item label="描述">{{props.row.comment}}</el-form-item>
           </el-form>
         </template>
@@ -28,12 +23,6 @@
                 </el-tooltip>
               </span>
           </span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="branch" label="分支">
-        <template slot-scope="scope">
-          <i class="fa fa-code-fork" style="margin-right: 2px"></i>
-          <b>{{scope.row.branch}}</b>
         </template>
       </el-table-column>
       <el-table-column prop="env" label="环境" width="80">
@@ -70,17 +59,13 @@
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button-group style="margin-right: 5px">
-            <el-button type="primary" icon="fa fa-play"
-                       @click="handlerRowRunBuild(scope.row)"></el-button>
             <el-button type="primary" icon="fa fa-cloud-upload" v-show="scope.row.deploymentJobId !== 0"
                        @click="handlerRowRunDeployment(scope.row)"></el-button>
           </el-button-group>
-          <el-dropdown split-button type="primary" @click="handlerRowEdit(scope.row)">
+          <el-dropdown split-button type="primary" @click="handlerRowDeploymentEdit(scope.row)">
             <i class="el-icon-edit"></i>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item icon="fa fa-plane"><span @click="handlerRowEngineEdit(scope.row)">工作引擎</span>
-              </el-dropdown-item>
-              <el-dropdown-item icon="el-icon-edit"><span @click="handlerRowDeploymentEdit(scope.row)">部署配置</span>
               </el-dropdown-item>
               <el-dropdown-item icon="fa fa-user"><span>权限配置</span></el-dropdown-item>
             </el-dropdown-menu>
@@ -94,17 +79,10 @@
                    :page-size="pagination.pageSize">
     </el-pagination>
     <!-- 任务编辑对话框 -->
-    <ciJobDialog ref="ciJobDialog" :formStatus="formCiJobStatus" @closeDialog="fetchData"></ciJobDialog>
     <cdJobDialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cdJobDialog>
     <!-- 任务引擎编辑对话框 -->
     <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
-    <h5JobBuildDialog ref="h5JobBuildDialog" :formStatus="formH5BuildStatus"></h5JobBuildDialog>
-    <javaJobBuildDialog ref="javaJobBuildDialog" :formStatus="formJavaBuildStatus"></javaJobBuildDialog>
-    <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formIOSBuildStatus"></iOSJobBuildDialog>
-    <pythonJobBuildDialog ref="pythonJobBuildDialog" :formStatus="formPythonBuildStatus"></pythonJobBuildDialog>
-    <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
-    <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
-                                    :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
+    <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog" :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
     <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
   </div>
 </template>
@@ -115,21 +93,15 @@
   // Component
   // XTerm
   import JenkinsNodeXTerm from '@/components/opscloud/xterm/JenkinsNodeXTerm'
-  import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   // Component Build
-  import H5JobBuildDialog from '@/components/opscloud/build/H5JobBuildDialog'
-  import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
-  import IOSJobBuildDialog from '@/components/opscloud/build/IOSJobBuildDialog'
-  import PythonJobBuildDialog from '@/components/opscloud/build/PythonJobBuildDialog'
-  import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
 
-  import { queryCiJobPage } from '@api/application/ci.job.js'
+  import { queryCdJobPage } from '@api/application/cd.job.js'
 
   export default {
-    name: 'MyCiJobTable',
+    name: 'MyCdJobTable',
     data () {
       return {
         application: '',
@@ -162,21 +134,6 @@
         formEngineStatus: {
           visible: false
         },
-        formH5BuildStatus: {
-          visible: false
-        },
-        formJavaBuildStatus: {
-          visible: false
-        },
-        formIOSBuildStatus: {
-          visible: false
-        },
-        formPythonBuildStatus: {
-          visible: false
-        },
-        formAndroidBuildStatus: {
-          visible: false
-        },
         // cd Reinforce
         formAndroidReinforceBuildStatus: {
           visible: false
@@ -200,14 +157,8 @@
     },
     components: {
       JenkinsNodeXTerm,
-      CiJobDialog,
       CdJobDialog,
       JobEngineDialog,
-      H5JobBuildDialog,
-      JavaJobBuildDialog,
-      IOSJobBuildDialog,
-      PythonJobBuildDialog,
-      AndroidJobBuildDialog,
       AndroidReinforceJobBuildDialog
     },
     methods: {
@@ -238,116 +189,39 @@
         this.application = application
         this.fetchData()
         this.setTimer()
-        // this.fetchData()
-      },
-      handlerAdd () {
-        let ciJob = {
-          id: '',
-          applicationId: this.application.id,
-          jobTpl: null,
-          name: '',
-          jobKey: '',
-          branch: '',
-          envType: 0,
-          jotTplId: '',
-          jobType: '',
-          enableTag: false,
-          parameterYaml: '',
-          jobBuildNumber: 0,
-          hide: false,
-          deploymentJobId: 0,
-          atAll: false,
-          dingtalk: null,
-          dingtalkId: '',
-          bucket: null,
-          ossBucketId: '',
-          scmMemberId: '',
-          comment: ''
-        }
-        this.formCiJobStatus.operationType = true
-        this.formCiJobStatus.visible = true
-        this.$refs.ciJobDialog.initData(this.application, ciJob)
-      },
-      handlerRowRunBuild (row) {
-        switch (row.jobType) {
-          case 'HTML5':
-            this.formH5BuildStatus.visible = true
-            this.$refs.h5JobBuildDialog.initData(this.application, row)
-            break
-          case 'JAVA':
-            this.formJavaBuildStatus.visible = true
-            this.$refs.javaJobBuildDialog.initData(this.application, row)
-            break
-          case 'IOS':
-            this.formIOSBuildStatus.visible = true
-            this.$refs.iOSJobBuildDialog.initData(this.application, row)
-            break
-          case 'PYTHON':
-            this.formPythonBuildStatus.visible = true
-            this.$refs.pythonJobBuildDialog.initData(this.application, row)
-            break
-          case 'ANDROID':
-            this.formAndroidBuildStatus.visible = true
-            this.$refs.androidJobBuildDialog.initData(this.application, row)
-            break
-          default:
-            this.$message.error('构建任务类型配置错误!')
-        }
       },
       handlerRowRunDeployment (row) {
-        if (row.cdJob === null) {
-          this.$message.error('部署任务未创建!')
-        }
-        switch (row.cdJob.jobType) {
+        switch (row.jobType) {
           case 'ANDROID_REINFORCE':
             this.formAndroidReinforceBuildStatus.visible = true
-            this.$refs.androidReinforceJobBuildDialog.initData(this.application, row.cdJob)
+            this.$refs.androidReinforceJobBuildDialog.initData(this.application, row)
             break
           case 'JAVA_DEPLOYMENT':
             this.formJavaBuildStatus.visible = true
-            this.$refs.javaJobBuildDialog.initData(this.application, row.cdJob)
+            this.$refs.javaJobBuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('部署任务类型配置错误!')
         }
       },
       handlerRowDeploymentEdit (row) {
-        if (row.cdJob === null) {
-          let cdJob = {
-            id: '',
-            ciJobId: row.id,
-            applicationId: row.applicationId,
-            jobTpl: null,
-            name: '',
-            jobKey: '',
-            envType: 0,
-            jotTplId: '',
-            jobType: '',
-            parameterYaml: '',
-            jobBuildNumber: 0,
-            comment: ''
-          }
-          this.formCdJobStatus.operationType = true
-          this.$refs.cdJobDialog.initData(this.application, cdJob)
-        } else {
-          this.formCdJobStatus.operationType = false
-          this.$refs.cdJobDialog.initData(this.application, Object.assign({}, row.cdJob))
-        }
+        this.formCdJobStatus.operationType = false
+        this.$refs.cdJobDialog.initData(this.application, Object.assign({}, row))
         this.formCdJobStatus.visible = true
       },
       handlerRowEngineEdit (row) {
         let data = {
-          ciJobId: row.id,
-          cdJobId: row.cdJob !== null ? row.cdJob.id : null
+          ciJobId: row.ciJobId,
+          cdJobId: row.id
         }
         this.formEngineStatus.visible = true
         this.$refs.jobEngineDialog.initData(data)
       },
-      handlerRowEdit (row) {
-        this.formCiJobStatus.operationType = false
-        this.formCiJobStatus.visible = true
-        this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
-      },
+      // handlerRowEdit (row) {
+      //   this.formCiJobStatus.operationType = false
+      //   this.formCiJobStatus.visible = true
+      //   this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
+      // },
       handlerOpenXTerm (executor) {
         this.formXtermStatus.visible = true
         this.$refs.xtermDialog.initData(executor)
@@ -363,11 +237,10 @@
         let requestBody = {
           'applicationId': this.application.id,
           'queryName': this.queryParam.queryName,
-          'extend': 1,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
-        queryCiJobPage(requestBody)
+        queryCdJobPage(requestBody)
           .then(res => {
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum

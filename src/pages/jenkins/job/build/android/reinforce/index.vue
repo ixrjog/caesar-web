@@ -43,26 +43,6 @@
           </el-col>
         </el-row>
         <el-divider></el-divider>
-        <!--              变更详情11-->
-        <el-row>
-          <el-col :span="22">
-            <div class="tag-group" v-show="build.changes.length > 0">
-              <div v-for="item in build.changes" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
-                  <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
-                </el-tooltip>
-                <el-tag style="margin-left: 5px" type="primary">{{ item.commitMsg }}</el-tag>
-              </div>
-            </div>
-            <span v-show="build.changes.length === 0">No Changes</span>
-          </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="light" content="变更详情" placement="top-start">
-              <i class="fa fa-comment-o" aria-hidden="true"></i>
-            </el-tooltip>
-          </el-col>
-        </el-row>
-        <el-divider></el-divider>
         <!--              产出物详情-->
         <el-row>
           <el-col :span="22">
@@ -108,9 +88,8 @@
 
 <script>
 
-
   import VueQr from 'vue-qr'
-  import { queryCiJobBuildByBuildId } from '@api/build/job.build.js'
+  import { queryCdJobBuildByBuildId } from '@api/build/job.build.js'
 
   const build = {
     user: { email: '' },
@@ -121,10 +100,10 @@
   }
 
   export default {
-    name: 'AndroidBuildDetails',
+    name: 'AndroidReinforceDetails',
     data () {
       return {
-        title: 'Android构建任务详情',
+        title: 'Android加固任务详情',
         buildId: '',
         build: build,
         options: {
@@ -151,14 +130,14 @@
       initDownloadHref () {
         for (let i = 0; i < this.build.artifacts.length; i++) {
           let size = this.build.artifacts[i].artifactFileName.length
-          if(this.build.artifacts[i].artifactFileName.lastIndexOf('.apk') === (size -4)){
+          if(this.build.artifacts[i].artifactFileName.lastIndexOf('.zip') === (size -4)){
             this.downloadHref = this.build.artifacts[i].ossUrl
             break
           }
         }
       },
       fetchData () {
-        queryCiJobBuildByBuildId(this.buildId)
+        queryCdJobBuildByBuildId(this.buildId)
           .then(res => {
             this.build = res.body
             this.initDownloadHref()

@@ -2,6 +2,14 @@ import request from '@/plugin/axios'
 
 const baseUrl = '/application/cd/job'
 
+export function queryCdJobPage (data) {
+  return request({
+    url: baseUrl + '/page/query',
+    method: 'post',
+    data
+  })
+}
+
 export function addCdJob (data) {
   return request({
     url: baseUrl + '/add',

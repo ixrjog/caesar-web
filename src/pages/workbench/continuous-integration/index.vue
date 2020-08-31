@@ -5,12 +5,27 @@
       <el-col :span="8">
         <el-card shadow="never">
           <myApplicationTable ref="myApplicationTable"
-                                        @handlerSelApplication="handlerSelApplication"></myApplicationTable>
+                              @handlerSelApplication="handlerSelApplication"></myApplicationTable>
         </el-card>
       </el-col>
       <el-col :span="16">
-        <el-card shadow="never">
+        <el-card shadow="never" v-show="builbType">
+          <div slot="header" class="clearfix">
+            <span>构建任务</span>
+            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch"><i
+              class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+            </el-button>
+          </div>
           <myCiJobTable ref="myCiJobTable"></myCiJobTable>
+        </el-card>
+        <el-card shadow="never" v-show="!builbType">
+          <div slot="header" class="clearfix">
+            <span>部署任务</span>
+            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch"><i
+              class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+            </el-button>
+          </div>
+          <myCdJobTable ref="myCdJobTable"></myCdJobTable>
         </el-card>
       </el-col>
     </el-row>
@@ -21,22 +36,29 @@
 
   import MyApplicationTable from '@/components/opscloud/application/MyApplicationTable.vue'
   import MyCiJobTable from '@/components/opscloud/application/MyCiJobTable.vue'
+  import MyCdJobTable from '@/components/opscloud/application/MyCdJobTable.vue'
 
   export default {
     data () {
       return {
-        title: '我的应用'
+        title: '我的应用',
+        builbType: true
       }
     },
     components: {
       MyApplicationTable,
-      MyCiJobTable
+      MyCiJobTable,
+      MyCdJobTable
     },
     mounted () {
     },
     methods: {
+      handlerSwitch () {
+        this.builbType = !this.builbType
+      },
       handlerSelApplication (application) {
         this.$refs.myCiJobTable.initData(application)
+        this.$refs.myCdJobTable.initData(application)
       }
     }
   }

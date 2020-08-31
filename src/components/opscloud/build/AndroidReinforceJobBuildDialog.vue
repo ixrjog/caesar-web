@@ -3,12 +3,12 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="执行加固" name="reinforce">
         <!--        <el-divider></el-divider>-->
-        <el-form :model="ciJob">
+        <el-form :model="cdJob">
           <el-form-item label="任务名称" :label-width="labelWidth">
-            <el-input v-model="ciJob.name" disabled></el-input>
+            <el-input v-model="cdJob.name" disabled></el-input>
           </el-form-item>
           <el-form-item label="选择构件" :label-width="labelWidth">
-            <el-select v-model.trim="buildId" placeholder="选择类型">
+            <el-select v-model.trim="buildId" placeholder="选择类型" :loading="loadBuildArtifact">
               <el-option
                 v-for="item in buildArtifactOptions"
                 :key="item.id"
@@ -112,26 +112,6 @@
                 </el-col>
               </el-row>
               <el-divider></el-divider>
-              <!--              变更详情11-->
-              <el-row>
-                <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.changes.length > 0">
-                    <div v-for="item in scope.row.changes" :key="item.id">
-                      <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
-                        <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
-                      </el-tooltip>
-                      <el-tag style="margin-left: 5px" type="primary">{{ item.commitMsg }}</el-tag>
-                    </div>
-                  </div>
-                  <span v-show="scope.row.changes.length === 0">No Changes</span>
-                </el-col>
-                <el-col :span="2">
-                  <el-tooltip class="item" effect="light" content="变更详情" placement="top-start">
-                    <i class="fa fa-comment-o" aria-hidden="true"></i>
-                  </el-tooltip>
-                </el-col>
-              </el-row>
-              <el-divider></el-divider>
               <!--              产出物详情-->
               <el-row>
                 <el-col :span="22">
@@ -204,7 +184,8 @@
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCdJob, queryCiJobBuildArtifact } from '@api/build/job.build.js'
+  import { queryCdJobBuildPage, buildCdJob, queryCiJobBuildArtifact } from '@api/build/job.build.js'
+
 
   const channelTypeOptions = [
     {
@@ -258,7 +239,6 @@
         title: 'Android加固任务',
         activeName: 'reinforce',
         application: '',
-        ciJob: '',
         cdJob: '',
         labelWidth: '150px',
         options: {
@@ -272,6 +252,7 @@
           versionDesc: '',
           paramMap: {}
         },
+        loadBuildArtifact: false,
         buildArtifactOptions: [],
         buildId: '',
         channelType: '',
@@ -316,8 +297,9 @@
         }, 5000)
       },
       getBuildArtifact () {
+        this.loadBuildArtifact = true
         let requestBody = {
-          'ciJobId': this.ciJob.id,
+          'ciJobId': this.cdJob.ciJobId,
           'size': 10
         }
         queryCiJobBuildArtifact(requestBody)
@@ -326,14 +308,14 @@
             if (res.body !== null && res.body.length > 0) {
               this.buildId = res.body[0].id
             }
+            this.loadBuildArtifact = false
           })
       },
-      initData (application, ciJob) {
+      initData (application, cdJob) {
         this.activeName = 'reinforce'
         this.buildId = ''
         this.application = application
-        this.ciJob = ciJob
-        this.cdJob = ciJob.cdJob
+        this.cdJob = cdJob
         // 初始化参数
         this.channelType = 0
         this.channelGroup = []
@@ -347,7 +329,7 @@
       handlerRowOpenBuildDetails (row) {
         let host = window.location.host
         let httpProtocol = window.location.href.split('://')[0]
-        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android?buildId=' + row.id
+        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android/reinforce?buildId=' + row.id
         window.open(buildDetailsUrl)
       },
       handlerBuild () {
@@ -385,13 +367,13 @@
           this.loading = true
         }
         let requestBody = {
-          'ciJobId': this.ciJob.id,
+          'cdJobId': this.cdJob.id,
           'queryName': this.queryParam.queryName,
           'extend': 1,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
-        queryCiJobBuildPage(requestBody)
+        queryCdJobBuildPage(requestBody)
           .then(res => {
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum
