@@ -211,7 +211,7 @@
         } else {
           let host = window.location.host
           let httpProtocol = window.location.href.split('://')[0]
-          const socketURI = (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/oc3/' + xtermUrl
+          const socketURI = (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/cs/' + xtermUrl
           this.socketURI = socketURI
         }
       },
