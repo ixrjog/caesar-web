@@ -129,9 +129,10 @@
       },
       initDownloadHref () {
         for (let i = 0; i < this.build.artifacts.length; i++) {
-          let size = this.build.artifacts[i].artifactFileName.length
-          if(this.build.artifacts[i].artifactFileName.lastIndexOf('.zip') === (size -4)){
-            this.downloadHref = this.build.artifacts[i].ossUrl
+          let artifact = this.build.artifacts[i]
+          let size = artifact.artifactFileName.length
+          if (artifact.artifactFileName.lastIndexOf('.zip') === (size - 4)) {
+            this.downloadHref = artifact.ossUrl
             break
           }
         }

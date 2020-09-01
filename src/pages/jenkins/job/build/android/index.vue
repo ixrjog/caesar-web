@@ -108,7 +108,6 @@
 
 <script>
 
-
   import VueQr from 'vue-qr'
   import { queryCiJobBuildByBuildId } from '@api/build/job.build.js'
 
@@ -150,9 +149,10 @@
       },
       initDownloadHref () {
         for (let i = 0; i < this.build.artifacts.length; i++) {
-          let size = this.build.artifacts[i].artifactFileName.length
-          if(this.build.artifacts[i].artifactFileName.lastIndexOf('.apk') === (size -4)){
-            this.downloadHref = this.build.artifacts[i].ossUrl
+          let artifact = this.build.artifacts[i]
+          let size = artifact.artifactFileName.length
+          if (artifact.artifactFileName.lastIndexOf('.apk') === (size - 4)) {
+            this.downloadHref = artifact.ossUrl
             break
           }
         }
