@@ -72,7 +72,7 @@
           <el-button-group style="margin-right: 5px">
             <el-button type="primary" icon="fa fa-play"
                        @click="handlerRowRunBuild(scope.row)"></el-button>
-            <el-button type="primary" icon="fa fa-cloud-upload" v-show="scope.row.deploymentJobId !== 0"
+            <el-button type="primary" icon="fa fa-cloud-upload" v-if="scope.row.deploymentJobId !== 0"
                        @click="handlerRowRunDeployment(scope.row)"></el-button>
           </el-button-group>
           <el-dropdown split-button type="primary" @click="handlerRowEdit(scope.row)">
