@@ -181,6 +181,7 @@
 
 <script>
 
+  import util from '@/libs/util.js'
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
@@ -330,7 +331,8 @@
         let host = window.location.host
         let httpProtocol = window.location.href.split('://')[0]
         let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android/reinforce?buildId=' + row.id
-        window.open(buildDetailsUrl)
+        util.open(buildDetailsUrl)
+        //window.open(buildDetailsUrl)
       },
       handlerBuild () {
         this.building = true

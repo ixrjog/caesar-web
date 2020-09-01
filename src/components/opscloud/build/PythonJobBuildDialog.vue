@@ -195,6 +195,7 @@
 
 <script>
 
+  import util from '@/libs/util.js'
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
@@ -281,7 +282,8 @@
           })
       },
       handlerRowOpenBuildUrl (row) {
-        window.open(row.jobBuildUrl)
+        util.open(row.jobBuildUrl)
+      //  window.open(row.jobBuildUrl)
       },
       handlerBuild () {
         this.building = true
