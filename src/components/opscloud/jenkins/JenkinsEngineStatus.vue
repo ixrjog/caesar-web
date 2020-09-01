@@ -1,6 +1,9 @@
 <template>
   <div>
     <el-card class="box-card" shadow="never">
+      <div slot="header" class="clearfix">
+        <span>引擎负载</span>
+      </div>
       <div id="engineChart" style="width: 100%; height: 400px;"></div>
     </el-card>
   </div>
@@ -28,6 +31,7 @@
     mixins: [],
     components: {},
     mounted () {
+      this.queryEngineChart()
       this.setTimer()
     },
     beforeDestroy () {
@@ -100,6 +104,19 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .table-expand {
+    font-size: 0;
+  }
 
+  .table-expand label {
+    width: 150px;
+    color: #99a9bf;
+  }
+
+  .table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
 </style>
