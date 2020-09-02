@@ -72,7 +72,7 @@
       closeDialog () {
         this.sessionInstance = ''
         this.term.dispose()
-        this.term = ''
+        this.term = null
         this.formStatus.visible = false
       },
       queryJobBuildOutput () {
@@ -94,6 +94,9 @@
         this.queryJobBuildOutput()
       },
       handlerOutput () {
+        if (this.term !== null) {
+          this.term.dispose()
+        }
         const term = new Terminal({
           rendererType: 'canvas', // 渲染类型 canvas dom
           allowTransparency: true,
