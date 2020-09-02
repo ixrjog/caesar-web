@@ -38,6 +38,12 @@
               <el-popover placement="top-start" trigger="hover">
                 <el-form>
                   <span v-show="item.executors.length > 0">
+                          <el-tag type="primary">构建日志
+                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
+                                   @click="handlerOpenViewBuildOutput(item.executors)"><span
+                          style="color: #535353">查看</span></el-button>
+                      </el-tag>
+                     <el-divider></el-divider>
                             <div v-for="executor in item.executors" :key="executor.id">
                       <el-tag type="primary">{{ executor.nodeName }}:{{ executor.privateIp}}
                         <el-button type="text" style="margin-left: 10px; padding: 3px 0"
@@ -84,6 +90,7 @@
     <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog" :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
     <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
+    <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
   </div>
 </template>
 
@@ -97,6 +104,7 @@
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   // Component Build
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
+  import ViewJobBuildOutput from '@/components/opscloud/application/ViewJobBuildOutput'
 
   import { queryCdJobPage } from '@api/application/cd.job.js'
 
@@ -141,6 +149,9 @@
         formXtermStatus: {
           visible: false
         },
+        formBuildOutputStatus: {
+          visible: false
+        },
         timer: null // 查询定时器
       }
     },
@@ -159,7 +170,8 @@
       JenkinsNodeXTerm,
       CdJobDialog,
       JobEngineDialog,
-      AndroidReinforceJobBuildDialog
+      AndroidReinforceJobBuildDialog,
+      ViewJobBuildOutput
     },
     methods: {
       ...mapActions({
@@ -225,6 +237,10 @@
       handlerOpenXTerm (executor) {
         this.formXtermStatus.visible = true
         this.$refs.xtermDialog.initData(executor)
+      },
+      handlerOpenViewBuildOutput (executors) {
+        this.formBuildOutputStatus.visible = true
+        this.$refs.viewJobBuildOutput.initData(1, executors[0].buildId)
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage

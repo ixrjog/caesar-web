@@ -55,3 +55,11 @@ export function queryCiJobBuildArtifact (data) {
     data
   })
 }
+
+export function viewJobBuildOutput (data) {
+  return request({
+    url: baseUrl + '/build/output/view',
+    method: 'post',
+    data
+  })
+}

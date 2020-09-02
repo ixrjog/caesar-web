@@ -49,6 +49,12 @@
               <el-popover placement="top-start" trigger="hover">
                 <el-form>
                   <span v-show="item.executors.length > 0">
+                       <el-tag type="primary">构建日志
+                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
+                                   @click="handlerOpenViewBuildOutput(item.executors)"><span
+                          style="color: #535353">查看</span></el-button>
+                      </el-tag>
+                     <el-divider></el-divider>
                             <div v-for="executor in item.executors" :key="executor.id">
                       <el-tag type="primary">{{ executor.nodeName }}:{{ executor.privateIp}}
                         <el-button type="text" style="margin-left: 10px; padding: 3px 0"
@@ -105,7 +111,9 @@
     <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
-    <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
+    <!--    @openXTerm="handlerOpenXTerm"-->
+    <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus"></jenkinsNodeXTerm>
+    <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
   </div>
 </template>
 
@@ -118,6 +126,7 @@
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
+  import ViewJobBuildOutput from '@/components/opscloud/application/ViewJobBuildOutput'
   // Component Build
   import H5JobBuildDialog from '@/components/opscloud/build/H5JobBuildDialog'
   import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
@@ -184,6 +193,9 @@
         formXtermStatus: {
           visible: false
         },
+        formBuildOutputStatus: {
+          visible: false
+        },
         timer: null // 查询定时器
       }
     },
@@ -208,7 +220,8 @@
       IOSJobBuildDialog,
       PythonJobBuildDialog,
       AndroidJobBuildDialog,
-      AndroidReinforceJobBuildDialog
+      AndroidReinforceJobBuildDialog,
+      ViewJobBuildOutput
     },
     methods: {
       ...mapActions({
@@ -351,6 +364,10 @@
       handlerOpenXTerm (executor) {
         this.formXtermStatus.visible = true
         this.$refs.xtermDialog.initData(executor)
+      },
+      handlerOpenViewBuildOutput (executors) {
+        this.formBuildOutputStatus.visible = true
+        this.$refs.viewJobBuildOutput.initData(0, executors[0].buildId)
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage
