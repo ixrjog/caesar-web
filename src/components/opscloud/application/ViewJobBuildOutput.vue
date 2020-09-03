@@ -34,6 +34,9 @@
         output: '',
         xterm: 'auditXterm',
         term: null,
+        xtermSize: {
+          rows: 30
+        },
         sessionInstance: '',
         labelWidth: '100px',
         xtermTheme: { // 终端主题
@@ -101,6 +104,7 @@
           rendererType: 'canvas', // 渲染类型 canvas dom
           allowTransparency: true,
           fontSize: 11,
+          rows: this.xtermSize.rows,
           theme: this.xtermTheme,
           termName: 'xterm',
           visualBell: false,

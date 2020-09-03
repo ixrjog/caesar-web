@@ -48,7 +48,7 @@
           <el-form-item label="更新flutterPub" :label-width="labelWidth">
             <el-select v-model="buildParam.paramMap.pubGet" placeholder="选择类型">
               <el-option
-                v-for="item in podUpdateOptions"
+                v-for="item in pubGetOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">

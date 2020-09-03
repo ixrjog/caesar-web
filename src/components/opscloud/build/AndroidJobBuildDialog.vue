@@ -55,6 +55,16 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="更新flutterPub" :label-width="labelWidth">
+            <el-select v-model="pubGet" placeholder="选择类型">
+              <el-option
+                v-for="item in pubGetOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="版本名称" :label-width="labelWidth">
             <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号"></el-input>
           </el-form-item>
@@ -273,6 +283,14 @@
     }
   ]
 
+  const pubGetOptions = [{
+    value: true,
+    label: '更新'
+  }, {
+    value: false,
+    label: '跳过'
+  }]
+
   export default {
     data () {
       return {
@@ -289,12 +307,14 @@
         },
         ENVIRONMENT_BUILD: '',
         PRODUCT_FLAVOR_BUILD: '',
+        pubGet: '',
         buildParam: {
           versionName: '',
           versionDesc: '',
         },
         buildEnvOptions: buildEnvOptions,
         buildProductFlavorOptions: buildProductFlavorOptions,
+        pubGetOptions: pubGetOptions,
         branchOptions: [],
         branchesLoading: false,
         tableData: [],
@@ -341,6 +361,7 @@
         // 初始化参数
         this.ENVIRONMENT_BUILD = ciJob.parameters['ENVIRONMENT_BUILD']
         this.PRODUCT_FLAVOR_BUILD = ciJob.parameters['PRODUCT_FLAVOR_BUILD']
+        this.pubGet = ciJob.parameters['pubGet']
         this.getBranches()
         this.setTimer()
         this.fetchData()
@@ -375,7 +396,8 @@
           'versionDesc': this.buildParam.versionDesc,
           'paramMap': {
             'ENVIRONMENT_BUILD': this.ENVIRONMENT_BUILD,
-            'PRODUCT_FLAVOR_BUILD': this.PRODUCT_FLAVOR_BUILD
+            'PRODUCT_FLAVOR_BUILD': this.PRODUCT_FLAVOR_BUILD,
+            'pubGet': this.pubGet
           }
         }
         buildCiJob(requestBody)

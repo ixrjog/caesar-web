@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
-      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"  style="display: inline-block;max-width: 200px;"/>
+      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询" style="display: inline-block;max-width: 200px;"/>
       <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
       <el-button @click="handlerAdd" style="margin-left: 5px">新建</el-button>
     </el-row>
@@ -9,7 +9,9 @@
       <el-table-column prop="name" label="实例名称">
         <template slot-scope="props">
           <span>{{ props.row.name }}</span>
-          <el-tag v-if="props.row.version != ''" style="margin-left: 5px" disable-transitions type="primary">{{ props.row.version }}</el-tag>
+          <el-tag v-if="props.row.version != ''" style="margin-left: 5px" disable-transitions type="primary">{{
+            props.row.version }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="url" label="管理url"></el-table-column>
@@ -23,6 +25,8 @@
       <el-table-column prop="comment" label="描述"></el-table-column>
       <el-table-column fixed="right" label="操作" width="380">
         <template slot-scope="scope">
+          <el-button :type="scope.row.isActive ?  'info': 'success'" plain size="mini"
+                     @click="handlerRowSetActive(scope.row)">{{scope.row.isActive ? '无效':'有效'}}</el-button>
           <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>
           <el-button type="danger" plain size="mini" @click="handlerRowDel(scope.row)">删除</el-button>
         </template>
@@ -45,7 +49,11 @@
   // Component
   import JenkinsInstanceDialog from '@/components/opscloud/jenkins/JenkinsInstanceDialog'
   // API
-  import { queryJenkinsInstancePage, delJenkinsInstanceById } from '@api/jenkins/jenkins.instance.js'
+  import {
+    queryJenkinsInstancePage,
+    delJenkinsInstanceById,
+    setJenkinsInstanceActiveById
+  } from '@api/jenkins/jenkins.instance.js'
 
   export default {
     name: 'JenkinsInstanceTable',
@@ -98,6 +106,15 @@
         if (typeof (this.info.pageSize) !== 'undefined') {
           this.pagination.pageSize = this.info.pageSize
         }
+      },
+      handlerRowSetActive (row) {
+        setJenkinsInstanceActiveById(row.id).then(res => {
+          this.fetchData()
+          this.$message({
+            type: 'success',
+            message: '设置成功!'
+          })
+        })
       },
       handlerRowEdit (row) {
         let instance = Object.assign({}, row)

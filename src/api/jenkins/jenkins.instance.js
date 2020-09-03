@@ -32,3 +32,10 @@ export function delJenkinsInstanceById (id) {
     method: 'delete'
   })
 }
+
+export function setJenkinsInstanceActiveById (id) {
+  return request({
+    url: baseUrl + '/active/set?id=' + id,
+    method: 'get'
+  })
+}
