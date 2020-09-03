@@ -35,9 +35,18 @@
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
           </el-form-item>
-
           <el-form-item label="更新pod" :label-width="labelWidth">
-            <el-select v-model.trim="buildParam.paramMap.podUpdate" placeholder="选择类型">
+            <el-select v-model="buildParam.paramMap.podUpdate" placeholder="选择类型">
+              <el-option
+                v-for="item in podUpdateOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="更新flutterPub" :label-width="labelWidth">
+            <el-select v-model="buildParam.paramMap.pubGet" placeholder="选择类型">
               <el-option
                 v-for="item in podUpdateOptions"
                 :key="item.value"
@@ -222,6 +231,14 @@
     label: '跳过'
   }]
 
+  const pubGetOptions = [{
+    value: true,
+    label: '更新'
+  }, {
+    value: false,
+    label: '跳过'
+  }]
+
   export default {
     data () {
       return {
@@ -242,6 +259,7 @@
           paramMap: {}
         },
         podUpdateOptions: podUpdateOptions,
+        pubGetOptions: pubGetOptions,
         branchOptions: [],
         branchesLoading: false,
         tableData: [],
@@ -289,6 +307,11 @@
           this.buildParam.paramMap['podUpdate'] = true
         }else{
           this.buildParam.paramMap['podUpdate'] = false
+        }
+        if(this.ciJob.parameters['pubGet'] === 'true'){
+          this.buildParam.paramMap['pubGet'] = true
+        }else{
+          this.buildParam.paramMap['pubGet'] = false
         }
         this.getBranches()
         this.setTimer()
