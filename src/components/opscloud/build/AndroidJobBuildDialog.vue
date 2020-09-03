@@ -19,7 +19,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="分支" :label-width="labelWidth" required>
-            <el-select v-model.trim="ciJob.branch" style="width: 500px">
+            <el-select v-model="ciJob.branch" style="width: 500px">
               <el-option-group
                 v-for="group in branchOptions"
                 :key="group.label"
@@ -36,7 +36,7 @@
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
           </el-form-item>
           <el-form-item label="构建环境" :label-width="labelWidth">
-            <el-select v-model.trim="buildParam.paramMap.ENVIRONMENT_BUILD" placeholder="选择类型">
+            <el-select v-model="ENVIRONMENT_BUILD" placeholder="选择类型">
               <el-option
                 v-for="item in buildEnvOptions"
                 :key="item.value"
@@ -46,7 +46,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="构建渠道" :label-width="labelWidth">
-            <el-select v-model.trim="buildParam.paramMap.PRODUCT_FLAVOR_BUILD" placeholder="选择类型">
+            <el-select v-model="PRODUCT_FLAVOR_BUILD" placeholder="选择类型">
               <el-option
                 v-for="item in buildProductFlavorOptions"
                 :key="item.value"
@@ -287,10 +287,11 @@
         queryParam: {
           queryName: ''
         },
+        ENVIRONMENT_BUILD: '',
+        PRODUCT_FLAVOR_BUILD: '',
         buildParam: {
           versionName: '',
           versionDesc: '',
-          paramMap: {}
         },
         buildEnvOptions: buildEnvOptions,
         buildProductFlavorOptions: buildProductFlavorOptions,
@@ -338,8 +339,8 @@
         this.application = application
         this.ciJob = ciJob
         // 初始化参数
-        this.buildParam.paramMap['ENVIRONMENT_BUILD'] = ciJob.parameters['ENVIRONMENT_BUILD']
-        this.buildParam.paramMap['PRODUCT_FLAVOR_BUILD'] = ciJob.parameters['PRODUCT_FLAVOR_BUILD']
+        this.ENVIRONMENT_BUILD = ciJob.parameters['ENVIRONMENT_BUILD']
+        this.PRODUCT_FLAVOR_BUILD = ciJob.parameters['PRODUCT_FLAVOR_BUILD']
         this.getBranches()
         this.setTimer()
         this.fetchData()
@@ -364,7 +365,6 @@
         let httpProtocol = window.location.href.split('://')[0]
         let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android?buildId=' + row.id
         util.open(buildDetailsUrl)
-        // window.open(buildDetailsUrl)
       },
       handlerBuild () {
         this.building = true
@@ -373,7 +373,10 @@
           'branch': this.ciJob.branch,
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
-          'paramMap': this.buildParam.paramMap
+          'paramMap': {
+            'ENVIRONMENT_BUILD': this.ENVIRONMENT_BUILD,
+            'PRODUCT_FLAVOR_BUILD': this.PRODUCT_FLAVOR_BUILD
+          }
         }
         buildCiJob(requestBody)
           .then(res => {
