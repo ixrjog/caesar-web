@@ -36,7 +36,7 @@
         </el-table>
       </el-row>
     </el-card>
-    <el-card class="box-card" shadow="never" style="margin-top: 10px">
+    <el-card class="box-card" shadow="never" style="margin-top: 10px" v-show="job.cdJobId !== null">
       <div slot="header" class="clearfix">
         <span>部署引擎</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="handlerDeploymentEngineCreate"
@@ -124,7 +124,7 @@
       },
       handlerBuildEngineCreate () {
         this.creatingBuildEngine = true
-        createCiJobEngine(this.job.ciJobid)
+        createCiJobEngine(this.job.ciJobId)
           .then(res => {
             this.creatingBuildEngine = false
             this.fetchBuildEngineData()
