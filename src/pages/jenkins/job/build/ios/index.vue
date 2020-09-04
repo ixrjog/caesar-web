@@ -149,7 +149,7 @@
         this.pageUrl = window.location.href
       },
       initDownloadHref () {
-        let h = 'itms-services://?action=download-manifest&amp;url='
+        let h = 'itms-services://?action=download-manifest&url='
         for (let i = 0; i < this.build.artifacts.length; i++) {
           if (this.build.artifacts[i].artifactFileName === 'manifest.plist') {
             this.downloadHref = h + this.build.artifacts[i].ossUrl
