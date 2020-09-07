@@ -70,6 +70,14 @@ export function queryApplicationSCMMemberBranch (data) {
   })
 }
 
+export function queryApplicationSCMMemberBranchCommit (data) {
+  return request({
+    url: baseUrl + '/scm/member/branch/commit/query',
+    method: 'post',
+    data
+  })
+}
+
 export function queryApplicationEngine (applicationId) {
   return request({
     url: baseUrl + '/engine/query?applicationId=' + applicationId,

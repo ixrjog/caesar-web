@@ -34,6 +34,14 @@
             </el-select>
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
+            <el-button size="mini" type="primary" style="margin-left: 5px" @click="getCommit"
+                       :loading="commitLoading"><i class="fa fa-info" aria-hidden="true"></i></el-button>
+          </el-form-item>
+          <el-form-item label="commit" :label-width="labelWidth" v-show="commit !== ''">
+            <el-card shadow="naver">
+              <div><span style="color: #99a9bf">id : </span>{{commit.id}}</div>
+              <div><span style="color: #99a9bf">message : </span>{{commit.message}}</div>
+            </el-card>
           </el-form-item>
           <el-form-item label="构建环境" :label-width="labelWidth">
             <el-select v-model="ENVIRONMENT_BUILD" placeholder="选择类型">
@@ -231,7 +239,7 @@
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
   import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
-  import { queryApplicationSCMMemberBranch } from '@api/application/application.js'
+  import { queryApplicationSCMMemberBranch, queryApplicationSCMMemberBranchCommit } from '@api/application/application.js'
 
   const buildEnvOptions = [
     {
@@ -325,6 +333,8 @@
           total: 0
         },
         building: false,
+        commitLoading: false,
+        commit: '',
         timer: null // 查询定时器
       }
     },
@@ -362,6 +372,7 @@
         this.ENVIRONMENT_BUILD = ciJob.parameters['ENVIRONMENT_BUILD']
         this.PRODUCT_FLAVOR_BUILD = ciJob.parameters['PRODUCT_FLAVOR_BUILD']
         this.pubGet = ciJob.parameters['pubGet']
+        this.commit = ''
         this.getBranches()
         this.setTimer()
         this.fetchData()
@@ -376,6 +387,18 @@
           .then(res => {
             this.branchOptions = res.body.options
             this.branchesLoading = false
+          })
+      },
+      getCommit () {
+        this.commitLoading = true
+        let requestBody = {
+          'scmMemberId': this.ciJob.scmMemberId,
+          'branch': this.ciJob.branch
+        }
+        queryApplicationSCMMemberBranchCommit(requestBody)
+          .then(res => {
+            this.commit = res.body
+            this.commitLoading = false
           })
       },
       handlerRowOpenBuildUrl (row) {
