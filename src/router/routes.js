@@ -92,6 +92,15 @@ const frameIn = [
           title: '全局参数'
         }
       },
+      {
+        path: '/caesar/instance',
+        name: 'caesar-instance',
+        component: () => import('@/pages/caesar/instance'),
+        meta: {
+          auth: true,
+          title: 'Caesar实例管理'
+        }
+      },
       // jenkins
       {
         path: '/jenkins/instance',
