@@ -3,7 +3,7 @@
     <h1>{{title}}</h1>
     <div>
       <el-row :gutter="20">
-        <el-input placeholder="请输入内容" v-model.trim="settingMap.SERVER_ACCOUNT" class="input">
+        <el-input placeholder="请输入内容" v-model.trim="settingMap.SERVER_ACCOUNT" style="max-width: 800px; margin-left: 10px;">
           <template slot="prepend">SERVER_ACCOUNT(服务器默认登录账户)</template>
         </el-input>
         <el-button type="primary" plain size="mini"
@@ -11,7 +11,7 @@
         </el-button>
       </el-row>
       <el-row :gutter="20">
-        <el-input placeholder="请输入内容" v-model.trim="settingMap.SERVER_HIGH_AUTHORITY_ACCOUNT" class="input">
+        <el-input placeholder="请输入内容" v-model.trim="settingMap.SERVER_HIGH_AUTHORITY_ACCOUNT" style="max-width: 800px; margin-left: 10px;">
           <template slot="prepend">SERVER_HIGH_AUTHORITY_ACCOUNT(服务器高权限账户)</template>
         </el-input>
         <el-button type="primary" plain size="mini"
@@ -20,7 +20,7 @@
         </el-button>
       </el-row>
       <el-row :gutter="20">
-        <el-input placeholder="请输入内容" v-model.trim="settingMap.ORG_DEPT_ID" class="input">
+        <el-input placeholder="请输入内容" v-model.trim="settingMap.ORG_DEPT_ID" style="max-width: 800px; margin-left: 10px;">
           <template slot="prepend">ORG_DEPT_ID(组织架构拓扑根id)</template>
         </el-input>
         <el-button type="primary" plain size="mini" @click="handlerSettingSave('ORG_DEPT_ID',settingMap.ORG_DEPT_ID)"
@@ -106,11 +106,6 @@
   .row-bg {
     padding: 10px 0;
     background-color: #f9fafc;
-  }
-
-  .input {
-    max-width: 800px;
-    margin-left: 10px;
   }
 
   .button {
