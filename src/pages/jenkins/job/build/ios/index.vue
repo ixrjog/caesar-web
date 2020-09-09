@@ -6,7 +6,7 @@
     <el-col :span="10">
       <el-card shadow="never">
         <el-col :span="6">
-          <vue-qr :logoSrc="imageUrl" :text="pageUrl" :size="150"></vue-qr>
+          <vue-qr :logoSrc="imageUrl" :text="downloadHref" :size="150"></vue-qr>
         </el-col>
         <el-col :span="18">
           <div style="width:100%;text-align:center; margin-top: 50px">
@@ -138,16 +138,16 @@
     mounted () {
       this.buildId = this.$route.query.buildId
       this.fetchData()
-      this.initPageURL()
+      //this.initPageURL()
       this.$store.dispatch('d2admin/menu/asideCollapseSet', true)
     },
     components: {
       VueQr
     },
     methods: {
-      initPageURL () {
-        this.pageUrl = window.location.href
-      },
+      // initPageURL () {
+      //   this.pageUrl = window.location.href
+      // },
       initDownloadHref () {
         let h = 'itms-services://?action=download-manifest&url='
         for (let i = 0; i < this.build.artifacts.length; i++) {
