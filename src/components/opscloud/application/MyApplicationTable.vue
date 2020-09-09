@@ -27,6 +27,7 @@
                 </el-tooltip>
               </span>
           </span>
+          <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)"></el-rate>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="120">
@@ -56,7 +57,7 @@
     <ApplicationDialog ref="applicationDialog" :formStatus="formStatus"
                        @closeDialog="fetchData"></ApplicationDialog>
     <ApplicationPermissionDialog ref="applicationPermissionDialog" :formStatus="formPermissionStatus"
-                           @closeDialog="fetchData"></ApplicationPermissionDialog>
+                                 @closeDialog="fetchData"></ApplicationPermissionDialog>
   </div>
 </template>
 
@@ -67,7 +68,7 @@
   import ApplicationDialog from '@/components/opscloud/application/ApplicationDialog'
   import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
 
-  import { queryMyApplicationPage } from '@api/application/application.js'
+  import { queryMyApplicationPage, updateMyApplicationRate } from '@api/application/application.js'
 
   export default {
     name: 'MyApplicationTable',
@@ -142,6 +143,18 @@
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage
         this.fetchData()
+      },
+      handlerSetApplicationRate (row) {
+        let requestBody = {
+          'userPermissionId': row.userPermission.id,
+          'rate': row.userPermission.rate
+        }
+        updateMyApplicationRate(requestBody)
+          .then(res => {
+            if (res.success) {
+              this.fetchData()
+            }
+          })
       },
       fetchData () {
         this.loading = true

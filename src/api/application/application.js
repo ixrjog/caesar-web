@@ -18,6 +18,14 @@ export function queryMyApplicationPage (data) {
   })
 }
 
+export function updateMyApplicationRate (data) {
+  return request({
+    url: baseUrl + '/my/rate/update',
+    method: 'put',
+    data
+  })
+}
+
 export function addApplication (data) {
   return request({
     url: baseUrl + '/add',
