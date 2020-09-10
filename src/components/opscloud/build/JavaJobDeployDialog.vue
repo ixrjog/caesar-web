@@ -310,8 +310,7 @@
       },
       handlerBuild () {
         this.building = true
-        this.buildParam.paramMap['hostPattern'] = this.hostPattern // 服务器分组
-        this.buildParam.paramMap['servers'] = this.servers // 记录服务器列表信息
+        this.buildParam.paramMap.hostPattern = this.hostPattern // 服务器分组
         let requestBody = {
           'cdJobId': this.cdJob.id,
           'ciBuildId': this.buildId,
