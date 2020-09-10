@@ -63,3 +63,11 @@ export function viewJobBuildOutput (data) {
     data
   })
 }
+
+
+export function queryCdJobHostPatternByJobId (cdJobId) {
+  return request({
+    url: baseUrl + '/cd/host/pattern/query?cdJobId=' + cdJobId,
+    method: 'get'
+  })
+}

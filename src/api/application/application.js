@@ -127,3 +127,33 @@ export function updateUserApplicationPermission (applicationId, userId) {
     method: 'put'
   })
 }
+
+export function queryServerGroupPage (data) {
+  return request({
+    url: baseUrl + '/server/group/page/query',
+    method: 'post',
+    data
+  })
+}
+
+export function queryApplicationServerGroup (applicationId) {
+  return request({
+    url: baseUrl + '/server/group/query?applicationId=' + applicationId,
+    method: 'get'
+  })
+}
+
+export function addApplicationServerGroup (data) {
+  return request({
+    url: baseUrl + '/server/group/add',
+    method: 'put',
+    data
+  })
+}
+
+export function removeApplicationServerGroup (id) {
+  return request({
+    url: baseUrl + '/server/group/remove?id=' + id,
+    method: 'delete'
+  })
+}

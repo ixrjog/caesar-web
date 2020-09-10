@@ -72,9 +72,49 @@
           </el-table>
         </el-row>
       </el-tab-pane>
+      <el-tab-pane label="服务器组(可选)" name="serverGroup" v-if="application.id !== ''">
+        <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
+          <el-select v-model="sourceType" filterable clearable class="select"
+                     reserve-keyword>
+            <el-option
+              v-for="item in sourceTypeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <el-select v-model="serverGroup" filterable clearable class="select"
+                     value-key="id"
+                     remote reserve-keyword placeholder="搜索服务器组" :remote-method="getServerGroup">
+            <el-option
+              v-for="item in serverGroupOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item">
+              <span style="float: left;margin-right: 15px">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.comment }}</span>
+            </el-option>
+          </el-select>
+          <el-button size="mini" type="primary" :disabled="serverGroup === ''" @click="handlerServerGroupAdd">添加
+          </el-button>
+        </el-row>
+        <el-row :gutter="24" style="margin-bottom: 5px;margin-left: 5px">
+          <el-table :data="serverGroups" style="width: 100%" v-loading="applicationServerGroupLoading">
+            <el-table-column prop="source" label="数据源" width="100"></el-table-column>
+            <el-table-column prop="serverGroupName" label="服务器组名称" width="300"></el-table-column>
+            <el-table-column prop="comment" label="描述"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="200">
+              <template slot-scope="scope">
+                <el-button type="danger" plain size="mini" @click="handlerServerGroupRowRemove(scope.row)">移除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-row>
+      </el-tab-pane>
       <el-tab-pane label="工作引擎" name="engine" v-if="application.id !== ''">
         <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
-          <el-select v-model="application.engineType" clearable placeholder="引擎类型" class="select">
+          <el-select v-model="application.engineType" clearable placeholder="引擎类型" class="select"
+                     @change="handlerSelEngineType">
             <el-option
               v-for="item in engineTypeOptions"
               :key="item.value"
@@ -132,7 +172,8 @@
   import {
     addApplication, updateApplication, queryApplicationSCMMember,
     addApplicationSCMMember, removeApplicationSCMMember,
-    queryApplicationEngine, addApplicationEngine, removeApplicationEngine
+    queryApplicationEngine, addApplicationEngine, removeApplicationEngine,
+    queryServerGroupPage, queryApplicationServerGroup, addApplicationServerGroup, removeApplicationServerGroup
   } from '@api/application/application.js'
 
   const engineTypeOptions = [{
@@ -141,6 +182,14 @@
   }, {
     value: 1,
     label: '指定引擎'
+  }]
+
+  const sourceTypeOptions = [{
+    value: 'LOCAL',
+    label: '本地数据源'
+  }, {
+    value: 'OPSCLOUD',
+    label: 'OPSCLOUD'
   }]
 
   export default {
@@ -166,6 +215,14 @@
         queryJenkinsParam: {
           queryName: ''
         },
+        // serverGroup
+        sourceType: 'OPSCLOUD',
+        sourceTypeOptions: sourceTypeOptions,
+        serverGroup: '',
+        serverGroupOptions: [],
+        applicationServerGroupLoading: false,
+        serverGroups: [],
+        // engine
         jenkinsInstanceId: '',
         engineLoading: false,
         engines: [],
@@ -191,6 +248,19 @@
       },
       handleClick () {
         this.$emit('input', !this.value)
+      },
+      getServerGroup (queryName) {
+        let requestBody = {
+          'source': this.sourceType,
+          'name': queryName,
+          'grpType': '',
+          'page': 1,
+          'length': 10
+        }
+        queryServerGroupPage(requestBody)
+          .then(res => {
+            this.serverGroupOptions = res.body.data
+          })
       },
       getEngine () {
         if (this.application.engineType === 0) {
@@ -218,6 +288,18 @@
               this.$message.error(res.msg)
             }
             this.scmMemberLoading = false
+          })
+      },
+      getApplicationServerGroup () {
+        this.applicationServerGroupLoading = true
+        queryApplicationServerGroup(this.application.id)
+          .then(res => {
+            if (res.success) {
+              this.serverGroups = res.body
+            } else {
+              this.$message.error(res.msg)
+            }
+            this.applicationServerGroupLoading = false
           })
       },
       getJenkinsInstance (queryName) {
@@ -264,6 +346,11 @@
       handlerBuildKey () {
         this.application.applicationKey = this.application.name.toUpperCase()
       },
+      handlerSelEngineType () {
+        if (this.application.engineType === 1) {
+          this.getJenkinsInstance('')
+        }
+      },
       handlerEngineAdd () {
         addApplicationEngine(this.application.id, this.jenkinsInstanceId)
           .then(res => {
@@ -274,6 +361,29 @@
               })
               this.jenkinsInstanceId = ''
               this.getEngine()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
+      },
+      handlerServerGroupAdd () {
+        let requestBody = {
+          'id': '',
+          'applicationId': this.application.id,
+          'serverGroupName': this.serverGroup.name,
+          'serverGroupId': this.serverGroup.id,
+          'comment': this.serverGroup.comment,
+          'source': this.sourceType
+        }
+        addApplicationServerGroup(requestBody)
+          .then(res => {
+            if (res.success) {
+              this.$message({
+                message: '成功',
+                type: 'success'
+              })
+              this.serverGroup = ''
+              this.getApplicationServerGroup()
             } else {
               this.$message.error(res.msg)
             }
@@ -314,6 +424,17 @@
               type: 'success'
             })
             this.getScmMember()
+          })
+      },
+      handlerServerGroupRowRemove (row) {
+        removeApplicationServerGroup(row.id)
+          .then(res => {
+            // 返回数据
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.getApplicationServerGroup()
           })
       },
       handlerSave () {

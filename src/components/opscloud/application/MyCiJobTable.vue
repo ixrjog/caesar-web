@@ -106,6 +106,7 @@
     <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
     <h5JobBuildDialog ref="h5JobBuildDialog" :formStatus="formH5BuildStatus"></h5JobBuildDialog>
     <javaJobBuildDialog ref="javaJobBuildDialog" :formStatus="formJavaBuildStatus"></javaJobBuildDialog>
+    <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></javaJobDeployDialog>
     <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formIOSBuildStatus"></iOSJobBuildDialog>
     <pythonJobBuildDialog ref="pythonJobBuildDialog" :formStatus="formPythonBuildStatus"></pythonJobBuildDialog>
     <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
@@ -130,6 +131,7 @@
   // Component Build
   import H5JobBuildDialog from '@/components/opscloud/build/H5JobBuildDialog'
   import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
+  import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
   import IOSJobBuildDialog from '@/components/opscloud/build/IOSJobBuildDialog'
   import PythonJobBuildDialog from '@/components/opscloud/build/PythonJobBuildDialog'
   import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
@@ -177,6 +179,9 @@
         formJavaBuildStatus: {
           visible: false
         },
+        formJavaDeployStatus: {
+          visible: false
+        },
         formIOSBuildStatus: {
           visible: false
         },
@@ -217,6 +222,7 @@
       JobEngineDialog,
       H5JobBuildDialog,
       JavaJobBuildDialog,
+      JavaJobDeployDialog,
       IOSJobBuildDialog,
       PythonJobBuildDialog,
       AndroidJobBuildDialog,
@@ -317,8 +323,8 @@
             this.$refs.androidReinforceJobBuildDialog.initData(this.application, row.cdJob)
             break
           case 'JAVA_DEPLOYMENT':
-            this.formJavaBuildStatus.visible = true
-            this.$refs.javaJobBuildDialog.initData(this.application, row.cdJob)
+            this.formJavaDeployStatus.visible = true
+            this.$refs.javaJobDeployDialog.initData(this.application, row.cdJob)
             break
           default:
             this.$message.error('部署任务类型配置错误!')
