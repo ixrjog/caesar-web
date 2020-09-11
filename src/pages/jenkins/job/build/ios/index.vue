@@ -5,13 +5,19 @@
     </div>
     <el-col :span="10">
       <el-card shadow="never">
-        <el-col :span="6">
-          <vue-qr :logoSrc="imageUrl" :text="downloadHref" :size="150"></vue-qr>
-        </el-col>
-        <el-col :span="18">
-          <div style="width:100%;text-align:center; margin-top: 50px">
-            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">点击安装</a>
+        <el-col :span="10">
+          <div style="width:100%;text-align:center">
+            <vue-qr :logoSrc="imageUrl" :text="downloadHref" :size="150"></vue-qr>
           </div>
+        </el-col>
+        <el-col :span="10">
+          <div style="width:100%;text-align:center; margin-top: 50px">
+            <div style="color: #286090; font-size:1em;">{{build.jobName}}</div>
+            <div style="color: #286090; font-size:2em;">{{build.versionName}}</div>
+          </div>
+<!--          <div style="width:100%;text-align:center; margin-top: 50px" v-show="false">-->
+<!--            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">点击安装</a>-->
+<!--          </div>-->
         </el-col>
       </el-card>
       <el-card shadow="never" style="margin-top: 10px">

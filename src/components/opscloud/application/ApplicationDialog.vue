@@ -105,7 +105,8 @@
             <el-table-column prop="comment" label="描述"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
               <template slot-scope="scope">
-                <el-button type="danger" plain size="mini" @click="handlerServerGroupRowRemove(scope.row)">移除</el-button>
+                <el-button type="danger" plain size="mini" @click="handlerServerGroupRowRemove(scope.row)">移除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -243,6 +244,9 @@
           this.getGitlabInstance('')
           if (this.application.engineType === 1) {
             this.getEngine()
+          }
+          if (application.serverGroups !== null && application.serverGroups.length > 0) {
+            this.serverGroups = application.serverGroups
           }
         }
       },
