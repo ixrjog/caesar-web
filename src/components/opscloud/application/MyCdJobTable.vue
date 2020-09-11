@@ -89,6 +89,7 @@
     <!-- 任务引擎编辑对话框 -->
     <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog" :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
+    <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></javaJobDeployDialog>
     <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
     <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
   </div>
@@ -104,6 +105,7 @@
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   // Component Build
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
+  import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
   import ViewJobBuildOutput from '@/components/opscloud/application/ViewJobBuildOutput'
 
   import { queryCdJobPage } from '@api/application/cd.job.js'
@@ -146,6 +148,9 @@
         formAndroidReinforceBuildStatus: {
           visible: false
         },
+        formJavaDeployStatus: {
+          visible: false
+        },
         formXtermStatus: {
           visible: false
         },
@@ -171,6 +176,7 @@
       CdJobDialog,
       JobEngineDialog,
       AndroidReinforceJobBuildDialog,
+      JavaJobDeployDialog,
       ViewJobBuildOutput
     },
     methods: {
@@ -209,8 +215,8 @@
             this.$refs.androidReinforceJobBuildDialog.initData(this.application, row)
             break
           case 'JAVA_DEPLOYMENT':
-            this.formJavaBuildStatus.visible = true
-            this.$refs.javaJobBuildDialog.initData(this.application, row)
+            this.formJavaDeployStatus.visible = true
+            this.$refs.javaJobDeployDialog.initData(this.application, row)
             break
           default:
             this.$message.error('部署任务类型配置错误!')
