@@ -105,8 +105,39 @@
                 </el-col>
               </el-row>
               <el-divider></el-divider>
-              <!--              产出物详情-->
+              <!--              主机分组-->
+              <el-row >
+                <el-col :span="22">
+                  <div v-show="scope.row.hostPattern !== null">
+                      <el-tag type="primary">{{ scope.row.hostPattern }}</el-tag>
+                  </div>
+                  <span v-show="scope.row.hostPattern === null">No HostPattern</span>
+                </el-col>
+                <el-col :span="2">
+                  <el-tooltip class="item" effect="light" content="主机分组" placement="top-start">
+                    <i class="fa fa-tag" aria-hidden="true"></i>
+                  </el-tooltip>
+                </el-col>
+              </el-row>
+              <el-divider></el-divider>
+              <!--              部署服务器-->
               <el-row>
+                <el-col :span="22">
+                  <div class="tag-group" v-show="scope.row.servers.length > 0">
+                    <div v-for="item in scope.row.servers" :key="item.id">
+                      <el-tag type="primary">{{ item.serverName }}-{{ item.serialNumber }} {{ item.privateIp }}</el-tag>
+                    </div>
+                  </div>
+                  <span v-show="scope.row.servers.length === 0">No Servers</span>
+                </el-col>
+                <el-col :span="2">
+                  <el-tooltip class="item" effect="light" content="部署服务器" placement="top-start">
+                    <i class="fa fa-server" aria-hidden="true"></i>
+                  </el-tooltip>
+                </el-col>
+              </el-row>
+              <!--              产出物详情-->
+              <el-row v-if="false">
                 <el-col :span="22">
                   <div class="tag-group" v-show="scope.row.artifacts.length > 0">
                     <div v-for="item in scope.row.artifacts" :key="item.id">
