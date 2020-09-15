@@ -13,7 +13,8 @@
                 v-for="item in buildArtifactOptions"
                 :key="item.id"
                 :label="item.versionName"
-                :value="item.id">
+                :value="item.id"
+                :disabled="item.noArtifact">
                 <span style="float: left">{{item.versionName}}</span>
                 <span
                   style="float: right; color: #8492a6; font-size: 13px; margin-left: 10px">#{{ item.jobBuildNumber}} {{ item.endTime }}({{ item.ago }})</span>
