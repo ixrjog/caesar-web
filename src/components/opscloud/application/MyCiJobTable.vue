@@ -47,15 +47,20 @@
             <el-button v-for="item in props.row.buildViews" :key="item.buildNumber"
                        :style="{ backgroundColor: item.color, color: '#FFFFFF' }">
               <el-popover placement="top-start" trigger="hover">
-                <el-form>
+                <el-card class="box-card" shadow="never">
+                  <div slot="header" class="clearfix">
+                    <span>控制台</span>
+                    <el-button style="float: right; padding: 3px 0" type="text" @click="handlerAbortBuild(item.executors)" v-show="item.building">中止任务</el-button>
+                  </div>
+                  <el-form>
                   <span v-show="item.executors.length > 0">
-                       <el-tag type="primary">构建日志
-                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
-                                   @click="handlerOpenViewBuildOutput(item.executors)"><span
-                          style="color: #535353">查看</span></el-button>
-                      </el-tag>
-                     <el-divider></el-divider>
-                            <div v-for="executor in item.executors" :key="executor.id">
+                    <el-tag type="primary">构建日志
+                      <el-button type="text" style="margin-left: 10px; padding: 3px 0"
+                                 @click="handlerOpenViewBuildOutput(item.executors)"><span
+                        style="color: #535353">查看</span></el-button>
+                    </el-tag>
+                    <el-divider></el-divider>
+                    <div v-for="executor in item.executors" :key="executor.id">
                       <el-tag type="primary">{{ executor.nodeName }}:{{ executor.privateIp}}
                         <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                                    @click="handlerOpenXTerm(executor)"><span
@@ -63,10 +68,9 @@
                       </el-tag>
                     </div>
                   </span>
-                  <span v-show="item.executors.length === 0">
-                    No Executors
-                  </span>
-                </el-form>
+                    <span v-show="item.executors.length === 0">No Executors</span>
+                  </el-form>
+                </el-card>
                 <span slot="reference"><i class="el-icon-loading" v-if="item.building"></i>{{item.buildNumber}}</span>
               </el-popover>
             </el-button>
@@ -138,6 +142,7 @@
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
+  import { abortBuildCiJob } from '@api/build/job.build.js'
 
   export default {
     name: 'MyCiJobTable',
@@ -370,6 +375,19 @@
       handlerOpenXTerm (executor) {
         this.formXtermStatus.visible = true
         this.$refs.xtermDialog.initData(executor)
+      },
+      handlerAbortBuild (executors) {
+        abortBuildCiJob(executors[0].buildId)
+          .then(res => {
+            if (res.success) {
+              this.$message({
+                message: '执行成功（请等待）!',
+                type: 'success'
+              })
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
       },
       handlerOpenViewBuildOutput (executors) {
         this.formBuildOutputStatus.visible = true

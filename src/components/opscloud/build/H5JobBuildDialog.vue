@@ -112,7 +112,7 @@
               <!--              变更详情11-->
               <el-row>
                 <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.changes.length > 0">
+                  <div class="tag-group" v-show="scope.row.changes !== null && scope.row.changes.length > 0">
                     <div v-for="item in scope.row.changes" :key="item.id">
                       <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
                         <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
@@ -120,7 +120,7 @@
                       <el-tag style="margin-left: 5px" type="primary">{{ item.commitMsg }}</el-tag>
                     </div>
                   </div>
-                  <span v-show="scope.row.changes.length === 0">No Changes</span>
+                  <span v-show="scope.row.changes === null || scope.row.changes.length === 0">No Changes</span>
                 </el-col>
                 <el-col :span="2">
                   <el-tooltip class="item" effect="light" content="变更详情" placement="top-start">
@@ -132,7 +132,7 @@
               <!--              产出物详情-->
               <el-row>
                 <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.artifacts.length > 0">
+                  <div class="tag-group" v-show="scope.row.artifacts !== null">
                     <div v-for="item in scope.row.artifacts" :key="item.id">
                       <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
                         <el-tag type="primary">{{ item.artifactFileName }}</el-tag>
@@ -142,7 +142,7 @@
                       </el-tooltip>
                     </div>
                   </div>
-                  <span v-show="scope.row.artifacts.length === 0">No Artifacts</span>
+                  <span v-show="scope.row.artifacts === null">No Artifacts</span>
                 </el-col>
                 <el-col :span="2">
                   <el-tooltip class="item" effect="light" content="产出物" placement="top-start">
@@ -154,12 +154,12 @@
               <!--              工作节点-->
               <el-row>
                 <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.executors.length > 0">
+                  <div class="tag-group" v-show="scope.row.executors !== null">
                     <div v-for="item in scope.row.executors" :key="item.id">
                       <el-tag type="primary">{{ item.nodeName }}:{{ item.privateIp}}</el-tag>
                     </div>
                   </div>
-                  <span v-show="scope.row.executors.length === 0">No Executors</span>
+                  <span v-show="scope.row.executors === null">No Executors</span>
                 </el-col>
                 <el-col :span="2">
                   <el-tooltip class="item" effect="light" content="工作节点" placement="top-start">
@@ -173,7 +173,7 @@
             <template slot-scope="scope">
               <el-button-group style="float: right; padding: 3px 0">
                 <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerSelRow(scope.row)"></el-button>
+                           @click="handlerRowAbortBuild(scope.row)"></el-button>
                 <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)">
                 </el-button>
               </el-button-group>
@@ -202,7 +202,7 @@
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
+  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId, abortBuildCiJob } from '@api/build/job.build.js'
   import {
     queryApplicationSCMMemberBranch,
     queryApplicationSCMMemberBranchCommit
@@ -295,6 +295,19 @@
           .then(res => {
             this.commit = res.body
             this.commitLoading = false
+          })
+      },
+      handlerRowAbortBuild (row) {
+        abortBuildCiJob(row.id)
+          .then(res => {
+            if (res.success) {
+              this.$message({
+                message: '执行成功（请等待）!',
+                type: 'success'
+              })
+            } else {
+              this.$message.error(res.msg)
+            }
           })
       },
       handlerRowOpenBuildUrl (row) {

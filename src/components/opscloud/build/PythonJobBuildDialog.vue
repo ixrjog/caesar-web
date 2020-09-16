@@ -171,7 +171,7 @@
             <template slot-scope="scope">
               <el-button-group style="float: right; padding: 3px 0">
                 <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerSelRow(scope.row)"></el-button>
+                           @click="handlerRowAbortBuild(scope.row)"></el-button>
                 <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)">
                 </el-button>
               </el-button-group>
@@ -199,7 +199,7 @@
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
+  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId,abortBuildCiJob } from '@api/build/job.build.js'
   import { queryApplicationSCMMemberBranch } from '@api/application/application.js'
   // import { addCiJob, updateCiJob } from '@api/application/ci.job.js'
 
@@ -279,6 +279,19 @@
           .then(res => {
             this.branchOptions = res.body.options
             this.branchesLoading = false
+          })
+      },
+      handlerRowAbortBuild (row) {
+        abortBuildCiJob(row.id)
+          .then(res => {
+            if (res.success) {
+              this.$message({
+                message: '执行成功（请等待）!',
+                type: 'success'
+              })
+            } else {
+              this.$message.error(res.msg)
+            }
           })
       },
       handlerRowOpenBuildUrl (row) {

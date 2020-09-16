@@ -26,6 +26,13 @@ export function buildCiJob (data) {
   })
 }
 
+export function abortBuildCiJob (ciBuildId) {
+  return request({
+    url: baseUrl + '/ci/build/abort?ciBuildId=' + ciBuildId,
+    method: 'put'
+  })
+}
+
 export function buildCdJob (data) {
   return request({
     url: baseUrl + '/cd/build',
