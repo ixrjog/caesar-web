@@ -30,11 +30,11 @@
           <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="最新构建" width="190">
+      <el-table-column prop="name" label="最新构建" width="210">
         <template slot-scope="props">
           <el-button-group>
             <el-button v-for="item in props.row.buildViews" :key="item.buildNumber"
-                       :style="{ backgroundColor: item.color, color: '#FFFFFF' }">
+                       :style="{ backgroundColor: item.color, color: '#FFFFFF',width: '50px' }">
               <el-popover placement="top-start" trigger="hover">
                 <el-form>
                   <span v-show="item.executors.length > 0">
@@ -62,7 +62,7 @@
           </el-button-group>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="210">
         <template slot-scope="scope">
           <el-button-group style="margin-right: 5px">
             <el-button type="primary" icon="fa fa-cloud-upload" v-show="scope.row.deploymentJobId !== 0"
