@@ -50,7 +50,9 @@
                 <el-card class="box-card" shadow="never">
                   <div slot="header" class="clearfix">
                     <span>控制台</span>
-                    <el-button style="float: right; padding: 3px 0" type="text" @click="handlerAbortBuild(item.executors)" v-show="item.building">中止任务</el-button>
+                    <el-button style="float: right; padding: 3px 0" type="text"
+                               @click="handlerAbortBuild(item.executors)" v-show="item.building">中止任务
+                    </el-button>
                   </div>
                   <el-form>
                   <span v-show="item.executors.length > 0">
@@ -398,9 +400,8 @@
         this.fetchData()
       },
       fetchData () {
-        if (this.tableData.length === 0) {
-          this.loading = true
-        }
+        if (this.application === '') return
+        if (this.tableData.length === 0) this.loading = true
         let requestBody = {
           'applicationId': this.application.id,
           'queryName': this.queryParam.queryName,

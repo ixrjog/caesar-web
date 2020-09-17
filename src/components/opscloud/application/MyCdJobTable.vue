@@ -88,7 +88,8 @@
     <cdJobDialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cdJobDialog>
     <!-- 任务引擎编辑对话框 -->
     <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
-    <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog" :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
+    <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
+                                    :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
     <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></javaJobDeployDialog>
     <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
     <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
@@ -253,9 +254,8 @@
         this.fetchData()
       },
       fetchData () {
-        if (this.tableData.length === 0) {
-          this.loading = true
-        }
+        if (this.application === '') return
+        if (this.tableData.length === 0) this.loading = true
         let requestBody = {
           'applicationId': this.application.id,
           'queryName': this.queryParam.queryName,
