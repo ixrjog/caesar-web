@@ -201,6 +201,10 @@
 
   const channelGroupOptions = [
     {
+      value: 'shero',
+      label: '官网'
+    },
+    {
       value: 'yyb',
       label: '应用宝'
     },
@@ -221,16 +225,8 @@
       label: 'VIVO'
     },
     {
-      value: 'baidu',
-      label: '百度'
-    },
-    {
       value: 'bmhy',
       label: '斑马会员'
-    },
-    {
-      value: 'ceshi',
-      label: '测试渠道'
     }
   ]
 
