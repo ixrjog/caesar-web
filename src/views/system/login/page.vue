@@ -16,14 +16,17 @@
         flex="dir:top main:justify cross:stretch box:justify">
         <div class="page-login--content-header">
           <p class="page-login--content-header-motto">
-            时间是一切财富中最宝贵的财富 DevOps
+            欢迎来到白衣的运维世界
           </p>
         </div>
         <div
           class="page-login--content-main"
           flex="dir:top main:center cross:center">
           <!-- logo -->
-          <img class="page-login--logo" src="./image/logo@2x.png">
+<!--          <img class="page-login&#45;&#45;logo" src="./image/d2-admin.svg"  height="40" width="40">-->
+
+              <span style="font-size:30px; color: #2f74ff" class="page-login--content-main">CAESAR CI/CD</span>
+
           <!-- form -->
           <div class="page-login--form">
             <el-card shadow="never">
