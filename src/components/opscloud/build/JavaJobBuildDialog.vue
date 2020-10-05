@@ -118,7 +118,7 @@
               <!--              变更详情11-->
               <el-row>
                 <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.changes.length > 0">
+                  <div class="tag-group" v-show="scope.row.changes.length !== null && scope.row.changes.length > 0">
                     <div v-for="item in scope.row.changes" :key="item.id">
                       <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
                         <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
@@ -126,7 +126,7 @@
                       <el-tag style="margin-left: 5px" type="primary">{{ item.commitMsg }}</el-tag>
                     </div>
                   </div>
-                  <span v-show="scope.row.changes.length === 0">No Changes</span>
+                  <span v-show="scope.row.changes === null || scope.row.changes.length === 0">No Changes</span>
                 </el-col>
                 <el-col :span="2">
                   <el-tooltip class="item" effect="light" content="变更详情" placement="top-start">
@@ -138,7 +138,7 @@
               <!--              产出物详情-->
               <el-row>
                 <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.artifacts.length > 0">
+                  <div class="tag-group" v-show="scope.row.artifacts !== null && scope.row.artifacts.length > 0">
                     <div v-for="item in scope.row.artifacts" :key="item.id">
                       <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
                         <el-tag type="primary">{{ item.artifactFileName }}</el-tag>
@@ -148,7 +148,7 @@
                       </el-tooltip>
                     </div>
                   </div>
-                  <span v-show="scope.row.artifacts.length === 0">No Artifacts</span>
+                  <span v-show="scope.row.artifacts === null || scope.row.artifacts.length === 0">No Artifacts</span>
                 </el-col>
                 <el-col :span="2">
                   <el-tooltip class="item" effect="light" content="产出物" placement="top-start">
@@ -160,12 +160,12 @@
               <!--              工作节点-->
               <el-row>
                 <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.executors.length > 0">
+                  <div class="tag-group" v-show="scope.row.executors.length !== null && scope.row.executors.length > 0">
                     <div v-for="item in scope.row.executors" :key="item.id">
                       <el-tag type="primary">{{ item.nodeName }}:{{ item.privateIp}}</el-tag>
                     </div>
                   </div>
-                  <span v-show="scope.row.executors.length === 0">No Executors</span>
+                  <span v-show="scope.row.executors.length === null || scope.row.executors.length === 0">No Executors</span>
                 </el-col>
                 <el-col :span="2">
                   <el-tooltip class="item" effect="light" content="工作节点" placement="top-start">
