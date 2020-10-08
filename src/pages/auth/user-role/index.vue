@@ -6,18 +6,20 @@
       </div>
       <div style="margin-bottom: 5px">
         <el-row :gutter="24" style="margin-bottom: 5px">
-            <el-input v-model="queryParam.username" placeholder="用户名" class="input-search-bar"/>
-            <el-select v-model="queryParam.roleId" filterable clearable
-                       remote reserve-keyword placeholder="输入关键词搜索角色" :remote-method="getRole" :loading="loading" class="search-bar">
-              <el-option
-                v-for="item in roleOptions"
-                :key="item.id"
-                :label="item.roleName"
-                :value="item.id">
-              </el-option>
-            </el-select>
-            <el-button @click="fetchData" class="search-bar">查询</el-button>
-            <el-button @click="addItem" class="search-bar">新增</el-button>
+          <el-input v-model="queryParam.username" placeholder="用户名" class="input-search-bar"/>
+          <el-select v-model="queryParam.roleId" filterable clearable
+                     remote reserve-keyword placeholder="输入关键词搜索角色" :remote-method="getRole" :loading="loading"
+                     class="search-bar">
+            <el-option
+              v-for="item in roleOptions"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+          </el-select>
+          <el-button @click="fetchData" class="search-bar">查询</el-button>
+          <el-button @click="addItem" class="search-bar">新增</el-button>
+          <el-button @click="handlerSyncUserRole" class="search-bar">同步</el-button>
         </el-row>
       </div>
       <el-table :data="tableData" style="width: 100%">
@@ -31,11 +33,13 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background @current-change="paginationCurrentChange" :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
+      <el-pagination background @current-change="paginationCurrentChange" :page-sizes="[10, 15, 20, 25, 30]"
+                     @size-change="handleSizeChange"
                      layout="sizes, prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
                      :page-size="pagination.pageSize">
       </el-pagination>
-      <UserRoleDialog :formStatus="formUserRoleStatus" :formData="userRole" @closeUserRoleDialog="fetchData"></UserRoleDialog>
+      <UserRoleDialog :formStatus="formUserRoleStatus" :formData="userRole"
+                      @closeUserRoleDialog="fetchData"></UserRoleDialog>
     </template>
   </d2-container>
 </template>
@@ -46,7 +50,7 @@
   // API
   import { queryRolePage } from '@api/auth/auth.role.js'
   import { queryUserPage } from '@api/user/user.js'
-  import { queryUserRolePage, deleteUserRoleById } from '@api/auth/auth.user.role.js'
+  import { queryUserRolePage, deleteUserRoleById, syncUserRole } from '@api/auth/auth.user.role.js'
 
   export default {
     data () {
@@ -148,6 +152,15 @@
           username: '',
           roleId: ''
         }
+      },
+      handlerSyncUserRole () {
+        syncUserRole()
+          .then(res => {
+            this.$message({
+              type: 'success',
+              message: '后台同步中'
+            })
+          })
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage

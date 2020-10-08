@@ -15,6 +15,13 @@ export function addUserRole (data) {
   })
 }
 
+export function syncUserRole () {
+  return request({
+    url: '/auth/user/role/sync',
+    method: 'get'
+  })
+}
+
 export function deleteUserRoleById (id) {
   return request({
     url: '/auth/user/role/del?id=' + id,
