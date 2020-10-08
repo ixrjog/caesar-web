@@ -43,10 +43,10 @@
               <div><span style="color: #99a9bf">message : </span>{{commit.message}}</div>
             </el-card>
           </el-form-item>
-          <el-form-item label="构建环境" :label-width="labelWidth">
-            <el-select v-model="ENVIRONMENT_BUILD" placeholder="选择类型">
+          <el-form-item label="构建类型" :label-width="labelWidth">
+            <el-select v-model="BUILD_TYPE" placeholder="选择类型">
               <el-option
-                v-for="item in buildEnvOptions"
+                v-for="item in buildTypeOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -54,19 +54,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="构建渠道" :label-width="labelWidth">
-            <el-select v-model="PRODUCT_FLAVOR_BUILD" placeholder="选择类型">
+            <el-select v-model="PRODUCT_FLAVOR" placeholder="选择类型">
               <el-option
                 v-for="item in buildProductFlavorOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="更新flutterPub" :label-width="labelWidth">
-            <el-select v-model="pubGet" placeholder="选择类型">
-              <el-option
-                v-for="item in pubGetOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -241,11 +231,7 @@
   import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId, abortBuildCiJob } from '@api/build/job.build.js'
   import { queryApplicationSCMMemberBranch, queryApplicationSCMMemberBranchCommit } from '@api/application/application.js'
 
-  const buildEnvOptions = [
-    {
-      value: 'beta',
-      label: 'beta'
-    },
+  const buildTypeOptions = [
     {
       value: 'release',
       label: 'release'
@@ -258,46 +244,14 @@
 
   const buildProductFlavorOptions = [
     {
-      value: 'yyb',
-      label: '应用宝'
+      value: 'alpha',
+      label: 'alpha'
     },
     {
-      value: 'huawei',
-      label: '华为'
-    },
-    {
-      value: 'xiaomi',
-      label: '小米'
-    },
-    {
-      value: 'oppo',
-      label: 'OPPO'
-    },
-    {
-      value: 'vivo',
-      label: 'VIVO'
-    },
-    {
-      value: 'baidu',
-      label: '百度'
-    },
-    {
-      value: 'bmhy',
-      label: '斑马会员'
-    },
-    {
-      value: 'ceshi',
-      label: '测试渠道'
+      value: 'publish',
+      label: 'publish'
     }
   ]
-
-  const pubGetOptions = [{
-    value: true,
-    label: '更新'
-  }, {
-    value: false,
-    label: '跳过'
-  }]
 
   export default {
     data () {
@@ -313,16 +267,14 @@
         queryParam: {
           queryName: ''
         },
-        ENVIRONMENT_BUILD: '',
-        PRODUCT_FLAVOR_BUILD: '',
-        pubGet: '',
+        BUILD_TYPE: '',
+        PRODUCT_FLAVOR: '',
         buildParam: {
           versionName: '',
           versionDesc: '',
         },
-        buildEnvOptions: buildEnvOptions,
+        buildTypeOptions: buildTypeOptions,
         buildProductFlavorOptions: buildProductFlavorOptions,
-        pubGetOptions: pubGetOptions,
         branchOptions: [],
         branchesLoading: false,
         tableData: [],
@@ -369,9 +321,8 @@
         this.application = application
         this.ciJob = ciJob
         // 初始化参数
-        this.ENVIRONMENT_BUILD = ciJob.parameters['ENVIRONMENT_BUILD']
-        this.PRODUCT_FLAVOR_BUILD = ciJob.parameters['PRODUCT_FLAVOR_BUILD']
-        this.pubGet = ciJob.parameters['pubGet']
+        this.BUILD_TYPE = ciJob.parameters['BUILD_TYPE']
+        this.PRODUCT_FLAVOR = ciJob.parameters['PRODUCT_FLAVOR']
         this.commit = ''
         this.getBranches()
         this.setTimer()
@@ -431,9 +382,8 @@
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
           'paramMap': {
-            'ENVIRONMENT_BUILD': this.ENVIRONMENT_BUILD,
-            'PRODUCT_FLAVOR_BUILD': this.PRODUCT_FLAVOR_BUILD,
-            'pubGet': this.pubGet
+            'BUILD_TYPE': this.BUILD_TYPE,
+            'PRODUCT_FLAVOR': this.PRODUCT_FLAVOR
           }
         }
         buildCiJob(requestBody)
