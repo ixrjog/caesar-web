@@ -53,7 +53,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="构建渠道" :label-width="labelWidth">
+          <el-form-item label="发布类型" :label-width="labelWidth">
             <el-select v-model="PRODUCT_FLAVOR" placeholder="选择类型">
               <el-option
                 v-for="item in buildProductFlavorOptions"
@@ -235,6 +235,10 @@
     {
       value: 'release',
       label: 'release'
+    },
+    {
+      value: 'preview',
+      label: 'preview'
     },
     {
       value: 'debug',
