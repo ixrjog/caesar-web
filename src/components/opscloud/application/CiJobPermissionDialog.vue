@@ -11,7 +11,8 @@
             :label="item.username"
             :value="item.id">
             <span style="float: left">{{ item.username }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px ;margin-left:  10px">{{ item.displayName }}</span>
+            <span
+              style="float: right; color: #8492a6; font-size: 13px ;margin-left:  10px">{{ item.displayName }}</span>
           </el-option>
         </el-select>
         <el-button type="success" :disabled="userId === ''" plain size="mini" @click="grantUser()"
@@ -32,7 +33,9 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="180">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="mini" @click="handlerRowUpdatePermission(scope.row)">{{scope.row.userPermission.roleName ==='ADMIN' ? '降权': '提权'}}</el-button>
+          <el-button type="primary" plain size="mini" @click="handlerRowUpdatePermission(scope.row)">
+            {{scope.row.userPermission.roleName ==='ADMIN' ? '降权': '提权'}}
+          </el-button>
           <el-button type="danger" plain size="mini" @click="handlerRowRevokeUser(scope.row)">撤销</el-button>
         </template>
       </el-table-column>
@@ -49,14 +52,18 @@
 
 <script>
   // API
-  import { queryApplicationExcludeUserPage, queryApplicationIncludeUserPage } from '@api/user/user.application.js'
-  import { grantUserApplication, revokeUserApplication, updateUserApplicationPermission } from '@api/application/application.js'
+  import {
+    queryApplicationBuildJobExcludeUserPage,
+    queryApplicationBuildJobIncludeUserPage
+  } from '@api/user/user.application.js'
+  import { grantUserApplicationBuildJob, revokeUserApplicationBuildJob } from '@api/application/application.js'
 
   export default {
     data () {
       return {
-        title: '应用授权管理',
+        title: '任务授权管理',
         application: {},
+        ciJob: {},
         tableData: [],
         loading: false,
         searchLoading: false,
@@ -72,29 +79,31 @@
         }
       }
     },
-    name: 'ApplicationPermissionDialog',
+    name: 'CiJobPermissionDialog',
     props: ['formStatus'],
     mixins: [],
     mounted () {
     },
     methods: {
-      initData (application) {
+      initData (ciJob) {
         // 初始化数据
-        this.application = application
+        this.ciJob = ciJob
         this.userId = ''
         this.pagination.currentPage = 1
         this.getUser('')
+        console.log(ciJob)
         this.fetchData()
       },
       getUser (queryName) {
         this.searchLoading = true
         let requestBody = {
           'queryName': queryName,
-          'applicationId': this.application.id,
+          'applicationId': this.ciJob.applicationId,
+          'ciJobId': this.ciJob.id,
           'page': 1,
           'length': 10
         }
-        queryApplicationExcludeUserPage(requestBody)
+        queryApplicationBuildJobExcludeUserPage(requestBody)
           .then(res => {
             this.userOptions = res.body.data
             this.searchLoading = false
@@ -108,7 +117,7 @@
       },
       grantUser () {
         setTimeout(() => {
-          grantUserApplication(this.application.id, this.userId)
+          grantUserApplicationBuildJob(this.ciJob.id, this.userId)
             .then(res => {
               // 返回数据
               this.$message({
@@ -121,24 +130,24 @@
             })
         }, 30)
       },
-      handlerRowUpdatePermission (row) {
-        setTimeout(() => {
-          updateUserApplicationPermission(this.application.id, row.id)
-            .then(res => {
-              // 返回数据
-              this.$message({
-                message: '成功',
-                type: 'success'
-              })
-              this.userId = ''
-              this.getUser('')
-              this.fetchData()
-            })
-        }, 30)
-      },
+      // handlerRowUpdatePermission (row) {
+      //   setTimeout(() => {
+      //     updateUserApplicationPermission(this.application.id, row.id)
+      //       .then(res => {
+      //         // 返回数据
+      //         this.$message({
+      //           message: '成功',
+      //           type: 'success'
+      //         })
+      //         this.userId = ''
+      //         this.getUser('')
+      //         this.fetchData()
+      //       })
+      //   }, 30)
+      // },
       handlerRowRevokeUser (row) {
         setTimeout(() => {
-          revokeUserApplication(this.application.id, row.id)
+          revokeUserApplicationBuildJob(this.ciJob.id, row.id)
             .then(res => {
               // 返回数据
               this.$message({
@@ -158,11 +167,12 @@
         this.loading = true
         let requestBody = {
           'queryName': this.queryParam.queryName,
-          'applicationId': this.application.id,
+          'applicationId': this.ciJob.applicationId,
+          'ciJobId': this.ciJob.id,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
-        queryApplicationIncludeUserPage(requestBody)
+        queryApplicationBuildJobIncludeUserPage(requestBody)
           .then(res => {
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum

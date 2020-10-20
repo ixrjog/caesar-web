@@ -94,7 +94,7 @@
               </el-dropdown-item>
               <el-dropdown-item icon="el-icon-edit"><span @click="handlerRowDeploymentEdit(scope.row)">部署配置</span>
               </el-dropdown-item>
-              <el-dropdown-item icon="fa fa-user"><span>权限配置</span></el-dropdown-item>
+              <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span></el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -121,6 +121,7 @@
     <!--    @openXTerm="handlerOpenXTerm"-->
     <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus"></jenkinsNodeXTerm>
     <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
+    <ciJobPermissionDialog ref="ciJobPermissionDialog" :formStatus="formPermissionStatus"></ciJobPermissionDialog>
   </div>
 </template>
 
@@ -142,6 +143,7 @@
   import PythonJobBuildDialog from '@/components/opscloud/build/PythonJobBuildDialog'
   import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
+  import CiJobPermissionDialog from '@/components/opscloud/application/CiJobPermissionDialog'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
   import { abortBuildCiJob } from '@api/build/job.build.js'
@@ -208,6 +210,9 @@
         formBuildOutputStatus: {
           visible: false
         },
+        formPermissionStatus: {
+          visible: false
+        },
         timer: null // 查询定时器
       }
     },
@@ -234,7 +239,8 @@
       PythonJobBuildDialog,
       AndroidJobBuildDialog,
       AndroidReinforceJobBuildDialog,
-      ViewJobBuildOutput
+      ViewJobBuildOutput,
+      CiJobPermissionDialog
     },
     methods: {
       ...mapActions({
@@ -360,6 +366,10 @@
           this.$refs.cdJobDialog.initData(this.application, Object.assign({}, row.cdJob))
         }
         this.formCdJobStatus.visible = true
+      },
+      handlerRowPermissionEdit (row) {
+        this.formPermissionStatus.visible = true
+        this.$refs.ciJobPermissionDialog.initData(Object.assign({}, row))
       },
       handlerRowEngineEdit (row) {
         let data = {

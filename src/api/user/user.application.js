@@ -17,3 +17,19 @@ export function queryApplicationIncludeUserPage (data) {
     data
   })
 }
+
+export function queryApplicationBuildJobExcludeUserPage (data) {
+  return request({
+    url: baseUrl + '/build/job/exclude/page/query',
+    method: 'post',
+    data
+  })
+}
+
+export function queryApplicationBuildJobIncludeUserPage (data) {
+  return request({
+    url: baseUrl + '/build/job/include/page/query',
+    method: 'post',
+    data
+  })
+}

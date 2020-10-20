@@ -157,3 +157,17 @@ export function removeApplicationServerGroup (id) {
     method: 'delete'
   })
 }
+
+export function grantUserApplicationBuildJob (ciJobId, userId) {
+  return request({
+    url: baseUrl + '/build/job/user/grant?ciJobId=' + ciJobId + '&userId=' + userId,
+    method: 'put'
+  })
+}
+
+export function revokeUserApplicationBuildJob (ciJobId, userId) {
+  return request({
+    url: baseUrl + '/build/job/user/revoke?ciJobId=' + ciJobId + '&userId=' + userId,
+    method: 'delete'
+  })
+}
