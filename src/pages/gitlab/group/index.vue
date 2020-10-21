@@ -25,13 +25,18 @@
             <span>{{props.row.instance.name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="项目名称"></el-table-column>
-        <el-table-column prop="projectVisibility" label="访问" width="180">
+        <el-table-column prop="name" label="群组名称"></el-table-column>
+        <el-table-column prop="applicationKey" label="绑定应用key">
           <template slot-scope="props">
-            <el-tag disable-transitions type="primary" plain size="mini">{{props.row.projectVisibility}}</el-tag>
+            <el-tag disable-transitions type="primary" plain size="mini" v-show="props.row.applicationKey !== null">{{props.row.applicationKey}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="sshUrl" label="sshUrl" width="400"></el-table-column>
+        <el-table-column prop="groupVisibility" label="访问" width="180">
+          <template slot-scope="props">
+            <el-tag disable-transitions type="primary" plain size="mini">{{props.row.groupVisibility}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="webUrl" label="webUrl" width="400"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
@@ -72,13 +77,14 @@
   // API
   import { queryBusinessTag, queryTagPage } from '@api/tag/tag.js'
   import { queryGitlabInstancePage } from '@api/gitlab/gitlab.instance.js'
-  import { queryGitlabProjectPage, delGitlabProjectById, syncGitlabProject } from '@api/gitlab/gitlab.project.js'
+
+  import { queryGitlabGroupPage, delGitlabGroupById, syncGitlabGroup } from '@api/gitlab/gitlab.group.js'
 
   export default {
-    name: 'GitlabProjectTable',
+    name: 'GitlabGroupTable',
     data () {
       return {
-        title: 'Gitlab项目管理',
+        title: 'Gitlab群组管理',
         tableData: [],
         options: {
           stripe: true
@@ -94,7 +100,7 @@
           queryName: ''
         },
         instanceOptions: [],
-        businessType: 9,
+        businessType: 15, // GitlabGroup
         formTagTransferStatus: {
           visible: false,
           title: '编辑服务器标签'
@@ -142,7 +148,7 @@
           })
       },
       handlerSync () {
-        syncGitlabProject(this.queryParam.instanceId)
+        syncGitlabGroup(this.queryParam.instanceId)
           .then(res => {
             this.$message({
               type: 'success',
@@ -177,7 +183,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          delGitlabProjectById(row.id).then(res => {
+          delGitlabGroupById(row.id).then(res => {
             this.fetchData()
             this.$message({
               type: 'success',
@@ -204,7 +210,7 @@
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
-        queryGitlabProjectPage(requestBody)
+        queryGitlabGroupPage(requestBody)
           .then(res => {
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum

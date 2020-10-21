@@ -139,6 +139,15 @@ const frameIn = [
         }
       },
       {
+        path: '/gitlab/group',
+        name: 'gitlab-group',
+        component: () => import('@/pages/gitlab/group'),
+        meta: {
+          auth: true,
+          title: 'Gitlab群组管理'
+        }
+      },
+      {
         path: '/gitlab/project',
         name: 'gitlab-project',
         component: () => import('@/pages/gitlab/project'),
