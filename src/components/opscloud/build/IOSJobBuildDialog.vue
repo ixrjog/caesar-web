@@ -43,20 +43,10 @@
               <div><span style="color: #99a9bf">message : </span>{{commit.message}}</div>
             </el-card>
           </el-form-item>
-          <el-form-item label="更新pod" :label-width="labelWidth">
-            <el-select v-model="buildParam.paramMap.podUpdate" placeholder="选择类型">
+          <el-form-item label="构建类型" :label-width="labelWidth">
+            <el-select v-model="buildParam.paramMap.buildType" placeholder="选择类型">
               <el-option
-                v-for="item in podUpdateOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="更新flutterPub" :label-width="labelWidth">
-            <el-select v-model="buildParam.paramMap.pubGet" placeholder="选择类型">
-              <el-option
-                v-for="item in pubGetOptions"
+                v-for="item in buildTypeOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -235,21 +225,14 @@
     queryApplicationSCMMemberBranchCommit
   } from '@api/application/application.js'
 
-  const podUpdateOptions = [{
-    value: true,
-    label: '更新'
+  const buildTypeOptions = [{
+    value: 'alpha',
+    label: 'alpha'
   }, {
-    value: false,
-    label: '跳过'
+    value: 'release',
+    label: 'release'
   }]
 
-  const pubGetOptions = [{
-    value: true,
-    label: '更新'
-  }, {
-    value: false,
-    label: '跳过'
-  }]
 
   export default {
     data () {
@@ -270,8 +253,7 @@
           versionDesc: '',
           paramMap: {}
         },
-        podUpdateOptions: podUpdateOptions,
-        pubGetOptions: pubGetOptions,
+        buildTypeOptions: buildTypeOptions,
         branchOptions: [],
         branchesLoading: false,
         tableData: [],
@@ -318,16 +300,7 @@
         this.application = application
         this.ciJob = ciJob
         this.commit = ''
-        if (this.ciJob.parameters['podUpdate'] === 'true') {
-          this.buildParam.paramMap['podUpdate'] = true
-        } else {
-          this.buildParam.paramMap['podUpdate'] = false
-        }
-        if (this.ciJob.parameters['pubGet'] === 'true') {
-          this.buildParam.paramMap['pubGet'] = true
-        } else {
-          this.buildParam.paramMap['pubGet'] = false
-        }
+        this.buildParam.paramMap.buildType = this.ciJob.parameters.buildType
         this.getBranches()
         this.setTimer()
         this.fetchData()
