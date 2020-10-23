@@ -237,10 +237,6 @@
       label: 'release'
     },
     {
-      value: 'preview',
-      label: 'preview'
-    },
-    {
       value: 'debug',
       label: 'debug'
     }
