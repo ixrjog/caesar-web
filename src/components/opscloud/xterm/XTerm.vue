@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" @close='handlerExit'>
+  <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" :before-close='handlerCloseDialog'>
     <div v-for="xterm in xterms" :key="xterm">
       <template>
         <el-col :span="24">
@@ -248,6 +248,15 @@
         this.xterms = []
         this.xtermMap = {}
         clearInterval(this.timer)
+      },
+      handlerCloseDialog (done) {
+        this.$confirm('确定退出Web终端,并关闭所有会话?')
+          .then(_ => {
+            done()
+            this.handlerExit()
+          })
+          .catch(_ => {
+          })
       },
       /**
        * 批量登录
