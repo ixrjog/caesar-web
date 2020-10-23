@@ -218,7 +218,6 @@
   import util from '@/libs/util.js'
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
-
   import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId, abortBuildCiJob } from '@api/build/job.build.js'
   import {
     queryApplicationSCMMemberBranch,
@@ -232,7 +231,6 @@
     value: 'release',
     label: 'release'
   }]
-
 
   export default {
     data () {
