@@ -10,7 +10,7 @@
             <el-card class="box-card" shadow="never">
               <div slot="header" class="clearfix">
                 <span>个人信息</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="editItem()">修改基本信息</el-button>
+                <el-button style="float: right; padding: 3px 0" disabled type="text" @click="editItem()">修改基本信息</el-button>
               </div>
               <el-form :model="formUserDetail">
                 <el-form-item label="用户名" :label-width="labelWidth">
