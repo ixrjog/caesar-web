@@ -21,7 +21,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="服务器分组" :label-width="labelWidth">
+          <el-form-item label="主机分组" :label-width="labelWidth">
             <el-select v-model.trim="hostPattern" placeholder="选择类型" @change="handlerSelHostPattern">
               <el-option
                 v-for="item in hostPatternOptions"
@@ -31,13 +31,12 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="服务器详情" :label-width="labelWidth">
+          <el-form-item label="主机详情" :label-width="labelWidth">
             <el-card shadow="never">
-              <div class="tag-group">
-                <span v-for="server in servers" :key="server.id">
-                  <el-tag style="margin-left: 5px" class="primary">{{ server.name }}-{{ server.serialNumber}} - {{ server.privateIp}}</el-tag>
-                </span>
-              </div>
+                <div v-for="server in servers" :key="server.id">
+                    <el-tag style="margin-left: 5px" type="primary">{{ server.name }}-{{ server.serialNumber}} - {{ server.privateIp}}</el-tag>
+                    <el-tag style="margin-left: 2px" type="success" effect="dark">{{ server.deployVersion === null ? '首次发布': server.deployVersion.versionName}}</el-tag>
+                </div>
             </el-card>
           </el-form-item>
         </el-form>
