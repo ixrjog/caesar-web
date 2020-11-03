@@ -5,7 +5,7 @@
       <el-tab-pane label="资源配置" name="authResource">
         <AuthResourceTable ref="authResourceTable"></AuthResourceTable>
       </el-tab-pane>
-      <el-tab-pane label="资源组" name="authGrup">
+      <el-tab-pane label="资源组" name="authGroup">
         <AuthGroupTable ref="authGroupTable"></AuthGroupTable>
       </el-tab-pane>
     </el-tabs>
