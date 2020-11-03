@@ -57,7 +57,15 @@ export function readJobTplById (id) {
 
 export function queryCiJobTplPage (data) {
   return request({
-    url: baseUrl + '/job/page/query',
+    url: baseUrl + '/ci/job/page/query',
+    method: 'post',
+    data
+  })
+}
+
+export function queryCdJobTplPage (data) {
+  return request({
+    url: baseUrl + '/cd/job/page/query',
     method: 'post',
     data
   })
@@ -65,7 +73,14 @@ export function queryCiJobTplPage (data) {
 
 export function upgradeCiJobTplByJobId (jobId) {
   return request({
-    url: baseUrl + '/job/upgrade?jobId=' + jobId,
+    url: baseUrl + '/ci/job/upgrade?jobId=' + jobId,
+    method: 'get'
+  })
+}
+
+export function upgradeCdJobTplByJobId (jobId) {
+  return request({
+    url: baseUrl + '/cd/job/upgrade?jobId=' + jobId,
     method: 'get'
   })
 }

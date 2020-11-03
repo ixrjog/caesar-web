@@ -2,13 +2,12 @@
   <d2-container>
     <h1>{{title}}</h1>
     <el-row :gutter="10">
-      <el-col :span="8">
+      <el-col :span="10">
         <el-card shadow="never">
-          <jobTplTable ref="jobTplTable"
-                       @handlerSelTemplate="handlerSelTemplate"></jobTplTable>
+          <jobTplTable ref="jobTplTable" @handlerSelTemplate="handlerSelTemplate"></jobTplTable>
         </el-card>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="14">
         <el-card shadow="never">
           <jobTable ref="jobTable"></jobTable>
         </el-card>

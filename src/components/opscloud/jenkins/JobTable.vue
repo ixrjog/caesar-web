@@ -2,9 +2,15 @@
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
       <el-input v-model.trim="jobTpl.name" disabled placeholder="应用名称" class="input"></el-input>
-      <el-input v-model.trim="queryParam.queryName" :disabled="jobTpl === ''" placeholder="关键字查询" class="input"></el-input>
+      <el-input v-model.trim="queryParam.queryName" :disabled="jobTpl === ''" placeholder="关键字查询"
+                class="input"></el-input>
       <el-button @click="fetchData" style="margin-left: 5px" :disabled="jobTpl === ''">查询</el-button>
       <el-button @click="handlerUpgrade" style="margin-left: 5px" :disabled="jobTpl === ''">全部升级</el-button>
+      <el-button type="primary" @click="handlerSwitch"><i
+        class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+      </el-button>
+
+      <el-tag type="success" style="float: right;margin-right: 45px">{{ queryType ? 'Build Jobs':'Deployment Jobs'}}</el-tag>
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
@@ -26,7 +32,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="200">
+      <el-table-column fixed="right" label="操作" width="80">
         <template slot-scope="scope">
           <el-button type="primary" plain size="mini" v-show="scope.row.needUpgrade"
                      @click="handlerRowTplUpgrade(scope.row)">升级
@@ -45,13 +51,14 @@
 <script>
   import { mapState, mapActions } from 'vuex'
 
-  import { queryCiJobTplPage, upgradeCiJobTplByJobId } from '@api/jenkins/jenkins.tpl.js'
+  import { queryCiJobTplPage, queryCdJobTplPage, upgradeCiJobTplByJobId, upgradeCdJobTplByJobId } from '@api/jenkins/jenkins.tpl.js'
 
   export default {
     name: 'MyCiJobTable',
     data () {
       return {
         jobTpl: '',
+        queryType: true, // true ciJob ; false cdJob
         tableData: [],
         options: {
           stripe: true
@@ -93,6 +100,10 @@
           this.pagination.pageSize = this.info.pageSize
         }
       },
+      handlerSwitch () {
+        this.queryType = !this.queryType
+        this.fetchData()
+      },
       initData (jobTpl) {
         this.jobTpl = jobTpl
         this.fetchData()
@@ -104,14 +115,25 @@
 
       },
       handlerRowTplUpgrade (row) {
-        upgradeCiJobTplByJobId(row.id)
-          .then(res => {
-            this.$message({
-              type: 'success',
-              message: '升级成功!'
+        if (this.queryType) {
+          upgradeCiJobTplByJobId(row.id)
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: '升级成功!'
+              })
+              this.fetchData()
             })
-            this.fetchData()
-          })
+        } else {
+          upgradeCdJobTplByJobId(row.id)
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: '升级成功!'
+              })
+              this.fetchData()
+            })
+        }
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage
@@ -127,12 +149,21 @@
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
-        queryCiJobTplPage(requestBody)
-          .then(res => {
-            this.tableData = res.body.data
-            this.pagination.total = res.body.totalNum
-            this.loading = false
-          })
+        if (this.queryType) {
+          queryCiJobTplPage(requestBody)
+            .then(res => {
+              this.tableData = res.body.data
+              this.pagination.total = res.body.totalNum
+              this.loading = false
+            })
+        } else {
+          queryCdJobTplPage(requestBody)
+            .then(res => {
+              this.tableData = res.body.data
+              this.pagination.total = res.body.totalNum
+              this.loading = false
+            })
+        }
       }
     }
   }
