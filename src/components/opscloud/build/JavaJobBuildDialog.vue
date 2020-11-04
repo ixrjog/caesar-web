@@ -306,7 +306,6 @@
       },
       handlerRowOpenBuildUrl (row) {
         util.open(row.jobBuildUrl)
-       // window.open(row.jobBuildUrl)
       },
       handlerBuild () {
         this.building = true
