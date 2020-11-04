@@ -78,3 +78,18 @@ export function queryCdJobHostPatternByJobId (cdJobId) {
     method: 'get'
   })
 }
+
+export function correctionJobBuildEngineByJobId (ciJobId) {
+  return request({
+    url: baseUrl + '/ci/engine/correction?ciJobId=' + ciJobId,
+    method: 'get'
+  })
+}
+
+export function correctionJobDeployEngineByJobId (cdJobId) {
+  return request({
+    url: baseUrl + '/cd/engine/correction?cdJobId=' + cdJobId,
+    method: 'get'
+  })
+}
+

@@ -6,6 +6,10 @@
         <el-button style="float: right; padding: 3px 0" type="text" @click="handlerBuildEngineCreate"
                    :loading="creatingBuildEngine">创建工作引擎
         </el-button>
+
+        <el-button style="float: right; padding: 3px 0;margin-right: 5px" type="text" @click="handlerBuildEngineCorrection"
+                   :loading="correctingBuildEngine">校正工作引擎
+        </el-button>
       </div>
       <el-row :gutter="24" style="margin-bottom: 5px;margin-left: 5px">
         <el-table :data="buildEngines" v-loading="buildEngineLoading">
@@ -41,6 +45,10 @@
         <span>部署引擎</span>
         <el-button style="float: right; padding: 3px 0" type="text" @click="handlerDeploymentEngineCreate"
                    :loading="creatingDeploymentEngine">创建工作引擎
+        </el-button>
+
+        <el-button style="float: right; padding: 3px 0;margin-right: 5px" type="text" @click="handlerDeploymentEngineCorrection"
+                   :loading="correctingDeploymentEngine">校正工作引擎
         </el-button>
       </div>
       <el-row :gutter="24" style="margin-bottom: 5px;margin-left: 5px">
@@ -84,6 +92,8 @@
   import { createCiJobEngine, queryCiJobEngine } from '@api/application/ci.job.js'
   import { createCdJobEngine, queryCdJobEngine } from '@api/application/cd.job.js'
 
+  import { correctionJobBuildEngineByJobId, correctionJobDeployEngineByJobId } from '@api/build/job.build.js'
+
   export default {
     data () {
       return {
@@ -96,9 +106,11 @@
         buildEngines: [],
         buildEngineLoading: false,
         creatingBuildEngine: false,
+        correctingBuildEngine: false,
         deploymentEngines: [],
         deploymentEngineLoading: false,
-        creatingDeploymentEngine: false
+        creatingDeploymentEngine: false,
+        correctingDeploymentEngine: false
       }
     },
     name: 'JobEngineDialog',
@@ -130,11 +142,27 @@
             this.fetchBuildEngineData()
           })
       },
+      handlerBuildEngineCorrection () {
+        this.correctingBuildEngine = true
+        correctionJobBuildEngineByJobId(this.job.ciJobId)
+          .then(res => {
+            this.correctingBuildEngine = false
+            this.fetchBuildEngineData()
+          })
+      },
       handlerDeploymentEngineCreate () {
         this.creatingDeploymentEngine = true
         createCdJobEngine(this.job.cdJobId)
           .then(res => {
             this.creatingDeploymentEngine = false
+            this.fetchDeploymentEngineData()
+          })
+      },
+      handlerDeploymentEngineCorrection () {
+        this.correctingDeploymentEngine = true
+        correctionJobDeployEngineByJobId(this.job.cdJobId)
+          .then(res => {
+            this.correctingDeploymentEngine = false
             this.fetchDeploymentEngineData()
           })
       },
