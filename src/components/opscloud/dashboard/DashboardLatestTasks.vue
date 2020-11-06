@@ -2,8 +2,12 @@
   <div>
     <el-card shadow="hover">
       <el-col :span="12">
-        <div style="font-size: 14px;margin-bottom: 15px">Latest Build Tasks</div>
-        <el-table :data="latestTasks.latestBuildTasks" style="width: 100%;margin-bottom: 20px">
+        <div style="margin-bottom: 20px">
+          <span style="font-size: 14px">Latest Build Tasks</span>
+          <el-tag style="float: right;margin-right: 10px" type="text">Build Total {{latestTasks.buildTaskTotal}}
+          </el-tag>
+        </div>
+        <el-table :data="latestTasks.latestBuildTasks" style="width: 100%;margin-bottom: 15px">
           <el-table-column prop="jobName" label="任务名称" width="280">
             <template slot-scope="scope">
               <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
@@ -26,10 +30,14 @@
           </el-table-column>
         </el-table>
       </el-col>
-
       <el-col :span="12">
-        <div style="font-size: 14px;margin-bottom: 15px">Latest Deployment Tasks</div>
-        <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 20px">
+        <div style="margin-bottom: 20px">
+          <span style="font-size: 14px">Latest Deployment Tasks</span>
+          <el-tag style="float: right;margin-right: 10px" type="text">Deployment Total
+            {{latestTasks.deploymentTaskTotal}}
+          </el-tag>
+        </div>
+        <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 15px">
           <el-table-column prop="jobName" label="任务名称" width="280">
             <template slot-scope="scope">
               <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
