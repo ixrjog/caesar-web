@@ -15,3 +15,10 @@ export function queryLatestTasks () {
     method: 'get'
   })
 }
+
+export function queryTaskExecutionGroupByHour () {
+  return request({
+    url: baseUrl + '/task/execution/by/hour/query',
+    method: 'get'
+  })
+}

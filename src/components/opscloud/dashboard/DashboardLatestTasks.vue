@@ -7,7 +7,7 @@
           <el-tag style="float: right;margin-right: 10px" type="text">Build Total {{latestTasks.buildTaskTotal}}
           </el-tag>
         </div>
-        <el-table :data="latestTasks.latestBuildTasks" style="width: 100%;margin-bottom: 15px">
+        <el-table :data="latestTasks.latestBuildTasks" style="width: 100%;margin-bottom: 13px">
           <el-table-column prop="jobName" label="任务名称" width="280">
             <template slot-scope="scope">
               <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
@@ -37,7 +37,7 @@
             {{latestTasks.deploymentTaskTotal}}
           </el-tag>
         </div>
-        <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 15px">
+        <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 13px">
           <el-table-column prop="jobName" label="任务名称" width="280">
             <template slot-scope="scope">
               <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>

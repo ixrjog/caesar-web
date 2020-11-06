@@ -8,6 +8,11 @@
         <topCard></topCard>
       </el-row>
       <el-row :gutter="24">
+        <el-col>
+          <taskExecutionGroupByHour></taskExecutionGroupByHour>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
         <el-col :span="9">
           <jenkinsEngineStatus></jenkinsEngineStatus>
         </el-col>
@@ -25,6 +30,8 @@
   import topCard from '@/components/opscloud/dashboard/TopCard'
   import jenkinsEngineStatus from '@/components/opscloud/jenkins/JenkinsEngineStatus.vue'
   import dashboardLatestTasks from '@/components/opscloud/dashboard/DashboardLatestTasks'
+  // TaskExecutionGroupByHour
+  import taskExecutionGroupByHour from '@/components/opscloud/dashboard/TaskExecutionGroupByHour'
 
   export default {
     name: 'Dashboard',
@@ -39,7 +46,8 @@
     components: {
       topCard,
       jenkinsEngineStatus,
-      dashboardLatestTasks
+      dashboardLatestTasks,
+      taskExecutionGroupByHour
     },
     methods: {}
   }
@@ -48,6 +56,11 @@
 <style>
   .el-row {
     margin-left: 0px;
-    margin-bottom: 5px;&:last-child {}
+    margin-bottom: 5px;
+
+  &
+  :last-child {
+  }
+
   }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <div>
-    <el-card class="box-card" shadow="never">
-<!--      <div slot="header" class="clearfix">-->
-<!--        <span>引擎负载</span>-->
-<!--      </div>-->
+    <el-card class="box-card" shadow="hover">
       <div id="engineChart" style="width: 100%; height: 400px;"></div>
     </el-card>
   </div>
