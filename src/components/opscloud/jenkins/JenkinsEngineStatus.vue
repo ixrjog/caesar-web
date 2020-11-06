@@ -53,7 +53,7 @@
         let option = {
           title: {
             text: 'Jenkins Engine Cluster',
-            subtext: 'Caesar持续集成平台采用多Jenkins集群',
+            subtext: 'Caesar持续集成平台调度多Jenkins集群',
             textStyle: {
               fontSize: 14,
               align: 'center'
