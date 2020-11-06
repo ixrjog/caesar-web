@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-card class="box-card" shadow="never">
-      <div slot="header" class="clearfix">
-        <span>引擎负载</span>
-      </div>
+<!--      <div slot="header" class="clearfix">-->
+<!--        <span>引擎负载</span>-->
+<!--      </div>-->
       <div id="engineChart" style="width: 100%; height: 400px;"></div>
     </el-card>
   </div>
@@ -44,13 +44,25 @@
         }
         this.timer = setInterval(() => {
           this.queryEngineChart()
-          // console.log('开始定时...每8秒执行一次')
+          // console.log('开始定时...每N秒执行一次')
         }, 10000)
       },
       initMyChart (data) {
         let myChart = echarts.init(document.getElementById('engineChart'))
         // 指定图表的配置项和数据
         let option = {
+          title: {
+            text: 'Jenkins Engine Cluster',
+            subtext: 'Caesar持续集成平台采用多Jenkins集群',
+            textStyle: {
+              fontSize: 14,
+              align: 'center'
+            },
+            subtextStyle: {
+              align: 'center'
+            },
+            sublink: 'http://wiki.xinc818.com/pages/viewpage.action?pageId=17827555'
+          },
           tooltip: {
             trigger: 'item',
             triggerOn: 'mousemove'
@@ -118,5 +130,12 @@
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
+  }
+
+  .el-card__header {
+    padding: 10px 10px;
+    border-bottom: 1px solid #EBEEF5;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
   }
 </style>

@@ -45,6 +45,15 @@ const frameIn = [
         hidden: true,
         component: _import('system/function/redirect')
       },
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: () => import('@/pages/dashboard'),
+        meta: {
+          auth: true,
+          title: '首页'
+        }
+      },
       // env
       {
         path: '/env',
