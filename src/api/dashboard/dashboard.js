@@ -22,3 +22,17 @@ export function queryTaskExecutionGroupByHour () {
     method: 'get'
   })
 }
+
+export function queryJobTypeStatistics () {
+  return request({
+    url: baseUrl + '/job/type/query',
+    method: 'get'
+  })
+}
+
+export function queryTaskExecutionGroupByWeek () {
+  return request({
+    url: baseUrl + '/task/execution/by/week/query',
+    method: 'get'
+  })
+}

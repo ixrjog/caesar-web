@@ -8,17 +8,17 @@
           </el-tag>
         </div>
         <el-table :data="latestTasks.latestBuildTasks" style="width: 100%;margin-bottom: 13px">
-          <el-table-column prop="jobName" label="任务名称" width="280">
+          <el-table-column prop="jobName" label="任务名称">
             <template slot-scope="scope">
               <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="时间" width="80">
+          <el-table-column label="时间" width="150">
             <template slot-scope="scope">
               <span style="color: #20A9D9">{{scope.row.ago}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="80">
+          <el-table-column label="状态" width="150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
                 <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
@@ -38,17 +38,17 @@
           </el-tag>
         </div>
         <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 13px">
-          <el-table-column prop="jobName" label="任务名称" width="280">
+          <el-table-column prop="jobName" label="任务名称">
             <template slot-scope="scope">
               <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="时间" width="80">
+          <el-table-column label="时间" width="150">
             <template slot-scope="scope">
               <span style="color: #20A9D9">{{scope.row.ago}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="状态" width="80">
+          <el-table-column label="状态" width="150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
                 <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
