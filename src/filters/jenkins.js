@@ -34,7 +34,7 @@ export function getJobBuildStatusText (value) {
     case 'BUILDING':
       return '构建中'
     case 'ABORTED':
-      return '中止了'
+      return '用户中止'
     case 'SUCCESS':
       return '成功'
     case 'UNKNOWN':
