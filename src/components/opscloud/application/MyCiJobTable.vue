@@ -1,11 +1,9 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model.trim="application.name" disabled placeholder="应用名称" class="input"></el-input>
+      <el-input v-model.trim="application.name" disabled placeholder="应用名称" class="input">
+      </el-input>
       <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
-      <!--      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"-->
-      <!--                class="input"/>-->
-      <!--      <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>-->
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column type="expand">

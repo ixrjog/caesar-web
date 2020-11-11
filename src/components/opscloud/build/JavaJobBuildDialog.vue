@@ -123,7 +123,7 @@
                       <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
                         <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
                       </el-tooltip>
-                      <el-tag style="margin-left: 5px" type="primary">{{ item.commitMsg }}</el-tag>
+                      <span style="margin-left: 5px">{{ item.commitMsg }}</span>
                     </div>
                   </div>
                   <span v-show="scope.row.changes === null || scope.row.changes.length === 0">No Changes</span>
