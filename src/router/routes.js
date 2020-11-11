@@ -51,7 +51,16 @@ const frameIn = [
         component: () => import('@/pages/dashboard'),
         meta: {
           auth: true,
-          title: '首页'
+          title: '仪表盘'
+        }
+      },
+      {
+        path: '/dashboard/hot',
+        name: 'dashboard-hot',
+        component: () => import('@/pages/dashboard/hot'),
+        meta: {
+          auth: true,
+          title: '热门排行'
         }
       },
       // env

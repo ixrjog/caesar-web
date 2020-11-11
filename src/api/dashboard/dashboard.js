@@ -36,3 +36,10 @@ export function queryTaskExecutionGroupByWeek () {
     method: 'get'
   })
 }
+
+export function queryHotTopStatistics () {
+  return request({
+    url: baseUrl + '/hot/top/query',
+    method: 'get'
+  })
+}
