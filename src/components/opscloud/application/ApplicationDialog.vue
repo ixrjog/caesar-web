@@ -10,12 +10,15 @@
           <el-form-item label="应用key" :label-width="labelWidth" :required="true">
             <el-input v-model="application.applicationKey" placeholder="请输入内容"
                       :disabled="!formStatus.operationType">
-
               <template slot="append">
-                <el-button size="mini" type="primary" @click="handlerBuildKey"><i class="fa fa-arrow-up"
-                                                                                  aria-hidden="true"></i></el-button>
+                <el-button size="mini" type="primary" @click="handlerBuildKey">
+                  <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                </el-button>
               </template>
             </el-input>
+          </el-form-item>
+          <el-form-item label="GitFlow" :label-width="labelWidth">
+            <el-checkbox v-model="application.enableGitflow">启用</el-checkbox>
           </el-form-item>
           <el-form-item label="描述" :label-width="labelWidth">
             <el-input v-model="application.comment" placeholder="请输入内容"></el-input>

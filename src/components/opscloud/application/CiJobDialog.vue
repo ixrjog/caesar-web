@@ -348,6 +348,7 @@
       getBranches () {
         this.branchesLoading = true
         let requestBody = {
+          'ciJobId': this.ciJob.id,
           'scmMemberId': this.ciJob.scmMemberId,
           'enableTag': this.ciJob.enableTag
         }
