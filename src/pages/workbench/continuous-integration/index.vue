@@ -10,7 +10,7 @@
       <el-col :span="16">
         <el-card shadow="hover" v-show="builbType">
           <div slot="header" class="clearfix">
-            <span>构建任务</span>
+            <span>All build jobs</span>
             <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
               <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
             </el-button>
@@ -19,7 +19,7 @@
         </el-card>
         <el-card shadow="hover" v-show="!builbType">
           <div slot="header" class="clearfix">
-            <span>部署任务</span>
+            <span>All deploy jobs</span>
             <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
               <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
             </el-button>
