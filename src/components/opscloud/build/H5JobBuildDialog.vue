@@ -82,90 +82,26 @@
           <el-table-column label="详情">
             <template slot-scope="scope">
               <el-row>
-                <el-col :span="22">
-                  <el-tooltip class="item" effect="light" :content="scope.row.user.email" placement="top-start">
-                    <el-tag disable-transitions type="primary">{{scope.row.user.displayName}}
-                    </el-tag>
-                  </el-tooltip>
-                  <span style="margin-left: 5px">{{scope.row.ago}}</span>
-                </el-col>
-                <el-col :span="2">
-                  <el-tooltip class="item" effect="light" content="执行人" placement="top-start">
-                    <i class="el-icon-user" aria-hidden="true"></i>
-                  </el-tooltip>
-                </el-col>
+                <build-user :user="scope.row.user" :ago="scope.row.ago"></build-user>
               </el-row>
               <el-divider></el-divider>
               <el-row>
-                <el-col :span="22">
-                  <div>构建时长: {{scope.row.buildTime}}</div>
-                  <div>开始时间: {{scope.row.startTime}}</div>
-                  <div>结束时间: {{scope.row.endTime}}</div>
-                </el-col>
-                <el-col :span="2">
-                  <el-tooltip class="item" effect="light" content="构建时间" placement="top-start">
-                    <i class="el-icon-time" aria-hidden="true"></i>
-                  </el-tooltip>
-                </el-col>
+                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
               </el-row>
               <el-divider></el-divider>
               <!--              变更详情11-->
               <el-row>
-                <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.changes !== null && scope.row.changes.length > 0">
-                    <div v-for="item in scope.row.changes" :key="item.id">
-                      <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
-                        <el-tag type="primary">{{ item.shortCommitId }}</el-tag>
-                      </el-tooltip>
-                      <span style="margin-left: 5px">{{ item.commitMsg }}</span>
-                    </div>
-                  </div>
-                  <span v-show="scope.row.changes === null || scope.row.changes.length === 0">No Changes</span>
-                </el-col>
-                <el-col :span="2">
-                  <el-tooltip class="item" effect="light" content="变更详情" placement="top-start">
-                    <i class="fa fa-comment-o" aria-hidden="true"></i>
-                  </el-tooltip>
-                </el-col>
+                <build-changes :changes="scope.row.changes"></build-changes>
               </el-row>
               <el-divider></el-divider>
               <!--              产出物详情-->
               <el-row>
-                <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.artifacts !== null">
-                    <div v-for="item in scope.row.artifacts" :key="item.id">
-                      <el-tooltip class="item" effect="light" :content="item.ossUrl" placement="top-start">
-                        <el-tag type="primary">{{ item.artifactFileName }}</el-tag>
-                      </el-tooltip>
-                      <el-tooltip class="item" effect="light" content="文件大小" placement="top-start">
-                        <el-tag style="margin-left: 5px" type="primary">{{ item.artifactFileSize }}</el-tag>
-                      </el-tooltip>
-                    </div>
-                  </div>
-                  <span v-show="scope.row.artifacts === null">No Artifacts</span>
-                </el-col>
-                <el-col :span="2">
-                  <el-tooltip class="item" effect="light" content="产出物" placement="top-start">
-                    <i class="el-icon-folder" aria-hidden="true"></i>
-                  </el-tooltip>
-                </el-col>
+                <build-artifacts :artifacts="scope.row.artifacts"></build-artifacts>
               </el-row>
               <el-divider></el-divider>
               <!--              工作节点-->
               <el-row>
-                <el-col :span="22">
-                  <div class="tag-group" v-show="scope.row.executors !== null">
-                    <div v-for="item in scope.row.executors" :key="item.id">
-                      <el-tag type="primary">{{ item.nodeName }}:{{ item.privateIp}}</el-tag>
-                    </div>
-                  </div>
-                  <span v-show="scope.row.executors === null">No Executors</span>
-                </el-col>
-                <el-col :span="2">
-                  <el-tooltip class="item" effect="light" content="工作节点" placement="top-start">
-                    <i class="fa fa-television" aria-hidden="true"></i>
-                  </el-tooltip>
-                </el-col>
+                <build-executors :executors="scope.row.executors"></build-executors>
               </el-row>
             </template>
           </el-table-column>
@@ -199,6 +135,13 @@
 <script>
 
   import util from '@/libs/util.js'
+
+  // Component
+  import BuildUser from '@/components/opscloud/build/summary/BuildUser'
+  import BuildTimes from '@/components/opscloud/build/summary/BuildTimes'
+  import BuildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
+  import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
+  import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
@@ -240,7 +183,13 @@
     },
     name: 'JobH5BuildDialog',
     props: ['formStatus'],
-    components: {},
+    components: {
+      BuildUser,
+      BuildTimes,
+      BuildArtifacts,
+      BuildExecutors,
+      BuildChanges
+    },
     filters: {
       getJobBuildStatusType, getJobBuildStatusText
     },
