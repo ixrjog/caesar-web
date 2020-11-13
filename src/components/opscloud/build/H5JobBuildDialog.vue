@@ -89,7 +89,12 @@
                 <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
               </el-row>
               <el-divider></el-divider>
-              <!--              变更详情11-->
+              <!--              commit-->
+              <el-row>
+                <build-commit :commit="scope.row.commit"></build-commit>
+              </el-row>
+              <el-divider></el-divider>
+              <!--              变更详情-->
               <el-row>
                 <build-changes :changes="scope.row.changes"></build-changes>
               </el-row>
@@ -137,6 +142,7 @@
   import util from '@/libs/util.js'
 
   // Component
+  import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
   import BuildUser from '@/components/opscloud/build/summary/BuildUser'
   import BuildTimes from '@/components/opscloud/build/summary/BuildTimes'
   import BuildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
@@ -184,6 +190,7 @@
     name: 'JobH5BuildDialog',
     props: ['formStatus'],
     components: {
+      BuildCommit,
       BuildUser,
       BuildTimes,
       BuildArtifacts,
