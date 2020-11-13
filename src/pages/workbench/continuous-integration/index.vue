@@ -3,31 +3,30 @@
     <h1>{{title}}</h1>
     <el-row :gutter="10">
       <el-col :span="8">
-        <el-card shadow="never">
-          <myApplicationTable ref="myApplicationTable"
-                              @handlerSelApplication="handlerSelApplication"></myApplicationTable>
+        <el-card shadow="hover">
+          <my-application-table ref="myApplicationTable" @handlerSelApplication="handlerSelApplication"></my-application-table>
         </el-card>
       </el-col>
       <el-col :span="16">
-        <el-card shadow="never" v-show="builbType">
+        <el-card shadow="hover" v-show="builbType">
           <div slot="header" class="clearfix">
             <span>构建任务</span>
-            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch"><i
-              class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
+              <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
             </el-button>
           </div>
-          <myCiJobTable ref="myCiJobTable"></myCiJobTable>
+          <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
         </el-card>
-        <el-card shadow="never" v-show="!builbType">
+        <el-card shadow="hover" v-show="!builbType">
           <div slot="header" class="clearfix">
             <span>部署任务</span>
-            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch"><i
-              class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
+              <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
             </el-button>
           </div>
-          <myCdJobTable ref="myCdJobTable"></myCdJobTable>
+          <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
         </el-card>
-        <jenkinsEngineStatus style="margin-top: 10px"></jenkinsEngineStatus>
+        <jenkins-engine-status style="margin-top: 10px"></jenkins-engine-status>
       </el-col>
     </el-row>
   </d2-container>
