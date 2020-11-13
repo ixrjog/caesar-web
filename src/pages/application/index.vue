@@ -125,6 +125,7 @@
           name: '',
           applicationKey: '',
           kubernetesApplicationId: '',
+          enableGitflow: false,
           engineType: 0,
           comment: ''
         }

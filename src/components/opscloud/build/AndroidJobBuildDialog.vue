@@ -2,13 +2,11 @@
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="50%" @before-close="closeDialog">
     <el-tabs v-model="activeName">
       <el-tab-pane label="执行构建" name="build">
-        <!--        <el-divider></el-divider>-->
         <el-form :model="ciJob">
           <el-form-item label="任务名称" :label-width="labelWidth">
             <el-input v-model="ciJob.name" disabled></el-input>
           </el-form-item>
           <el-form-item label="仓库" :label-width="labelWidth">
-            <!--            :disabled="!formStatus.operationType"-->
             <el-select v-model.trim="ciJob.scmMemberId" style="width: 500px" disabled>
               <el-option
                 v-for="item in application.scmMembers"
