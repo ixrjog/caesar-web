@@ -37,11 +37,8 @@
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getCommit"
                        :loading="commitLoading"><i class="fa fa-info" aria-hidden="true"></i></el-button>
           </el-form-item>
-          <el-form-item label="commit" :label-width="labelWidth" v-show="commit !== ''">
-            <el-card shadow="naver">
-              <div><span style="color: #99a9bf">id : </span>{{commit.id}}</div>
-              <div><span style="color: #99a9bf">message : </span>{{commit.message}}</div>
-            </el-card>
+          <el-form-item label="commit" :label-width="labelWidth" v-if="commit !== ''">
+            <execute-commit :commit="commit"></execute-commit>
           </el-form-item>
           <el-form-item label="版本名称" :label-width="labelWidth">
             <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号" ></el-input>
@@ -147,6 +144,7 @@
   import util from '@/libs/util.js'
 
   // Component
+  import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
   import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
   import BuildUser from '@/components/opscloud/build/summary/BuildUser'
   import BuildTimes from '@/components/opscloud/build/summary/BuildTimes'
@@ -197,6 +195,7 @@
     name: 'JobJavaBuildDialog',
     props: ['formStatus'],
     components: {
+      ExecuteCommit,
       BuildCommit,
       BuildUser,
       BuildTimes,
