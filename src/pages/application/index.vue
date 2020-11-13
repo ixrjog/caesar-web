@@ -18,7 +18,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="comment" label="描述"></el-table-column>
-        <el-table-column prop="tags" label="标签" width="180">
+        <el-table-column prop="tags" label="标签" width="300">
           <template slot-scope="props">
             <div class="tag-group">
               <span v-for="item in props.row.tags" :key="item.id">
