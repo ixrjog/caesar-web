@@ -8,6 +8,16 @@
         <topCard></topCard>
       </el-row>
       <el-row :gutter="24">
+        <el-col>
+          <taskExecutionGroupByWeek></taskExecutionGroupByWeek>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
+        <el-col>
+          <taskExecutionGroupByHour></taskExecutionGroupByHour>
+        </el-col>
+      </el-row>
+      <el-row :gutter="24">
         <el-col :span="9">
           <jobTypeStatistics></jobTypeStatistics>
         </el-col>
@@ -18,16 +28,6 @@
       <el-row :gutter="24">
         <el-col>
           <dashboardLatestTasks></dashboardLatestTasks>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col>
-          <taskExecutionGroupByWeek></taskExecutionGroupByWeek>
-        </el-col>
-      </el-row>
-      <el-row :gutter="24">
-        <el-col>
-          <taskExecutionGroupByHour></taskExecutionGroupByHour>
         </el-col>
       </el-row>
     </template>
