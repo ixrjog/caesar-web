@@ -7,10 +7,10 @@
           <el-form-item label="任务名称" :label-width="labelWidth">
             <el-input v-model="cdJob.name" disabled></el-input>
           </el-form-item>
-          <el-form-item label="选择构件" :label-width="labelWidth">
-            <el-select v-model.trim="buildId" placeholder="选择类型" :loading="loadBuildArtifact">
+          <el-form-item label="选择构件" :label-width="labelWidth" required>
+            <el-select v-model.trim="buildId" placeholder="选择类型" :loading="loadArtifacts">
               <el-option
-                v-for="item in buildArtifactOptions"
+                v-for="item in artifactOptions"
                 :key="item.id"
                 :label="item.versionName"
                 :value="item.id"
@@ -21,7 +21,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="主机分组" :label-width="labelWidth">
+          <el-form-item label="主机分组" :label-width="labelWidth" required>
             <el-select v-model.trim="hostPattern" placeholder="选择类型" @change="handlerSelHostPattern">
               <el-option
                 v-for="item in hostPatternOptions"
@@ -33,10 +33,14 @@
           </el-form-item>
           <el-form-item label="主机详情" :label-width="labelWidth">
             <el-card shadow="never">
-                <div v-for="server in servers" :key="server.id">
-                    <el-tag style="margin-left: 5px" type="primary">{{ server.name }}-{{ server.serialNumber}} - {{ server.privateIp}}</el-tag>
-                    <el-tag style="margin-left: 2px" type="success" effect="dark">{{ server.deployVersion === null ? '首次发布': server.deployVersion.versionName}}</el-tag>
-                </div>
+              <div v-for="server in servers" :key="server.id">
+                <el-tag style="margin-left: 5px" type="primary">{{ server.name }}-{{ server.serialNumber}} - {{
+                  server.privateIp}}
+                </el-tag>
+                <el-tag style="margin-left: 2px" type="success" effect="dark">{{ server.deployVersion === null ? '首次发布':
+                  server.deployVersion.versionName}}
+                </el-tag>
+              </div>
             </el-card>
           </el-form-item>
         </el-form>
@@ -82,11 +86,12 @@
               </el-row>
               <el-divider></el-divider>
               <el-row>
-                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
+                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
+                             :endTime="scope.row.endTime"></build-times>
               </el-row>
               <el-divider></el-divider>
               <!--              主机分组-->
-              <el-row >
+              <el-row>
                 <build-host-pattern :hostPattern="scope.row.hostPattern"></build-host-pattern>
               </el-row>
               <el-divider></el-divider>
@@ -173,8 +178,8 @@
           versionDesc: '',
           paramMap: {}
         },
-        loadBuildArtifact: false,
-        buildArtifactOptions: [],
+        loadArtifacts: false,
+        artifactOptions: [],
         buildId: '',
         hostPattern: '',
         hostPatternOptions: [],
@@ -225,18 +230,19 @@
         }, 5000)
       },
       getBuildArtifact () {
-        this.loadBuildArtifact = true
+        this.loadArtifacts = true
         let requestBody = {
           'ciJobId': this.cdJob.ciJobId,
           'size': 10
         }
         queryCiJobBuildArtifact(requestBody)
           .then(res => {
-            this.buildArtifactOptions = res.body
-            if (res.body !== null && res.body.length > 0) {
-              this.buildId = res.body[0].id
+            this.artifactOptions = res.body
+            if (this.artifactOptions !== null && this.artifactOptions.length > 0) {
+              // 选中最新构件
+              this.buildId = this.artifactOptions[0].id
             }
-            this.loadBuildArtifact = false
+            this.loadArtifacts = false
           })
       },
       getHostPattern () {
@@ -276,16 +282,27 @@
         }
       },
       handlerRowOpenBuildUrl (row) {
-        window.open(row.jobBuildUrl)
+        util.open(row.jobBuildUrl)
       },
       handlerRowOpenBuildDetails (row) {
         let host = window.location.host
         let httpProtocol = window.location.href.split('://')[0]
         let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android/reinforce?buildId=' + row.id
         util.open(buildDetailsUrl)
-        //window.open(buildDetailsUrl)
       },
       handlerBuild () {
+        if (this.buildId === '') {
+          this.$message({
+            message: '未选中部署构建',
+            type: 'warning'
+          })
+        }
+        if (this.hostPattern === '') {
+          this.$message({
+            message: '未选中主机分组',
+            type: 'warning'
+          })
+        }
         this.building = true
         this.buildParam.paramMap.hostPattern = this.hostPattern // 服务器分组
         let requestBody = {
