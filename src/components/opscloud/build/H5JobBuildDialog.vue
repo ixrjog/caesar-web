@@ -19,7 +19,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="分支" :label-width="labelWidth" required>
-            <el-select v-model.trim="ciJob.branch" style="width: 500px">
+            <el-select v-model.trim="ciJob.branch" filterable style="width: 500px">
               <el-option-group
                 v-for="group in branchOptions"
                 :key="group.label"
