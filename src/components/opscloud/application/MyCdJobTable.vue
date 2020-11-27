@@ -4,13 +4,6 @@
       <el-input v-model.trim="application.name" disabled placeholder="应用名称" class="input"></el-input>
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="table-expand">
-            <el-form-item label="描述">{{props.row.comment}}</el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">
           <el-tooltip class="item" effect="light" :content="props.row.jobKey" placement="top-start">
@@ -85,14 +78,14 @@
                    :page-size="pagination.pageSize">
     </el-pagination>
     <!-- 任务编辑对话框 -->
-    <cdJobDialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cdJobDialog>
+    <cd-job-dialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cd-job-dialog>
     <!-- 任务引擎编辑对话框 -->
-    <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
-    <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
-                                    :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
-    <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></javaJobDeployDialog>
-    <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkinsNodeXTerm>
-    <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
+    <job-engine-dialog ref="jobEngineDialog" :formStatus="formEngineStatus"></job-engine-dialog>
+    <android-reinforce-job-build-dialog ref="androidReinforceJobBuildDialog"
+                                    :formStatus="formAndroidReinforceBuildStatus"></android-reinforce-job-build-dialog>
+    <java-job-deploy-dialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></java-job-deploy-dialog>
+    <jenkins-node-x-term ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkins-node-x-term>
+    <view-job-build-output ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></view-job-build-output>
   </div>
 </template>
 
@@ -100,11 +93,9 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  // XTerm
   import JenkinsNodeXTerm from '@/components/opscloud/xterm/JenkinsNodeXTerm'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
-  // Component Build
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
   import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
   import ViewJobBuildOutput from '@/components/opscloud/application/ViewJobBuildOutput'

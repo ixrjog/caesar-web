@@ -6,14 +6,6 @@
       <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="table-expand">
-            <el-form-item label="仓库">{{props.row.scmMember.scmSshUrl}}</el-form-item>
-            <el-form-item label="描述">{{props.row.comment}}</el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">
           <el-tooltip class="item" effect="light" :content="props.row.jobKey" placement="top-start">
