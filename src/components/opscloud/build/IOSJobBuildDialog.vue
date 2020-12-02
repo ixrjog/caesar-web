@@ -36,9 +36,7 @@
                        :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getCommit"
                        :loading="commitLoading"><i class="fa fa-info" aria-hidden="true"></i></el-button>
-          </el-form-item>
-          <el-form-item label="commit" :label-width="labelWidth" v-if="commit !== ''">
-            <execute-commit :commit="commit"></execute-commit>
+            <execute-commit style="margin-top: 10px" v-if="commit !== ''" :commit="commit"></execute-commit>
           </el-form-item>
           <el-form-item label="构建类型" :label-width="labelWidth">
             <el-select v-model="buildParam.paramMap.buildType" placeholder="选择类型">
