@@ -4,8 +4,8 @@
       <div class="tag-group" v-show="changes.length !== null && changes.length > 0">
         <div v-for="item in changes" :key="item.id">
           <el-tooltip class="item" effect="light" :content="item.commitId" placement="top-start">
-            <span class="label">{{ item.shortCommitId }}</span>
-<!--            <el-tag type="primary">{{ item.shortCommitId }}</el-tag>-->
+<!--            <span class="label">{{ item.shortCommitId }}</span>-->
+            <el-button type="text" style="margin-left: 10px; padding: 3px 0" @click="handlerOpenUrl(item)">{{ item.shortCommitId }}</el-button>
           </el-tooltip>
           <span style="margin-left: 5px">{{ item.commitMsg }}</span>
         </div>
@@ -22,6 +22,8 @@
 
 <script>
 
+  import util from '@/libs/util.js'
+
   export default {
     name: 'BuildChanges',
     data () {
@@ -34,6 +36,9 @@
     mounted () {
     },
     methods: {
+      handlerOpenUrl(item){
+        util.open(item.commitUrl)
+      }
     }
   }
 </script>

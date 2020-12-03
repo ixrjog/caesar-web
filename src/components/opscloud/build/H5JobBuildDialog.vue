@@ -86,7 +86,7 @@
               <el-divider></el-divider>
               <!--              commit-->
               <el-row>
-                <build-commit :commit="scope.row.commit"></build-commit>
+                <build-commit :commit="scope.row.commitDetails"></build-commit>
               </el-row>
               <el-divider></el-divider>
               <!--              变更详情-->

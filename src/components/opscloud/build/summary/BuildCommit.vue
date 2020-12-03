@@ -1,7 +1,8 @@
 <template>
   <div>
     <el-col :span="22">
-      <span class="label">{{commit}}</span>
+      <el-button type="text" style="margin-left: 10px; padding: 3px 0" @click="handlerOpenUrl()">{{commit.commit}}
+      </el-button>
     </el-col>
     <el-col :span="2">
       <el-tooltip class="item" effect="light" content="commit" placement="top-start">
@@ -13,6 +14,8 @@
 
 <script>
 
+  import util from '@/libs/util.js'
+
   export default {
     name: 'BuildCommit',
     data () {
@@ -22,7 +25,11 @@
     filters: {},
     mounted () {
     },
-    methods: {}
+    methods: {
+      handlerOpenUrl(){
+        util.open(this.commit.commitUrl)
+      }
+    }
   }
 </script>
 
