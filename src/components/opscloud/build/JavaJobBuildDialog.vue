@@ -39,10 +39,13 @@
             <execute-commit style="margin-top: 10px" v-if="commit !== ''" :commit="commit"></execute-commit>
           </el-form-item>
           <el-form-item label="版本名称" :label-width="labelWidth">
-            <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号" ></el-input>
+            <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号"></el-input>
           </el-form-item>
           <el-form-item label="版本说明" :label-width="labelWidth">
             <el-input v-model="buildParam.versionDesc"></el-input>
+          </el-form-item>
+          <el-form-item label="通知静默" :label-width="labelWidth">
+            <el-checkbox v-model="buildParam.isSilence">不发送本次构建钉钉通知</el-checkbox>
           </el-form-item>
         </el-form>
         <div style="width:100%;text-align:center">
@@ -87,7 +90,8 @@
               </el-row>
               <el-divider></el-divider>
               <el-row>
-                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
+                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
+                             :endTime="scope.row.endTime"></build-times>
               </el-row>
               <el-divider></el-divider>
               <!--              commit-->
@@ -97,7 +101,7 @@
               <el-divider></el-divider>
               <!--              变更详情-->
               <el-row>
-               <build-changes :changes="scope.row.changes"></build-changes>
+                <build-changes :changes="scope.row.changes"></build-changes>
               </el-row>
               <el-divider></el-divider>
               <!--              产出物详情-->
@@ -154,7 +158,10 @@
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
   import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
-  import { queryApplicationSCMMemberBranch,queryApplicationSCMMemberBranchCommit } from '@api/application/application.js'
+  import {
+    queryApplicationSCMMemberBranch,
+    queryApplicationSCMMemberBranchCommit
+  } from '@api/application/application.js'
 
   export default {
     data () {
@@ -170,9 +177,10 @@
         queryParam: {
           queryName: ''
         },
-        buildParam:{
+        buildParam: {
           versionName: '',
           versionDesc: '',
+          isSilence: false,
           paramMap: {}
         },
         branchOptions: [],
@@ -217,7 +225,7 @@
         this.$emit('closeDialog')
       },
       setTimer () {
-        if(this.timer !== null) return
+        if (this.timer !== null) return
         this.timer = setInterval(() => {
           if (!this.formStatus.visible) return
           this.fetchData()
@@ -268,6 +276,7 @@
           'branch': this.ciJob.branch,
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
+          'isSilence': this.buildParam.isSilence,
           'paramMap': {}
         }
         buildCiJob(requestBody)
