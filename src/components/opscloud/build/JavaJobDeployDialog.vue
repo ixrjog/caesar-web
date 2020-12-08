@@ -43,6 +43,10 @@
               </div>
             </el-card>
           </el-form-item>
+          <el-form-item label="并发控制" :label-width="labelWidth">
+            <el-slider style="margin-left: 10px; width: 50%;" v-model="concurrent" mini :min="1" :max="8" :step="1"
+                       show-stops></el-slider>
+          </el-form-item>
         </el-form>
         <div style="width:100%;text-align:center">
           <el-button size="mini" type="primary" @click="handlerBuild" icon="fa fa-play" :loading="building"
@@ -181,6 +185,7 @@
         loadArtifacts: false,
         artifactOptions: [],
         buildId: '',
+        concurrent: 1, // 并发
         hostPattern: '',
         hostPatternOptions: [],
         servers: [],
@@ -305,11 +310,13 @@
         }
         this.building = true
         this.buildParam.paramMap.hostPattern = this.hostPattern // 服务器分组
+        this.buildParam.paramMap.concurrent = this.concurrent // 并发控制
         let requestBody = {
           'cdJobId': this.cdJob.id,
           'ciBuildId': this.buildId,
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
+          'concurrent': this.buildParam.concurrent,
           'paramMap': this.buildParam.paramMap
         }
         buildCdJob(requestBody)
