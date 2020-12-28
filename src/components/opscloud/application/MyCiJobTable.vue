@@ -26,6 +26,11 @@
           <b>{{scope.row.branch}}</b>
         </template>
       </el-table-column>
+      <el-table-column prop="sonarQube" label="代码质量" width="210">
+        <template slot-scope="scope">
+          <sonar-popover :sonarQube="scope.row.sonarQube" v-if="scope.row.enableSonar"></sonar-popover>
+        </template>
+      </el-table-column>
       <el-table-column prop="env" label="环境" width="80">
         <template slot-scope="scope">
           <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
@@ -84,7 +89,8 @@
               </el-dropdown-item>
               <el-dropdown-item icon="el-icon-edit"><span @click="handlerRowDeploymentEdit(scope.row)">部署配置</span>
               </el-dropdown-item>
-              <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span></el-dropdown-item>
+              <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span>
+              </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -134,6 +140,7 @@
   import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
   import CiJobPermissionDialog from '@/components/opscloud/application/CiJobPermissionDialog'
+  import SonarPopover from '@/components/opscloud/build/sonar/SonarPopover'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
   import { abortBuildCiJob } from '@api/build/job.build.js'
@@ -203,6 +210,7 @@
         formPermissionStatus: {
           visible: false
         },
+        labelWidth: '100px',
         timer: null // 查询定时器
       }
     },
@@ -230,7 +238,8 @@
       AndroidJobBuildDialog,
       AndroidReinforceJobBuildDialog,
       ViewJobBuildOutput,
-      CiJobPermissionDialog
+      CiJobPermissionDialog,
+      SonarPopover
     },
     methods: {
       ...mapActions({

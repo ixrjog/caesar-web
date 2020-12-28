@@ -73,6 +73,9 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="质量管理" :label-width="labelWidth" required>
+            <el-checkbox v-model="ciJob.enableSonar">启用SonarQube</el-checkbox>
+          </el-form-item>
           <el-form-item label="隐藏任务" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.hide" placeholder="选择类型">
               <el-option

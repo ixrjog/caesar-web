@@ -38,6 +38,9 @@
                        :loading="commitLoading"><i class="fa fa-info" aria-hidden="true"></i></el-button>
             <execute-commit style="margin-top: 10px" v-if="commit !== ''" :commit="commit"></execute-commit>
           </el-form-item>
+          <el-form-item label="质量管理" :label-width="labelWidth" v-show="ciJob.enableSonar">
+            <el-checkbox v-model="buildParam.isSonar">本次构建启用Sonar扫描</el-checkbox>
+          </el-form-item>
           <el-form-item label="版本名称" :label-width="labelWidth">
             <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号"></el-input>
           </el-form-item>
@@ -133,7 +136,6 @@
         </el-pagination>
       </el-tab-pane>
     </el-tabs>
-
     <el-divider></el-divider>
     <div slot="footer" class="dialog-footer">
       <el-button size="mini" @click="closeDialog">关闭</el-button>
@@ -181,6 +183,7 @@
           versionName: '',
           versionDesc: '',
           isSilence: false,
+          isSonar: null,
           paramMap: {}
         },
         branchOptions: [],
@@ -240,6 +243,13 @@
         this.getBranches()
         this.setTimer()
         this.fetchData()
+        if (ciJob.parameters.isSonar !== null) {
+          if (ciJob.parameters.isSonar === 'true' ){
+            this.buildParam.isSonar = true
+          }else{
+            this.buildParam.isSonar = false
+          }
+        }
       },
       getBranches () {
         this.branchesLoading = true
