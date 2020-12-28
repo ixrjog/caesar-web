@@ -12,10 +12,9 @@
             <div style="font-size: 10px; color: #B7B6B6">Bugs</div>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="sonarQube.measures.new_bugs != null">
           <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.new_bugs.periods[0].value
-              }}
+            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.new_bugs.periods[0].value }}
             </div>
             <div style="font-size: 10px; color: #B7B6B6">新增Bugs</div>
           </el-card>
@@ -33,10 +32,9 @@
             <div style="font-size: 10px; color: #B7B6B6">漏洞</div>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" v-if="sonarQube.measures.new_vulnerabilities != null">
           <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{
-              sonarQube.measures.new_vulnerabilities.periods[0].value }}
+            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.new_vulnerabilities.periods[0].value }}
             </div>
             <div style="font-size: 10px; color: #B7B6B6">新增漏洞</div>
           </el-card>

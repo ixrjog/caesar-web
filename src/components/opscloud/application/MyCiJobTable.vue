@@ -28,7 +28,9 @@
       </el-table-column>
       <el-table-column prop="sonarQube" label="代码质量" width="210">
         <template slot-scope="scope">
-          <sonar-popover :sonarQube="scope.row.sonarQube" v-if="scope.row.enableSonar"></sonar-popover>
+          <div v-if="scope.row.enableSonar">
+            <sonar-popover :sonarQube="scope.row.sonarQube"></sonar-popover>
+          </div>
         </template>
       </el-table-column>
       <el-table-column prop="env" label="环境" width="80">
