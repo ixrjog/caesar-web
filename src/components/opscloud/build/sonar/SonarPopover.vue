@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-popover placement="top-start" trigger="hover" width="400">
-      <el-row>
+      <el-row :gutter="10">
         <span>可靠性</span>
         <el-button type="text" style="float: right; padding: 3px 0" @click="handlerOpenUrl">跳转详情页面</el-button>
       </el-row>
