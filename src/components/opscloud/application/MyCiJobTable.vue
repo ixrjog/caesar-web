@@ -285,6 +285,7 @@
           jotTplId: '',
           jobType: '',
           enableTag: false,
+          enableSonar: false,
           parameterYaml: '',
           jobBuildNumber: 0,
           hide: false,
