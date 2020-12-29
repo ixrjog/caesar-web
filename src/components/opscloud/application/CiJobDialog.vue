@@ -61,6 +61,16 @@
                 </el-option>
               </el-option-group>
             </el-select>
+            <el-tooltip class="item" effect="light" content="刷新分支" placement="top">
+              <el-button size="mini" type="primary" style="margin-left: 5px" @click="handlerSelScm"
+                         :disabled="ciJob.scmMemberId === ''"
+                         :loading="branchesLoading"><i class="fa fa-refresh" aria-hidden="true"></i></el-button>
+            </el-tooltip>
+            <el-tooltip class="item" effect="light" content="创建默认发布分支" placement="top">
+              <el-button size="mini" type="primary" style="margin-left: 5px" @click="handlerCreateBranch"
+                         :disabled="ciJob.scmMemberId === ''"
+                         :loading="branchesLoading"><i class="fa fa-git" aria-hidden="true"></i></el-button>
+            </el-tooltip>
           </el-form-item>
           <el-form-item label="环境" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.envType" filterable clearable
@@ -163,7 +173,7 @@
 <script>
 
   import { queryEnvPage } from '@api/env/env.js'
-  import { queryApplicationSCMMemberBranch } from '@api/application/application.js'
+  import { queryApplicationSCMMemberBranch, createApplicationSCMMemberBranch } from '@api/application/application.js'
   import { queryDingtalkPage } from '@api/dingtalk/dingtalk.js'
   import { queryJobTplPage } from '@api/jenkins/jenkins.tpl.js'
   import { queryBucketPage } from '@api/aliyun/aliyun.oss.bucket.js'
@@ -265,7 +275,6 @@
         require('brace/snippets/xml')
       },
       closeDialog () {
-        this.ciJob = {}
         this.formStatus.visible = false
         this.$emit('closeDialog')
       },
@@ -347,6 +356,21 @@
         if (this.ciJob.scmMemberId !== '') {
           this.getBranches()
         }
+      },
+      handlerCreateBranch () {
+        if (this.ciJob.scmMemberId !== '') {
+          this.createBranches()
+        }
+      },
+      createBranches () {
+        this.branchesLoading = true
+        let requestBody = {
+          'scmMemberId': this.ciJob.scmMemberId
+        }
+        createApplicationSCMMemberBranch(requestBody)
+          .then(res => {
+            this.getBranches()
+          })
       },
       getBranches () {
         this.branchesLoading = true

@@ -78,6 +78,14 @@ export function queryApplicationSCMMemberBranch (data) {
   })
 }
 
+export function createApplicationSCMMemberBranch (data) {
+  return request({
+    url: baseUrl + '/scm/member/branch/create',
+    method: 'post',
+    data
+  })
+}
+
 export function queryApplicationSCMMemberBranchCommit (data) {
   return request({
     url: baseUrl + '/scm/member/branch/commit/query',
