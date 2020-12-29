@@ -2,7 +2,7 @@
   <div>
     <el-popover placement="top-start" trigger="hover" width="400">
       <el-row :gutter="10">
-        <span>可靠性</span>
+        <span style="margin-left: 5px">可靠性</span>
         <el-button type="text" style="float: right; padding: 3px 0" @click="handlerOpenUrl">跳转详情页面</el-button>
       </el-row>
       <el-row :gutter="10">
@@ -21,7 +21,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="10">
-        <span>安全性</span>
+        <span style="margin-left: 5px">安全性</span>
       </el-row>
       <el-row :gutter="10">
         <el-col :span="12">
@@ -41,7 +41,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="10">
-        <span>覆盖率</span>
+        <span style="margin-left: 5px">覆盖率</span>
       </el-row>
       <el-row :gutter="10">
         <el-col>
@@ -52,7 +52,7 @@
         </el-col>
       </el-row>
       <el-row :gutter="10">
-        <span>重复</span>
+        <span style="margin-left: 5px">重复</span>
       </el-row>
       <el-row :gutter="10">
         <el-col :span="12">
