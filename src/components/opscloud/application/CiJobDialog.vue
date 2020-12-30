@@ -23,11 +23,7 @@
           <el-form-item label="任务类型" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.jobType" filterable clearable
                        remote reserve-keyword>
-              <el-option
-                v-for="item in jobTypeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+              <el-option v-for="item in jobTypeOptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -35,11 +31,7 @@
             <!--            :disabled="!formStatus.operationType"-->
             <el-select v-model.trim="ciJob.scmMemberId" placeholder="请选择选择" style="width: 500px"
                        @change="handlerSelScm">
-              <el-option
-                v-for="item in application.scmMembers"
-                :key="item.id"
-                :label="item.scmSshUrl"
-                :value="item.id">
+              <el-option v-for="item in application.scmMembers" :key="item.id" :label="item.scmSshUrl" :value="item.id">
               </el-option>
             </el-select>
             <el-checkbox v-model="ciJob.enableTag" style="margin-left: 20px" @change="handlerSelScm">
@@ -49,15 +41,8 @@
           <el-form-item label="分支" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.branch" placeholder="请选择选择" style="width: 500px"
                        :disabled="branchOptions === '' || branchOptions.length === 0">
-              <el-option-group
-                v-for="group in branchOptions"
-                :key="group.label"
-                :label="group.label">
-                <el-option
-                  v-for="item in group.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+              <el-option-group v-for="group in branchOptions" :key="group.label" :label="group.label">
+                <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
               </el-option-group>
             </el-select>
@@ -75,11 +60,7 @@
           <el-form-item label="环境" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.envType" filterable clearable
                        remote reserve-keyword>
-              <el-option
-                v-for="item in envTypeOptions"
-                :key="item.envType"
-                :label="item.envName"
-                :value="item.envType">
+              <el-option v-for="item in envTypeOptions" :key="item.envType" :label="item.envName" :value="item.envType">
               </el-option>
             </el-select>
           </el-form-item>
@@ -88,11 +69,7 @@
           </el-form-item>
           <el-form-item label="隐藏任务" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.hide" placeholder="选择类型">
-              <el-option
-                v-for="item in hideOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+              <el-option v-for="item in hideOptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -106,11 +83,7 @@
           <el-form-item label="对象存储(oss)" :label-width="labelWidth">
             <el-select v-model.trim="ciJob.ossBucketId" filterable clearable placeholder="请选择选择" remote
                        :remote-method="getOSSBucket" style="width: 500px" :loading="bucketLoading">
-              <el-option
-                v-for="item in bucketOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+              <el-option v-for="item in bucketOptions" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
@@ -122,20 +95,14 @@
             <el-select v-model.trim="ciJob.dingtalkId" filterable clearable placeholder="请选择选择" remote
                        :remote-method="getDingtalk" style="width: 500px">
               <el-option
-                v-for="item in dingtalkOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                v-for="item in dingtalkOptions" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="通知类型" :label-width="labelWidth">
             <el-select v-model.trim="ciJob.atAll" placeholder="选择类型">
               <el-option
-                v-for="item in atAllOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="item in atAllOptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -144,19 +111,14 @@
       <el-tab-pane label="模版配置" name="template">
         <el-form :model="ciJob">
           <el-form-item label="任务模版" :label-width="labelWidth" required>
-            <el-select v-model.trim="ciJob.jobTpl" filterable clearable placeholder="请选择选择" remote value-key="id"
-                       @change="handlerSelTpl"
+            <el-select v-model="ciJob.jobTpl" filterable clearable placeholder="请选择选择" remote value-key="id" @change="handlerSelTpl"
                        :remote-method="getJobTpl" style="width: 500px">
-              <el-option
-                v-for="item in jobTplOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item">
+              <el-option v-for="item in jobTplOptions" :key="item.id" :label="item.name" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="模版参数" :label-width="labelWidth" required>
-            <editor v-model="ciJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome"
+            <editor v-model="ciJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome" v-if="JSON.stringify(ciJob) != '{}'"
                     width="100%" height="400"></editor>
           </el-form-item>
         </el-form>
@@ -164,7 +126,7 @@
     </el-tabs>
     <el-divider></el-divider>
     <div slot="footer" class="dialog-footer">
-      <el-button size="mini" @click="formStatus.visible = false">取消</el-button>
+      <el-button size="mini" @click="closeDialog">取消</el-button>
       <el-button size="mini" type="primary" @click="handlerSave">确定</el-button>
     </div>
   </el-dialog>
@@ -232,8 +194,6 @@
         options: {
           stripe: true
         },
-        // scmMembers: [],
-        // scmMemberLoading: false,
         queryParam: {
           instanceId: '',
           queryName: ''
@@ -275,11 +235,11 @@
         require('brace/snippets/xml')
       },
       closeDialog () {
+        this.ciJob = {}
         this.formStatus.visible = false
         this.$emit('closeDialog')
       },
       initData (application, ciJob) {
-        this.ciJob = {}
         this.branchOptions = []
         this.dingtalkOptions = []
         this.jobTplOptions = []
