@@ -3,18 +3,18 @@
     <h1>角色管理</h1>
     <el-tabs v-model="activeName">
       <el-tab-pane label="角色配置" name="authRole">
-        <AuthRoleTable ref="authRoleTable"></AuthRoleTable>
+        <auth-role-table ref="authRoleTable"></auth-role-table>
       </el-tab-pane>
       <el-tab-pane label="角色资源配置" name="authRoleResource">
-        <AuthRoleResourceTable ref="authRoleResourceTable"></AuthRoleResourceTable>
+        <auth-role-resource-table ref="authRoleResourceTable"></auth-role-resource-table>
       </el-tab-pane>
     </el-tabs>
   </d2-container>
 </template>
 
 <script>
-  import AuthRoleTable from '@/components/opscloud/table/AuthRoleTable.vue'
-  import AuthRoleResourceTable from '@/components/opscloud/table/AuthRoleResourceTable.vue'
+  import AuthRoleTable from '@/components/opscloud/auth/AuthRoleTable.vue'
+  import AuthRoleResourceTable from '@/components/opscloud/auth/AuthRoleResourceTable.vue'
 
   export default {
     data () {

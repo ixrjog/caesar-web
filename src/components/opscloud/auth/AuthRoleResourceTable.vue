@@ -3,63 +3,60 @@
     <el-select v-model="queryParam.roleId" filterable clearable
                remote reserve-keyword placeholder="输入关键词搜索角色" :remote-method="getRole"
                style="display: inline-block; max-width:200px">
-      <el-option
-        v-for="item in roleOptions"
-        :key="item.id"
-        :label="item.roleName"
-        :value="item.id">
+      <el-option v-for="item in roleOptions" :key="item.id" :label="item.roleName" :value="item.id">
       </el-option>
     </el-select>
     <el-select v-model="queryParam.groupId" filterable clearable
                remote reserve-keyword placeholder="输入关键词搜索资源组" :remote-method="getGroup"
                style="margin-left: 5px">
-      <el-option
-        v-for="item in groupOptions"
-        :key="item.id"
-        :label="item.groupCode"
-        :value="item.id">
+      <el-option v-for="item in groupOptions" :key="item.id" :label="item.groupCode" :value="item.id">
       </el-option>
     </el-select>
     <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
-
-    <el-row :gutter="20">
+    <el-row :gutter="20" style="margin-top: 10px">
       <el-col :span="12" v-if="tableUnbindData.length != 0">
-        <div>
-          <h3>未绑定资源</h3>
-        </div>
-        <el-table :data="tableUnbindData" style="width: 100%" :loading="unbindLoading">
-          <el-table-column prop="resourceName" label="资源路径"></el-table-column>
-          <el-table-column prop="comment" label="描述"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="280">
-            <template slot-scope="scope">
-              <el-button type="success" plain size="mini" @click="roleBindResource(scope.row)">绑定</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination background @current-change="unbindPaginationCurrentChange" :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
-                       layout="sizes, prev, pager, next"  :total="unbindPagination.total"
-                       :current-page="unbindPagination.currentPage"
-                       :page-size="unbindPagination.pageSize">
-        </el-pagination>
+        <el-card class="box-card" shadow="hover">
+          <div slot="header" class="clearfix">
+            <span>未绑定资源</span>
+          </div>
+          <el-table :data="tableUnbindData" style="width: 100%" :loading="unbindLoading">
+            <el-table-column prop="resourceName" label="资源路径"></el-table-column>
+            <el-table-column prop="comment" label="描述"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="280">
+              <template slot-scope="scope">
+                <el-button type="success" plain size="mini" @click="roleBindResource(scope.row)">绑定</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination background @current-change="unbindPaginationCurrentChange" :page-sizes="[10, 15, 20, 25, 30]"
+                         @size-change="handleSizeChange"
+                         layout="sizes, prev, pager, next" :total="unbindPagination.total"
+                         :current-page="unbindPagination.currentPage"
+                         :page-size="unbindPagination.pageSize">
+          </el-pagination>
+        </el-card>
       </el-col>
       <el-col :span="12" v-if="tableBindData.length != 0">
-        <div>
-          <h3>已绑定资源</h3>
-        </div>
-        <el-table :data="tableBindData" style="width: 100%" :loading="bindLoading">
-          <el-table-column prop="resourceName" label="资源路径"></el-table-column>
-          <el-table-column prop="comment" label="描述"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="280">
-            <template slot-scope="scope">
-              <el-button type="danger" plain size="mini" @click="roleUnbindResource(scope.row)">解除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination background @current-change="bindPaginationCurrentChange" :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
-                       layout="sizes, prev, pager, next"  :total="bindPagination.total"
-                       :current-page="bindPagination.currentPage"
-                       :page-size="bindPagination.pageSize">
-        </el-pagination>
+        <el-card class="box-card" shadow="hover">
+          <div slot="header" class="clearfix">
+            <span>已绑定资源</span>
+          </div>
+          <el-table :data="tableBindData" style="width: 100%" :loading="bindLoading">
+            <el-table-column prop="resourceName" label="资源路径"></el-table-column>
+            <el-table-column prop="comment" label="描述"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="280">
+              <template slot-scope="scope">
+                <el-button type="danger" plain size="mini" @click="roleUnbindResource(scope.row)">解除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-pagination background @current-change="bindPaginationCurrentChange" :page-sizes="[10, 15, 20, 25, 30]"
+                         @size-change="handleSizeChange"
+                         layout="sizes, prev, pager, next" :total="bindPagination.total"
+                         :current-page="bindPagination.currentPage"
+                         :page-size="bindPagination.pageSize">
+          </el-pagination>
+        </el-card>
       </el-col>
     </el-row>
   </div>
