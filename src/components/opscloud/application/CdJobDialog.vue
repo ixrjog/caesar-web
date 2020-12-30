@@ -50,19 +50,15 @@
       <el-tab-pane label="模版配置" name="template">
         <el-form :model="cdJob">
           <el-form-item label="任务模版" :label-width="labelWidth" required>
-            <el-select v-model.trim="cdJob.jobTpl" filterable clearable placeholder="请选择选择" remote value-key="id"
+            <el-select v-model="cdJob.jobTpl" filterable clearable placeholder="请选择" remote value-key="id"
                        @change="handlerSelTpl"
                        :remote-method="getJobTpl" style="width: 500px">
-              <el-option
-                v-for="item in jobTplOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item">
+              <el-option v-for="item in jobTplOptions" :key="item.id" :label="item.name" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="模版参数" :label-width="labelWidth" required>
-            <editor v-model="cdJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome"
+            <editor v-model="cdJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome" v-if="JSON.stringify(cdJob) != '{}'"
                     width="100%" height="400"></editor>
           </el-form-item>
         </el-form>
@@ -70,7 +66,7 @@
     </el-tabs>
     <el-divider></el-divider>
     <div slot="footer" class="dialog-footer">
-      <el-button size="mini" @click="formStatus.visible = false">取消</el-button>
+      <el-button size="mini" @click="closeDialog">取消</el-button>
       <el-button size="mini" type="primary" @click="handlerSave">确定</el-button>
     </div>
   </el-dialog>

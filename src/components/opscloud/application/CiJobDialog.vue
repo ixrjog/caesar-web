@@ -29,7 +29,7 @@
           </el-form-item>
           <el-form-item label="仓库" :label-width="labelWidth" required>
             <!--            :disabled="!formStatus.operationType"-->
-            <el-select v-model.trim="ciJob.scmMemberId" placeholder="请选择选择" style="width: 500px"
+            <el-select v-model.trim="ciJob.scmMemberId" placeholder="请选择" style="width: 500px"
                        @change="handlerSelScm">
               <el-option v-for="item in application.scmMembers" :key="item.id" :label="item.scmSshUrl" :value="item.id">
               </el-option>
@@ -39,7 +39,7 @@
             </el-checkbox>
           </el-form-item>
           <el-form-item label="分支" :label-width="labelWidth" required>
-            <el-select v-model.trim="ciJob.branch" placeholder="请选择选择" style="width: 500px"
+            <el-select v-model.trim="ciJob.branch" placeholder="请选择" style="width: 500px"
                        :disabled="branchOptions === '' || branchOptions.length === 0">
               <el-option-group v-for="group in branchOptions" :key="group.label" :label="group.label">
                 <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value">
@@ -81,7 +81,7 @@
       <el-tab-pane label="存储配置" name="storage">
         <el-form :model="ciJob">
           <el-form-item label="对象存储(oss)" :label-width="labelWidth">
-            <el-select v-model.trim="ciJob.ossBucketId" filterable clearable placeholder="请选择选择" remote
+            <el-select v-model.trim="ciJob.ossBucketId" filterable clearable placeholder="请选择" remote
                        :remote-method="getOSSBucket" style="width: 500px" :loading="bucketLoading">
               <el-option v-for="item in bucketOptions" :key="item.id" :label="item.name" :value="item.id">
               </el-option>
@@ -92,7 +92,7 @@
       <el-tab-pane label="通知配置" name="dingtalk">
         <el-form :model="ciJob">
           <el-form-item label="钉钉" :label-width="labelWidth">
-            <el-select v-model.trim="ciJob.dingtalkId" filterable clearable placeholder="请选择选择" remote
+            <el-select v-model.trim="ciJob.dingtalkId" filterable clearable placeholder="请选择" remote
                        :remote-method="getDingtalk" style="width: 500px">
               <el-option
                 v-for="item in dingtalkOptions" :key="item.id" :label="item.name" :value="item.id">
@@ -110,15 +110,30 @@
       </el-tab-pane>
       <el-tab-pane label="模版配置" name="template">
         <el-form :model="ciJob">
+          <el-form-item label="克隆模版" :label-width="labelWidth">
+            <el-select v-model.trim="cloneCiJob" filterable clearable placeholder="请选择当前应用下的任务" remote value-key="id"
+                       :remote-method="getCiJob" style="width: 500px">
+              <el-option v-for="item in ciJobOptions" :key="item.id" :label="item.name" :value="item">
+              </el-option>
+            </el-select>
+            <el-tooltip class="item" effect="light" content="克隆选中任务模版" placement="top">
+              <el-button size="mini" type="primary" style="margin-left: 5px" @click="handlerCloneJobTpl"
+                         :disabled="cloneCiJob === ''">
+                <i class="fa fa-clone" aria-hidden="true"></i></el-button>
+            </el-tooltip>
+          </el-form-item>
+          <el-divider></el-divider>
           <el-form-item label="任务模版" :label-width="labelWidth" required>
-            <el-select v-model="ciJob.jobTpl" filterable clearable placeholder="请选择选择" remote value-key="id" @change="handlerSelTpl"
+            <el-select v-model="ciJob.jobTpl" filterable clearable placeholder="请选择模版" remote value-key="id"
+                       @change="handlerSelTpl"
                        :remote-method="getJobTpl" style="width: 500px">
               <el-option v-for="item in jobTplOptions" :key="item.id" :label="item.name" :value="item">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="模版参数" :label-width="labelWidth" required>
-            <editor v-model="ciJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome" v-if="JSON.stringify(ciJob) != '{}'"
+            <editor v-model="ciJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome"
+                    v-if="JSON.stringify(ciJob) != '{}'"
                     width="100%" height="400"></editor>
           </el-form-item>
         </el-form>
@@ -140,7 +155,7 @@
   import { queryJobTplPage } from '@api/jenkins/jenkins.tpl.js'
   import { queryBucketPage } from '@api/aliyun/aliyun.oss.bucket.js'
 
-  import { addCiJob, updateCiJob } from '@api/application/ci.job.js'
+  import { addCiJob, updateCiJob, queryCiJobPage } from '@api/application/ci.job.js'
 
   const enableTagOptions = [{
     value: false,
@@ -209,7 +224,9 @@
         jobTplLoading: false,
         jobTplOptions: [],
         bucketOptions: [],
-        bucketLoading: false
+        bucketLoading: false,
+        ciJobOptions: [],
+        cloneCiJob: ''
       }
     },
     name: 'CiJobDialog',
@@ -257,6 +274,7 @@
         }
         if (this.ciJob.jobTpl === null) {
           this.getJobTpl('')
+          this.getCiJob('') // clone
         } else {
           this.jobTplOptions.push(this.ciJob.jobTpl)
         }
@@ -264,6 +282,30 @@
           this.getOSSBucket('')
         } else {
           this.bucketOptions.push(this.ciJob.bucket)
+        }
+      },
+      getCiJob (queryName) {
+        let requestBody = {
+          'queryName': queryName,
+          'applicationId': this.application.id,
+          'extend': 1,
+          'page': 1,
+          'length': 10
+        }
+        queryCiJobPage(requestBody)
+          .then(res => {
+            this.ciJobOptions = res.body.data
+          })
+      },
+      handlerCloneJobTpl () {
+        this.jobTplOptions = []
+        this.jobTplOptions.push(this.cloneCiJob.jobTpl)
+        this.ciJob.jobTpl = this.cloneCiJob.jobTpl
+        this.ciJob.parameterYaml = this.ciJob.jobTpl.parameterYaml
+      },
+      handlerSelTpl () {
+        if (this.ciJob.parameterYaml === '') {
+          this.ciJob.parameterYaml = this.ciJob.jobTpl.parameterYaml
         }
       },
       getOSSBucket (queryName) {
@@ -306,11 +348,6 @@
             this.jobTplOptions = res.body.data
             this.jobTplLoading = false
           })
-      },
-      handlerSelTpl () {
-        if (this.ciJob.parameterYaml === '') {
-          this.ciJob.parameterYaml = this.ciJob.jobTpl.parameterYaml
-        }
       },
       handlerSelScm () {
         if (this.ciJob.scmMemberId !== '') {
