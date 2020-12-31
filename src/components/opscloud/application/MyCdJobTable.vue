@@ -148,8 +148,7 @@
         },
         formBuildOutputStatus: {
           visible: false
-        },
-        timer: null // 查询定时器
+        }
       }
     },
     computed: {
@@ -161,7 +160,6 @@
       this.initPageSize()
     },
     beforeDestroy () {
-      clearInterval(this.timer) // 销毁定时器
     },
     components: {
       JenkinsNodeXTerm,
@@ -186,19 +184,9 @@
           this.pagination.pageSize = this.info.pageSize
         }
       },
-      setTimer () {
-        if (this.timer !== null) {
-          return
-        }
-        this.timer = setInterval(() => {
-          this.fetchData()
-          // console.log('开始定时...每8秒执行一次')
-        }, 8000)
-      },
       initData (application) {
         this.application = application
         this.fetchData()
-        this.setTimer()
       },
       handlerRowRunDeployment (row) {
         switch (row.jobType) {
@@ -227,11 +215,6 @@
         this.formEngineStatus.visible = true
         this.$refs.jobEngineDialog.initData(data)
       },
-      // handlerRowEdit (row) {
-      //   this.formCiJobStatus.operationType = false
-      //   this.formCiJobStatus.visible = true
-      //   this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
-      // },
       handlerOpenXTerm (executor) {
         this.formXtermStatus.visible = true
         this.$refs.xtermDialog.initData(executor)

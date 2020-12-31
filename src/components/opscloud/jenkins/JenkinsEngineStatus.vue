@@ -42,7 +42,7 @@
         this.timer = setInterval(() => {
           this.queryEngineChart()
           // console.log('开始定时...每N秒执行一次')
-        }, 10000)
+        }, 20000)
       },
       initMyChart (data) {
         let myChart = echarts.init(document.getElementById('engineChart'))

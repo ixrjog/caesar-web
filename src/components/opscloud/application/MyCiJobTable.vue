@@ -212,8 +212,7 @@
         formPermissionStatus: {
           visible: false
         },
-        labelWidth: '100px',
-        timer: null // 查询定时器
+        labelWidth: '100px'
       }
     },
     computed: {
@@ -225,7 +224,6 @@
       this.initPageSize()
     },
     beforeDestroy () {
-      clearInterval(this.timer) // 销毁定时器
     },
     components: {
       JenkinsNodeXTerm,
@@ -258,20 +256,9 @@
           this.pagination.pageSize = this.info.pageSize
         }
       },
-      setTimer () {
-        if (this.timer !== null) {
-          return
-        }
-        this.timer = setInterval(() => {
-          this.fetchData()
-          // console.log('开始定时...每8秒执行一次')
-        }, 8000)
-      },
       initData (application) {
         this.application = application
         this.fetchData()
-        this.setTimer()
-        // this.fetchData()
       },
       handlerAdd () {
         let ciJob = {

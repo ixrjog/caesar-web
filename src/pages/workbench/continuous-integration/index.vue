@@ -4,11 +4,12 @@
     <el-row :gutter="10">
       <el-col :span="8">
         <el-card shadow="hover">
-          <my-application-table ref="myApplicationTable" @handlerSelApplication="handlerSelApplication"></my-application-table>
+          <my-application-table ref="myApplicationTable"
+                                @handlerSelApplication="handlerSelApplication"></my-application-table>
         </el-card>
       </el-col>
       <el-col :span="16">
-        <el-card shadow="hover" v-show="builbType">
+        <el-card shadow="hover" v-show="buildType">
           <div slot="header" class="clearfix">
             <span>All build jobs</span>
             <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
@@ -17,7 +18,7 @@
           </div>
           <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
         </el-card>
-        <el-card shadow="hover" v-show="!builbType">
+        <el-card shadow="hover" v-show="!buildType">
           <div slot="header" class="clearfix">
             <span>All deploy jobs</span>
             <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
@@ -43,7 +44,9 @@
     data () {
       return {
         title: '我的应用',
-        builbType: true
+        buildType: true,
+        timer: null, // 查询定时器
+        intervalTime: 12000
       }
     },
     components: {
@@ -52,15 +55,30 @@
       MyCiJobTable,
       MyCdJobTable
     },
+    beforeDestroy () {
+      clearInterval(this.timer) // 销毁定时器
+    },
     mounted () {
     },
     methods: {
+      setTimer () {
+        if (this.timer === null) {
+          this.timer = setInterval(() => {
+            if (this.buildType) {
+              this.$refs.myCiJobTable.fetchData()
+            } else {
+              this.$refs.myCdJobTable.fetchData()
+            }
+          }, this.intervalTime)
+        }
+      },
       handlerSwitch () {
-        this.builbType = !this.builbType
+        this.buildType = !this.buildType
       },
       handlerSelApplication (application) {
         this.$refs.myCiJobTable.initData(application)
         this.$refs.myCdJobTable.initData(application)
+        this.setTimer()
       }
     }
   }
