@@ -301,7 +301,7 @@
         this.jobTplOptions = []
         this.jobTplOptions.push(this.cloneCiJob.jobTpl)
         this.ciJob.jobTpl = this.cloneCiJob.jobTpl
-        this.ciJob.parameterYaml = this.ciJob.jobTpl.parameterYaml
+        this.ciJob.parameterYaml = this.cloneCiJob.parameterYaml
       },
       handlerSelTpl () {
         if (this.ciJob.parameterYaml === '') {

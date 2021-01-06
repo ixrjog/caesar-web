@@ -4,8 +4,7 @@
     <el-row :gutter="10">
       <el-col :span="8">
         <el-card shadow="hover">
-          <my-application-table ref="myApplicationTable"
-                                @handlerSelApplication="handlerSelApplication"></my-application-table>
+          <my-application-table ref="myApplicationTable" @handlerSelApplication="handlerSelApplication"></my-application-table>
         </el-card>
       </el-col>
       <el-col :span="16">
@@ -78,7 +77,7 @@
       handlerSelApplication (application) {
         this.$refs.myCiJobTable.initData(application)
         this.$refs.myCdJobTable.initData(application)
-        this.setTimer()
+        this.setTimer() // 启动定时器查询任务列表
       }
     }
   }
