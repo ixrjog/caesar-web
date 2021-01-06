@@ -259,6 +259,7 @@
       },
       initData (application) {
         this.application = application
+        this.queryParam.queryName = ''
         this.fetchData()
       },
       handlerAdd () {
