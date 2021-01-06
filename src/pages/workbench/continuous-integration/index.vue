@@ -2,12 +2,12 @@
   <d2-container>
     <h1>{{title}}</h1>
     <el-row :gutter="10">
-      <el-col :span="8">
+      <el-col :span="7">
         <el-card shadow="hover">
           <my-application-table ref="myApplicationTable" @handlerSelApplication="handlerSelApplication"></my-application-table>
         </el-card>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="17">
         <el-card shadow="hover" v-show="buildType">
           <div slot="header" class="clearfix">
             <span>All build jobs</span>

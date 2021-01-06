@@ -27,7 +27,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="仓库" :label-width="labelWidth" required>
+          <el-form-item label="代码仓库" :label-width="labelWidth" required>
             <!--            :disabled="!formStatus.operationType"-->
             <el-select v-model.trim="ciJob.scmMemberId" placeholder="请选择" style="width: 500px"
                        @change="handlerSelScm">
@@ -38,7 +38,7 @@
               <span>允许标签(tag)构建</span>
             </el-checkbox>
           </el-form-item>
-          <el-form-item label="分支" :label-width="labelWidth" required>
+          <el-form-item label="首选分支" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.branch" placeholder="请选择" style="width: 500px"
                        :disabled="branchOptions === '' || branchOptions.length === 0">
               <el-option-group v-for="group in branchOptions" :key="group.label" :label="group.label">
@@ -57,7 +57,7 @@
                          :loading="branchesLoading"><i class="fa fa-git" aria-hidden="true"></i></el-button>
             </el-tooltip>
           </el-form-item>
-          <el-form-item label="环境" :label-width="labelWidth" required>
+          <el-form-item label="任务环境" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.envType" filterable clearable
                        remote reserve-keyword>
               <el-option v-for="item in envTypeOptions" :key="item.envType" :label="item.envName" :value="item.envType">
