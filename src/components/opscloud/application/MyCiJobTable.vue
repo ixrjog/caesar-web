@@ -148,6 +148,10 @@
   import { queryCiJobPage } from '@api/application/ci.job.js'
   import { abortBuildCiJob } from '@api/build/job.build.js'
 
+  const defaultFormStatus = {
+    visible: false
+  }
+
   export default {
     name: 'MyCiJobTable',
     data () {
@@ -179,40 +183,18 @@
           addTitle: '新增部署任务配置',
           updateTitle: '更新部署任务配置'
         },
-        formEngineStatus: {
-          visible: false
-        },
-        formH5BuildStatus: {
-          visible: false
-        },
-        formJavaBuildStatus: {
-          visible: false
-        },
-        formJavaDeployStatus: {
-          visible: false
-        },
-        formIOSBuildStatus: {
-          visible: false
-        },
-        formPythonBuildStatus: {
-          visible: false
-        },
-        formAndroidBuildStatus: {
-          visible: false
-        },
+        formEngineStatus: Object.assign({}, defaultFormStatus),
+        formH5BuildStatus: Object.assign({}, defaultFormStatus),
+        formJavaBuildStatus: Object.assign({}, defaultFormStatus),
+        formJavaDeployStatus: Object.assign({}, defaultFormStatus),
+        formIOSBuildStatus: Object.assign({}, defaultFormStatus),
+        formPythonBuildStatus: Object.assign({}, defaultFormStatus),
+        formAndroidBuildStatus: Object.assign({}, defaultFormStatus),
         // cd Reinforce
-        formAndroidReinforceBuildStatus: {
-          visible: false
-        },
-        formXtermStatus: {
-          visible: false
-        },
-        formBuildOutputStatus: {
-          visible: false
-        },
-        formPermissionStatus: {
-          visible: false
-        },
+        formAndroidReinforceBuildStatus: Object.assign({}, defaultFormStatus),
+        formXtermStatus: Object.assign({}, defaultFormStatus),
+        formBuildOutputStatus: Object.assign({}, defaultFormStatus),
+        formPermissionStatus: Object.assign({}, defaultFormStatus),
         labelWidth: '100px'
       }
     },
