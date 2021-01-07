@@ -153,6 +153,7 @@
   import BuildHostPattern from '@/components/opscloud/build/summary/BuildHostPattern'
   import BuildServers from '@/components/opscloud/build/summary/BuildServers'
 
+
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 

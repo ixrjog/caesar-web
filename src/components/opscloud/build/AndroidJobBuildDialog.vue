@@ -100,12 +100,19 @@
           </el-table-column>
           <el-table-column label="详情">
             <template slot-scope="scope">
+              <!--              作者-->
               <el-row>
                 <build-user :user="scope.row.user" :ago="scope.row.ago"></build-user>
               </el-row>
               <el-divider></el-divider>
+              <!--              任务时间-->
               <el-row>
                 <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
+              </el-row>
+              <el-divider></el-divider>
+              <!--              版本-->
+              <el-row>
+                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc" :buildStatus="scope.row.buildStatus"></build-verison>
               </el-row>
               <el-divider></el-divider>
               <!--              commit-->
@@ -168,6 +175,7 @@
   import BuildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
   import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
+  import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
 
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
@@ -243,7 +251,8 @@
       BuildTimes,
       BuildArtifacts,
       BuildExecutors,
-      BuildChanges
+      BuildChanges,
+      BuildVerison
     },
     filters: {
       getJobBuildStatusType, getJobBuildStatusText
