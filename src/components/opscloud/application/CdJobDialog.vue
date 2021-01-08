@@ -56,9 +56,18 @@
               <el-option v-for="item in jobTplOptions" :key="item.id" :label="item.name" :value="item">
               </el-option>
             </el-select>
+            <el-tooltip class="item" effect="light" content="编辑模版参数" placement="top">
+              <el-button size="mini" type="primary" style="margin-left: 5px" @click="handlerEditParameters">
+                <i class="fa fa-edit" aria-hidden="true"></i></el-button>
+            </el-tooltip>
           </el-form-item>
-          <el-form-item label="模版参数" :label-width="labelWidth" required>
-            <editor v-model="cdJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome" v-if="JSON.stringify(cdJob) != '{}'"
+          <el-form-item label="参数详情" :label-width="labelWidth" v-if="!editing">
+            <parameters-view :parameters="cdJob.parameters"></parameters-view>
+          </el-form-item>
+
+          <el-form-item label="模版参数" :label-width="labelWidth" required v-if="editing">
+            <editor v-model="cdJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome"
+                    v-if="JSON.stringify(cdJob) != '{}'"
                     width="100%" height="400"></editor>
           </el-form-item>
         </el-form>
@@ -74,11 +83,14 @@
 
 <script>
 
+  // Component
+  import ParametersView from '@/components/opscloud/application/param/ParametersView'
+
   import { queryEnvPage } from '@api/env/env.js'
   import { queryJobTplPage } from '@api/jenkins/jenkins.tpl.js'
   import { addCdJob, updateCdJob } from '@api/application/cd.job.js'
 
-  const jobTypeOptions = [ {
+  const jobTypeOptions = [{
     value: 'ANDROID_REINFORCE',
     label: 'AndroidReinforce'
   }, {
@@ -104,13 +116,15 @@
         jobTypeOptions: jobTypeOptions,
         envTypeOptions: [],
         jobTplLoading: false,
-        jobTplOptions: []
+        jobTplOptions: [],
+        editing: false
       }
     },
     name: 'CdJobDialog',
     props: ['formStatus'],
     components: {
-      editor: require('vue2-ace-editor')
+      editor: require('vue2-ace-editor'),
+      ParametersView
     },
     mounted () {
       this.getEnvType()
@@ -145,6 +159,11 @@
         } else {
           this.jobTplOptions.push(this.cdJob.jobTpl)
         }
+        if (!this.formStatus.operationType) {
+          this.editing = false
+        } else {
+          this.editing = true
+        }
       },
       getJobTpl (queryName) {
         this.jobTplLoading = true
@@ -159,6 +178,9 @@
             this.jobTplOptions = res.body.data
             this.jobTplLoading = false
           })
+      },
+      handlerEditParameters () {
+        this.editing = !this.editing
       },
       handlerSelTpl () {
         if (this.cdJob.parameterYaml === '') {

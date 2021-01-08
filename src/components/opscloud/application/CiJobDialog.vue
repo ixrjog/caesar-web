@@ -130,8 +130,17 @@
               <el-option v-for="item in jobTplOptions" :key="item.id" :label="item.name" :value="item">
               </el-option>
             </el-select>
+            <el-tooltip class="item" effect="light" content="编辑模版参数" placement="top">
+              <el-button size="mini" type="primary" style="margin-left: 5px" @click="handlerEditParameters">
+                <i class="fa fa-edit" aria-hidden="true"></i></el-button>
+            </el-tooltip>
           </el-form-item>
-          <el-form-item label="模版参数" :label-width="labelWidth" required>
+
+          <el-form-item label="参数详情" :label-width="labelWidth" v-if="!editing">
+            <parameters-view :parameters="ciJob.parameters"></parameters-view>
+          </el-form-item>
+
+          <el-form-item label="模版参数" :label-width="labelWidth" required v-if="editing">
             <editor v-model="ciJob.parameterYaml" @init="editorInit" lang="yaml" theme="chrome"
                     v-if="JSON.stringify(ciJob) != '{}'"
                     width="100%" height="400"></editor>
@@ -148,6 +157,9 @@
 </template>
 
 <script>
+
+  // Component
+  import ParametersView from '@/components/opscloud/application/param/ParametersView'
 
   import { queryEnvPage } from '@api/env/env.js'
   import { queryApplicationSCMMemberBranch, createApplicationSCMMemberBranch } from '@api/application/application.js'
@@ -226,13 +238,15 @@
         bucketOptions: [],
         bucketLoading: false,
         ciJobOptions: [],
-        cloneCiJob: ''
+        cloneCiJob: '',
+        editing: false
       }
     },
     name: 'CiJobDialog',
     props: ['formStatus'],
     components: {
-      editor: require('vue2-ace-editor')
+      editor: require('vue2-ace-editor'),
+      ParametersView
     },
     mounted () {
       this.getEnvType()
@@ -266,6 +280,9 @@
         this.ciJob = ciJob
         if (!this.formStatus.operationType) {
           this.getBranches()
+          this.editing = false
+        } else {
+          this.editing = true
         }
         if (this.ciJob.dingtalk === null) {
           this.getDingtalk('')
@@ -296,6 +313,9 @@
           .then(res => {
             this.ciJobOptions = res.body.data
           })
+      },
+      handlerEditParameters () {
+        this.editing = !this.editing
       },
       handlerCloneJobTpl () {
         this.jobTplOptions = []
