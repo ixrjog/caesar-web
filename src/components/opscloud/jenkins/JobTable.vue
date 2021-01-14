@@ -10,7 +10,8 @@
         class="fa fa-refresh" aria-hidden="true"></i>SWITCH
       </el-button>
 
-      <el-tag type="success" style="float: right;margin-right: 45px">{{ queryType ? 'Build Jobs':'Deployment Jobs'}}</el-tag>
+      <el-tag type="success" style="float: right;margin-right: 45px">{{ queryType ? 'Build Jobs':'Deployment Jobs'}}
+      </el-tag>
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
@@ -51,7 +52,13 @@
 <script>
   import { mapState, mapActions } from 'vuex'
 
-  import { queryCiJobTplPage, queryCdJobTplPage, upgradeCiJobTplByJobId, upgradeCdJobTplByJobId } from '@api/jenkins/jenkins.tpl.js'
+  import {
+    queryCiJobTplPage,
+    queryCdJobTplPage,
+    upgradeCiJobTplByJobId,
+    upgradeCdJobTplByJobId,
+    upgradeJobTplByTplId
+  } from '@api/jenkins/jenkins.tpl.js'
 
   export default {
     name: 'MyCiJobTable',
@@ -112,7 +119,15 @@
         window.open(jobEngine.jobUrl)
       },
       handlerUpgrade () {
-
+        if (this.jobTpl == null) return
+        upgradeJobTplByTplId(this.jobTpl.id)
+          .then(res => {
+            this.$message({
+              type: 'success',
+              message: '升级成功!'
+            })
+            this.fetchData()
+          })
       },
       handlerRowTplUpgrade (row) {
         if (this.queryType) {

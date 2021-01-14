@@ -84,3 +84,10 @@ export function upgradeCdJobTplByJobId (jobId) {
     method: 'get'
   })
 }
+
+export function upgradeJobTplByTplId (tplId) {
+  return request({
+    url: baseUrl + '/job/upgrade?tplId=' + tplId,
+    method: 'get'
+  })
+}

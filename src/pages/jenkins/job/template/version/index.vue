@@ -4,12 +4,12 @@
     <el-row :gutter="10">
       <el-col :span="10">
         <el-card shadow="never">
-          <jobTplTable ref="jobTplTable" @handlerSelTemplate="handlerSelTemplate"></jobTplTable>
+          <job-tpl-table ref="jobTplTable" @handlerSelTemplate="handlerSelTemplate"></job-tpl-table>
         </el-card>
       </el-col>
       <el-col :span="14">
         <el-card shadow="never">
-          <jobTable ref="jobTable"></jobTable>
+          <job-table ref="jobTable"></job-table>
         </el-card>
       </el-col>
     </el-row>
