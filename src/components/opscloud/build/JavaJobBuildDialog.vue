@@ -99,7 +99,8 @@
               <el-divider></el-divider>
               <!--              版本-->
               <el-row>
-                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc" :buildStatus="scope.row.buildStatus"></build-verison>
+                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                               :buildStatus="scope.row.buildStatus"></build-verison>
               </el-row>
               <el-divider></el-divider>
               <!--              commit-->
@@ -126,10 +127,16 @@
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
               <el-button-group style="float: right; padding: 3px 0">
-                <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerSelRow(scope.row)"></el-button>
-                <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)">
-                </el-button>
+                <el-tooltip class="item" effect="light" content="回滚当前任务版本" placement="top"
+                            v-if="scope.row.supportRollback && scope.row.finalized && scope.row.buildStatus === 'SUCCESS'">
+                  <el-button type="primary" icon="fa fa-undo"
+                             :loading="rollbacking"
+                             @click="handlerRollback(scope.row)"></el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="light" content="打开构建任务详情" placement="top">
+                  <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)">
+                  </el-button>
+                </el-tooltip>
               </el-button-group>
             </template>
           </el-table-column>
@@ -202,6 +209,7 @@
           total: 0
         },
         building: false,
+        rollbacking: false,
         commitLoading: false,
         commit: '',
         timer: null // 查询定时器
@@ -251,9 +259,9 @@
         this.setTimer()
         this.fetchData()
         if (ciJob.parameters.isSonar !== null) {
-          if (ciJob.parameters.isSonar === 'true' ){
+          if (ciJob.parameters.isSonar === 'true') {
             this.buildParam.isSonar = true
-          }else{
+          } else {
             this.buildParam.isSonar = false
           }
         }
@@ -281,6 +289,40 @@
           .then(res => {
             this.commit = res.body
             this.commitLoading = false
+          })
+      },
+      handlerRollback (row) {
+        // 回滚操作
+        this.$confirm('确定回滚当前版本?')
+          .then(_ => {
+            done()
+            this.rollbacking = true
+            let paramMap = {
+              rollbackJobBuildId: row.id
+            }
+            let requestBody = {
+              'ciJobId': this.ciJob.id,
+              'branch': this.ciJob.branch,
+              'versionName': '',
+              'versionDesc': '',
+              'isSilence': this.buildParam.isSilence,
+              'isRollback': true,
+              'paramMap': paramMap
+            }
+            buildCiJob(requestBody)
+              .then(res => {
+                if (res.success) {
+                  this.$message({
+                    type: 'success',
+                    message: '回滚任务执行中!'
+                  })
+                } else {
+                  this.$message.error(res.msg)
+                }
+                this.rollbacking = false
+              })
+          })
+          .catch(_ => {
           })
       },
       handlerRowOpenBuildUrl (row) {

@@ -46,6 +46,19 @@
           <el-form-item label="模版版本" :label-width="labelWidth">
             <el-input v-model="jobTpl.tplVersion" disabled></el-input>
           </el-form-item>
+          <el-form-item label="发布回滚" :label-width="labelWidth" required>
+            <el-checkbox v-model="jobTpl.supportRollback">模版支持回滚操作</el-checkbox>
+          </el-form-item>
+          <el-form-item label="回滚类型" :label-width="labelWidth" required v-show="jobTpl.supportRollback">
+            <el-select v-model="jobTpl.rollbackType" clearable>
+              <el-option
+                v-for="item in rollbackTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="描述" :label-width="labelWidth">
             <el-input v-model="jobTpl.comment" placeholder="请输入内容"></el-input>
           </el-form-item>
@@ -108,6 +121,16 @@
     }
   ]
 
+  const rollbackTypeOptions = [
+    {
+      value: 0,
+      label: 'Commit回滚'
+    }, {
+      value: 1,
+      label: '构件回滚'
+    }
+  ]
+
   export default {
     data () {
       return {
@@ -118,6 +141,7 @@
           stripe: true
         },
         tplTypeOptions: tplTypeOptions,
+        rollbackTypeOptions: rollbackTypeOptions,
         instanceLoading: false,
         instanceOptions: [],
         tplOptions: [],
