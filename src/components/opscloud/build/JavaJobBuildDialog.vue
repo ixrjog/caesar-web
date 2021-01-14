@@ -295,7 +295,6 @@
         // 回滚操作
         this.$confirm('确定回滚当前版本?')
           .then(_ => {
-            done()
             this.rollbacking = true
             let paramMap = {
               rollbackJobBuildId: row.id
@@ -321,6 +320,7 @@
                 }
                 this.rollbacking = false
               })
+            done()
           })
           .catch(_ => {
           })
