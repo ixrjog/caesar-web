@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible.sync="formStatus.visible" width="50%" @before-close="closeDialog">
+  <el-dialog :title="title" :visible.sync="formStatus.visible" width="60%" @before-close="closeDialog">
     <el-tabs v-model="activeName">
       <el-tab-pane label="执行构建" name="build">
         <!--        <el-divider></el-divider>-->
@@ -48,7 +48,7 @@
             <el-input v-model="buildParam.versionDesc"></el-input>
           </el-form-item>
           <el-form-item label="通知静默" :label-width="labelWidth">
-            <el-checkbox v-model="buildParam.isSilence">不发送本次构建钉钉通知</el-checkbox>
+            <el-checkbox v-model="buildParam.isSilence">本次构建不发送钉钉通知</el-checkbox>
           </el-form-item>
         </el-form>
         <div style="width:100%;text-align:center">
@@ -99,7 +99,7 @@
               <el-divider></el-divider>
               <!--              版本-->
               <el-row>
-                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc" :isRollback="scope.row.isRollback"
                                :buildStatus="scope.row.buildStatus"></build-verison>
               </el-row>
               <el-divider></el-divider>

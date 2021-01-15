@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible.sync="formStatus.visible" width="50%" @before-close="closeDialog">
+  <el-dialog :title="title" :visible.sync="formStatus.visible" width="60%" @before-close="closeDialog">
     <el-tabs v-model="activeName">
       <el-tab-pane label="执行部署" name="deploy">
         <!--        <el-divider></el-divider>-->
