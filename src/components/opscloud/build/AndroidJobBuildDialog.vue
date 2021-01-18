@@ -107,12 +107,14 @@
               <el-divider></el-divider>
               <!--              任务时间-->
               <el-row>
-                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
+                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
+                             :endTime="scope.row.endTime"></build-times>
               </el-row>
               <el-divider></el-divider>
               <!--              版本-->
               <el-row>
-                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc" :buildStatus="scope.row.buildStatus"></build-verison>
+                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                               :buildStatus="scope.row.buildStatus"></build-verison>
               </el-row>
               <el-divider></el-divider>
               <!--              commit-->
@@ -138,14 +140,7 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
-              <el-button-group style="float: right; padding: 3px 0">
-                <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerRowAbortBuild(scope.row)"></el-button>
-                <el-button type="primary" icon="el-icon-position"
-                           @click="handlerRowOpenBuildUrl(scope.row)"></el-button>
-                <el-button type="primary" icon="fa fa-download" @click="handlerRowOpenBuildDetails(scope.row)">
-                </el-button>
-              </el-button-group>
+              <build-operation :build="scope.row" :option="operationOption"></build-operation>
             </template>
           </el-table-column>
         </el-table>
@@ -165,8 +160,6 @@
 
 <script>
 
-  import util from '@/libs/util.js'
-
   // Component
   import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
   import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
@@ -177,11 +170,16 @@
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
   import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
 
+  import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
+
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId, abortBuildCiJob } from '@api/build/job.build.js'
-  import { queryApplicationSCMMemberBranch, queryApplicationSCMMemberBranchCommit } from '@api/application/application.js'
+  import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
+  import {
+    queryApplicationSCMMemberBranch,
+    queryApplicationSCMMemberBranchCommit
+  } from '@api/application/application.js'
 
   const buildTypeOptions = [
     {
@@ -239,6 +237,10 @@
         building: false,
         commitLoading: false,
         commit: '',
+        operationOption: {
+          buildType: 'ANDROID_BUILD',
+          showBuildDetails: true
+        },
         timer: null // 查询定时器
       }
     },
@@ -252,7 +254,8 @@
       BuildArtifacts,
       BuildExecutors,
       BuildChanges,
-      BuildVerison
+      BuildVerison,
+      BuildOperation
     },
     filters: {
       getJobBuildStatusType, getJobBuildStatusText
@@ -312,28 +315,6 @@
             this.commit = res.body
             this.commitLoading = false
           })
-      },
-      handlerRowAbortBuild (row) {
-        abortBuildCiJob(row.id)
-          .then(res => {
-            if (res.success) {
-              this.$message({
-                message: '执行成功（请等待）!',
-                type: 'success'
-              })
-            } else {
-              this.$message.error(res.msg)
-            }
-          })
-      },
-      handlerRowOpenBuildUrl (row) {
-        window.open(row.jobBuildUrl)
-      },
-      handlerRowOpenBuildDetails (row) {
-        let host = window.location.host
-        let httpProtocol = window.location.href.split('://')[0]
-        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android?buildId=' + row.id
-        util.open(buildDetailsUrl)
       },
       handlerBuild () {
         this.building = true

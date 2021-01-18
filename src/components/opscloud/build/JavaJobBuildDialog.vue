@@ -10,26 +10,14 @@
           <el-form-item label="仓库" :label-width="labelWidth">
             <!--            :disabled="!formStatus.operationType"-->
             <el-select v-model.trim="ciJob.scmMemberId" style="width: 500px" disabled>
-              <el-option
-                v-for="item in application.scmMembers"
-                :key="item.id"
-                :label="item.scmSshUrl"
-                :value="item.id">
+              <el-option v-for="item in application.scmMembers" :key="item.id" :label="item.scmSshUrl" :value="item.id">
               </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="分支" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.branch" filterable style="width: 500px">
-              <el-option-group
-                v-for="group in branchOptions"
-                :key="group.label"
-                :label="group.label">
-                <el-option
-                  v-for="item in group.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
+              <el-option-group v-for="group in branchOptions" :key="group.label" :label="group.label">
+                <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
               </el-option-group>
             </el-select>
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
@@ -99,7 +87,8 @@
               <el-divider></el-divider>
               <!--              版本-->
               <el-row>
-                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc" :isRollback="scope.row.isRollback"
+                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                               :isRollback="scope.row.isRollback"
                                :buildStatus="scope.row.buildStatus"></build-verison>
               </el-row>
               <el-divider></el-divider>
@@ -126,18 +115,7 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
-              <el-button-group style="float: right; padding: 3px 0">
-                <el-tooltip class="item" effect="light" content="回滚当前任务版本" placement="top"
-                            v-if="scope.row.supportRollback && scope.row.finalized && scope.row.buildStatus === 'SUCCESS'">
-                  <el-button type="primary" icon="fa fa-undo"
-                             :loading="rollbacking"
-                             @click="handlerRollback(scope.row)"></el-button>
-                </el-tooltip>
-                <el-tooltip class="item" effect="light" content="打开构建任务详情" placement="top">
-                  <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)">
-                  </el-button>
-                </el-tooltip>
-              </el-button-group>
+              <build-operation :build="scope.row"></build-operation>
             </template>
           </el-table-column>
         </el-table>
@@ -157,8 +135,6 @@
 
 <script>
 
-  import util from '@/libs/util.js'
-
   // Component
   import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
   import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
@@ -169,10 +145,12 @@
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
   import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
 
+  import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
+
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId } from '@api/build/job.build.js'
+  import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
   import {
     queryApplicationSCMMemberBranch,
     queryApplicationSCMMemberBranchCommit
@@ -209,7 +187,6 @@
           total: 0
         },
         building: false,
-        rollbacking: false,
         commitLoading: false,
         commit: '',
         timer: null // 查询定时器
@@ -225,7 +202,8 @@
       BuildArtifacts,
       BuildExecutors,
       BuildChanges,
-      BuildVerison
+      BuildVerison,
+      BuildOperation
     },
     filters: {
       getJobBuildStatusType, getJobBuildStatusText
@@ -290,43 +268,6 @@
             this.commit = res.body
             this.commitLoading = false
           })
-      },
-      handlerRollback (row) {
-        // 回滚操作
-        this.$confirm('确定回滚当前版本?')
-          .then(_ => {
-            this.rollbacking = true
-            let paramMap = {
-              rollbackJobBuildId: row.id
-            }
-            let requestBody = {
-              'ciJobId': this.ciJob.id,
-              'branch': this.ciJob.branch,
-              'versionName': '',
-              'versionDesc': '',
-              'isSilence': this.buildParam.isSilence,
-              'isRollback': true,
-              'paramMap': paramMap
-            }
-            buildCiJob(requestBody)
-              .then(res => {
-                if (res.success) {
-                  this.$message({
-                    type: 'success',
-                    message: '回滚任务执行中!'
-                  })
-                } else {
-                  this.$message.error(res.msg)
-                }
-                this.rollbacking = false
-              })
-            done()
-          })
-          .catch(_ => {
-          })
-      },
-      handlerRowOpenBuildUrl (row) {
-        util.open(row.jobBuildUrl)
       },
       handlerBuild () {
         this.building = true

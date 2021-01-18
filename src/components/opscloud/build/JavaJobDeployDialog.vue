@@ -116,14 +116,7 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
-              <el-button-group style="float: right; padding: 3px 0">
-                <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerSelRow(scope.row)"></el-button>
-                <el-button type="primary" icon="el-icon-position"
-                           @click="handlerRowOpenBuildUrl(scope.row)"></el-button>
-                <el-button type="primary" icon="fa fa-download" @click="handlerRowOpenBuildDetails(scope.row)">
-                </el-button>
-              </el-button-group>
+              <build-operation :build="scope.row"></build-operation>
             </template>
           </el-table-column>
         </el-table>
@@ -143,7 +136,6 @@
 
 <script>
 
-  import util from '@/libs/util.js'
   // Component
   import BuildUser from '@/components/opscloud/build/summary/BuildUser'
   import BuildTimes from '@/components/opscloud/build/summary/BuildTimes'
@@ -153,6 +145,7 @@
   import BuildHostPattern from '@/components/opscloud/build/summary/BuildHostPattern'
   import BuildServers from '@/components/opscloud/build/summary/BuildServers'
 
+  import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
 
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
@@ -210,7 +203,8 @@
       BuildExecutors,
       BuildChanges,
       BuildHostPattern,
-      BuildServers
+      BuildServers,
+      BuildOperation
     },
     filters: {
       getJobBuildStatusType, getJobBuildStatusText
@@ -286,15 +280,6 @@
             break
           }
         }
-      },
-      handlerRowOpenBuildUrl (row) {
-        util.open(row.jobBuildUrl)
-      },
-      handlerRowOpenBuildDetails (row) {
-        let host = window.location.host
-        let httpProtocol = window.location.href.split('://')[0]
-        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/android/reinforce?buildId=' + row.id
-        util.open(buildDetailsUrl)
       },
       handlerBuild () {
         if (this.buildId === '') {

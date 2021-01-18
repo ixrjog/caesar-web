@@ -128,14 +128,7 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
-              <el-button-group style="float: right; padding: 3px 0">
-                <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerRowAbortBuild(scope.row)"></el-button>
-                <el-button type="primary" icon="el-icon-position"
-                           @click="handlerRowOpenBuildUrl(scope.row)"></el-button>
-                <el-button type="primary" icon="fa fa-download" @click="handlerRowOpenBuildDetails(scope.row)">
-                </el-button>
-              </el-button-group>
+              <build-operation :build="scope.row" :option="operationOption"></build-operation>
             </template>
           </el-table-column>
         </el-table>
@@ -156,8 +149,6 @@
 
 <script>
 
-  import util from '@/libs/util.js'
-
   // Component
   import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
   import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
@@ -170,7 +161,7 @@
 
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId, abortBuildCiJob } from '@api/build/job.build.js'
+  import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
   import {
     queryApplicationSCMMemberBranch,
     queryApplicationSCMMemberBranchCommit
@@ -216,6 +207,10 @@
         building: false,
         commitLoading: false,
         commit: '',
+        operationOption: {
+          buildType: 'IOS_BUILD',
+          showBuildDetails: true
+        },
         timer: null // 查询定时器
       }
     },
@@ -287,29 +282,6 @@
             this.commit = res.body
             this.commitLoading = false
           })
-      },
-      handlerRowAbortBuild (row) {
-        abortBuildCiJob(row.id)
-          .then(res => {
-            if (res.success) {
-              this.$message({
-                message: '执行成功（请等待）!',
-                type: 'success'
-              })
-            } else {
-              this.$message.error(res.msg)
-            }
-          })
-      },
-      handlerRowOpenBuildUrl (row) {
-        window.open(row.jobBuildUrl)
-      },
-      handlerRowOpenBuildDetails (row) {
-        let host = window.location.host
-        let httpProtocol = window.location.href.split('://')[0]
-        let buildDetailsUrl = httpProtocol + '://' + host + '/#/job/build/ios?buildId=' + row.id
-        util.open(buildDetailsUrl)
-        //window.open(buildDetailsUrl )
       },
       handlerBuild () {
         this.building = true

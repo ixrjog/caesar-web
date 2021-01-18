@@ -81,14 +81,16 @@
               </el-row>
               <el-divider></el-divider>
               <el-row>
-                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime" :endTime="scope.row.endTime"></build-times>
+                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
+                             :endTime="scope.row.endTime"></build-times>
               </el-row>
               <el-divider></el-divider>
               <!--              版本-->
               <el-row>
-                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc" :buildStatus="scope.row.buildStatus"></build-verison>
+                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                               :isRollback="scope.row.isRollback"
+                               :buildStatus="scope.row.buildStatus"></build-verison>
               </el-row>
-              <el-divider></el-divider>
               <!--              commit-->
               <el-row>
                 <build-commit :commit="scope.row.commitDetails"></build-commit>
@@ -112,12 +114,7 @@
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
-              <el-button-group style="float: right; padding: 3px 0">
-                <el-button type="primary" icon="fa fa-stop" v-if="!scope.row.finalized"
-                           @click="handlerRowAbortBuild(scope.row)"></el-button>
-                <el-button type="primary" icon="el-icon-position" @click="handlerRowOpenBuildUrl(scope.row)">
-                </el-button>
-              </el-button-group>
+              <build-operation :build="scope.row"></build-operation>
             </template>
           </el-table-column>
         </el-table>
@@ -139,8 +136,6 @@
 
 <script>
 
-  import util from '@/libs/util.js'
-
   // Component
   import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
   import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
@@ -150,15 +145,16 @@
   import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
   import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
+
+  import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
   // Filters
   import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
 
-  import { queryCiJobBuildPage, buildCiJob, queryCiJobBuildByBuildId, abortBuildCiJob } from '@api/build/job.build.js'
+  import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
   import {
     queryApplicationSCMMemberBranch,
     queryApplicationSCMMemberBranchCommit
   } from '@api/application/application.js'
-  // import { addCiJob, updateCiJob } from '@api/application/ci.job.js'
 
   export default {
     data () {
@@ -186,6 +182,9 @@
         building: false,
         commitLoading: false,
         commit: '',
+        operation: {
+          showOpen: true
+        },
         timer: null // 查询定时器
       }
     },
@@ -199,7 +198,8 @@
       BuildArtifacts,
       BuildExecutors,
       BuildChanges,
-      BuildVerison
+      BuildVerison,
+      BuildOperation
     },
     filters: {
       getJobBuildStatusType, getJobBuildStatusText
@@ -256,23 +256,6 @@
             this.commit = res.body
             this.commitLoading = false
           })
-      },
-      handlerRowAbortBuild (row) {
-        abortBuildCiJob(row.id)
-          .then(res => {
-            if (res.success) {
-              this.$message({
-                message: '执行成功（请等待）!',
-                type: 'success'
-              })
-            } else {
-              this.$message.error(res.msg)
-            }
-          })
-      },
-      handlerRowOpenBuildUrl (row) {
-        util.open(row.jobBuildUrl)
-        //window.open(row.jobBuildUrl)
       },
       handlerBuild () {
         this.building = true
