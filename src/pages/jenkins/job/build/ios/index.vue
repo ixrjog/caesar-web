@@ -15,34 +15,20 @@
             <div style="color: #286090; font-size:1em;">{{build.jobName}}</div>
             <div style="color: #286090; font-size:2em;">{{build.versionName}}</div>
           </div>
-<!--          <div style="width:100%;text-align:center; margin-top: 50px" v-show="false">-->
-<!--            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">点击安装</a>-->
-<!--          </div>-->
+          <!--          <div style="width:100%;text-align:center; margin-top: 50px" v-show="false">-->
+          <!--            <a title="download" style="color: #286090; font-size:2em;" :href="downloadHref">点击安装</a>-->
+          <!--          </div>-->
         </el-col>
       </el-card>
       <el-card shadow="never" style="margin-top: 10px">
-        <el-row>
-          <build-user :user="build.user" :ago="build.ago"></build-user>
-        </el-row>
-        <el-divider></el-divider>
-        <el-row>
-          <build-times :buildTime="build.buildTime" :startTime="build.startTime" :endTime="build.endTime"></build-times>
-        </el-row>
-        <el-divider></el-divider>
+        <build-user :user="build.user" :ago="build.ago"></build-user>
+        <build-times :buildTime="build.buildTime" :startTime="build.startTime" :endTime="build.endTime"></build-times>
         <!--              变更详情-->
-        <el-row>
-          <build-changes :changes="build.changes"></build-changes>
-        </el-row>
-        <el-divider></el-divider>
+        <build-changes :changes="build.changes"></build-changes>
         <!--              产出物详情-->
-        <el-row>
-          <build-artifacts :artifacts="build.artifacts"></build-artifacts>
-        </el-row>
-        <el-divider></el-divider>
+        <build-artifacts :artifacts="build.artifacts"></build-artifacts>
         <!--              工作节点-->
-        <el-row>
-          <build-executors :executors="build.executors"></build-executors>
-        </el-row>
+        <build-executors :executors="build.executors"></build-executors>
       </el-card>
     </el-col>
   </div>

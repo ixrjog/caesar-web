@@ -33,10 +33,11 @@
     name: 'BuildOperation',
     data () {
       return {
+        ciJob: {},
         rollbacking: false
       }
     },
-    props: ['build', 'option'],
+    props: ['build','job', 'option'],
     filters: {},
     mounted () {
     },
@@ -50,11 +51,11 @@
               rollbackJobBuildId: this.build.id
             }
             let requestBody = {
-              'ciJobId': this.ciJob.id,
-              'branch': this.ciJob.branch,
+              'ciJobId': this.job.id,
+              'branch': '',
               'versionName': '',
               'versionDesc': '',
-              'isSilence': this.buildParam.isSilence,
+              'isSilence': false,
               'isRollback': true,
               'paramMap': paramMap
             }
@@ -94,13 +95,13 @@
       handlerOpenBuildDetails () {
         let host = window.location.host
         let httpProtocol = window.location.href.split('://')[0]
-        switch(this.option.buildType) {
+        switch (this.option.buildType) {
           case 'ANDROID_BUILD':
             util.open(httpProtocol + '://' + host + '/#/job/build/android?buildId=' + this.build.id)
-            break;
+            break
           case 'IOS_BUILD':
             util.open(httpProtocol + '://' + host + '/#/job/build/ios?buildId=' + this.build.id)
-            break;
+            break
           default:
         }
       }

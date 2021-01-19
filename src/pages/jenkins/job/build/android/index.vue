@@ -21,28 +21,14 @@
         </el-col>
       </el-card>
       <el-card shadow="never" style="margin-top: 10px">
-        <el-row>
-          <build-user :user="build.user" :ago="build.ago"></build-user>
-        </el-row>
-        <el-divider></el-divider>
-        <el-row>
-          <build-times :buildTime="build.buildTime" :startTime="build.startTime" :endTime="build.endTime"></build-times>
-        </el-row>
-        <el-divider></el-divider>
+        <build-user :user="build.user" :ago="build.ago"></build-user>
+        <build-times :buildTime="build.buildTime" :startTime="build.startTime" :endTime="build.endTime"></build-times>
         <!--              变更详情-->
-        <el-row>
-          <build-changes :changes="build.changes"></build-changes>
-        </el-row>
-        <el-divider></el-divider>
+        <build-changes :changes="build.changes"></build-changes>
         <!--              产出物详情-->
-        <el-row>
-          <build-artifacts :artifacts="build.artifacts"></build-artifacts>
-        </el-row>
-        <el-divider></el-divider>
+        <build-artifacts :artifacts="build.artifacts"></build-artifacts>
         <!--              工作节点-->
-        <el-row>
-          <build-executors :executors="build.executors"></build-executors>
-        </el-row>
+        <build-executors :executors="build.executors"></build-executors>
       </el-card>
     </el-col>
   </div>

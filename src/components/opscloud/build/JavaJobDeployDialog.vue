@@ -67,51 +67,29 @@
           </el-table-column>
           <el-table-column prop="jobBuildNumber" label="构建编号" width="100px">
           </el-table-column>
-          <el-table-column prop="branch" label="构建分支" width="150px">
+          <el-table-column prop="branch" label="构建分支" width="150px" v-if="false">
             <template slot-scope="scope">
-              <i class="fa fa-code-fork" style="margin-right: 2px"></i>
-              <b>{{scope.row.branch}}</b>
+              <build-branch :branch="scope.row.branch"></build-branch>
             </template>
           </el-table-column>
           <el-table-column label="状态" width="100px">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
-                <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
-                  class="el-icon-loading" v-show="!scope.row.finalized"></i>{{scope.row.buildStatus|
-                  getJobBuildStatusText}}
-                </el-tag>
-              </el-tooltip>
+              <build-status :build="scope.row"></build-status>
             </template>
           </el-table-column>
           <el-table-column label="详情">
             <template slot-scope="scope">
-              <el-row>
-                <build-user :user="scope.row.user" :ago="scope.row.ago"></build-user>
-              </el-row>
-              <el-divider></el-divider>
-              <el-row>
-                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
-                             :endTime="scope.row.endTime"></build-times>
-              </el-row>
-              <el-divider></el-divider>
+              <build-user :user="scope.row.user" :ago="scope.row.ago"></build-user>
+              <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
+                           :endTime="scope.row.endTime"></build-times>
               <!--              主机分组-->
-              <el-row>
-                <build-host-pattern :hostPattern="scope.row.hostPattern"></build-host-pattern>
-              </el-row>
-              <el-divider></el-divider>
+              <build-host-pattern :hostPattern="scope.row.hostPattern"></build-host-pattern>
               <!--              部署服务器-->
-              <el-row>
-                <build-servers :servers="scope.row.servers"></build-servers>
-              </el-row>
+              <build-servers :servers="scope.row.servers"></build-servers>
               <!--              产出物详情-->
-              <el-row v-if="false">
-                <build-artifacts :artifacts="scope.row.artifacts"></build-artifacts>
-              </el-row>
-              <el-divider></el-divider>
+              <build-artifacts :artifacts="scope.row.artifacts"></build-artifacts>
               <!--              工作节点-->
-              <el-row>
-                <build-executors :executors="scope.row.executors"></build-executors>
-              </el-row>
+              <build-executors :executors="scope.row.executors"></build-executors>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
@@ -144,11 +122,9 @@
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
   import BuildHostPattern from '@/components/opscloud/build/summary/BuildHostPattern'
   import BuildServers from '@/components/opscloud/build/summary/BuildServers'
-
+  import BuildStatus from '@/components/opscloud/build/summary/BuildStatus'
   import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
-
-  // Filters
-  import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
+  import BuildBranch from '@/components/opscloud/build/summary/BuildBranch'
 
   import {
     queryCdJobBuildPage,
@@ -204,10 +180,11 @@
       BuildChanges,
       BuildHostPattern,
       BuildServers,
-      BuildOperation
+      BuildOperation,
+      BuildStatus,
+      BuildBranch
     },
     filters: {
-      getJobBuildStatusType, getJobBuildStatusText
     },
     computed: {},
     mounted () {

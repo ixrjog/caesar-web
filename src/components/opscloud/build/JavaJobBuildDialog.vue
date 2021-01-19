@@ -17,7 +17,8 @@
           <el-form-item label="分支" :label-width="labelWidth" required>
             <el-select v-model.trim="ciJob.branch" filterable style="width: 500px">
               <el-option-group v-for="group in branchOptions" :key="group.label" :label="group.label">
-                <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                <el-option v-for="item in group.options" :key="item.value" :label="item.label"
+                           :value="item.value"></el-option>
               </el-option-group>
             </el-select>
             <el-button size="mini" type="primary" style="margin-left: 5px" @click="getBranches"
@@ -60,62 +61,36 @@
           </el-table-column>
           <el-table-column prop="branch" label="构建分支" width="150px">
             <template slot-scope="scope">
-              <i class="fa fa-code-fork" style="margin-right: 2px"></i>
-              <b>{{scope.row.branch}}</b>
+              <build-branch :branch="scope.row.branch"></build-branch>
             </template>
           </el-table-column>
           <el-table-column label="状态" width="100px">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
-                <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
-                  class="el-icon-loading" v-show="!scope.row.finalized"></i>{{scope.row.buildStatus|
-                  getJobBuildStatusText}}
-                </el-tag>
-              </el-tooltip>
+              <build-status :build="scope.row"></build-status>
             </template>
           </el-table-column>
           <el-table-column label="详情">
             <template slot-scope="scope">
-              <el-row>
-                <build-user :user="scope.row.user" :ago="scope.row.ago"></build-user>
-              </el-row>
-              <el-divider></el-divider>
-              <el-row>
-                <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
-                             :endTime="scope.row.endTime"></build-times>
-              </el-row>
-              <el-divider></el-divider>
+              <build-user :user="scope.row.user" :ago="scope.row.ago"></build-user>
+              <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
+                           :endTime="scope.row.endTime"></build-times>
               <!--              版本-->
-              <el-row>
-                <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
-                               :isRollback="scope.row.isRollback"
-                               :buildStatus="scope.row.buildStatus"></build-verison>
-              </el-row>
-              <el-divider></el-divider>
+              <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                             :isRollback="scope.row.isRollback"
+                             :buildStatus="scope.row.buildStatus"></build-verison>
               <!--              commit-->
-              <el-row>
-                <build-commit :commit="scope.row.commitDetails"></build-commit>
-              </el-row>
-              <el-divider></el-divider>
+              <build-commit :commit="scope.row.commitDetails"></build-commit>
               <!--              变更详情-->
-              <el-row>
-                <build-changes :changes="scope.row.changes"></build-changes>
-              </el-row>
-              <el-divider></el-divider>
+              <build-changes :changes="scope.row.changes"></build-changes>
               <!--              产出物详情-->
-              <el-row>
-                <build-artifacts :artifacts="scope.row.artifacts"></build-artifacts>
-              </el-row>
-              <el-divider></el-divider>
+              <build-artifacts :artifacts="scope.row.artifacts"></build-artifacts>
               <!--              工作节点-->
-              <el-row>
-                <build-executors :executors="scope.row.executors"></build-executors>
-              </el-row>
+              <build-executors :executors="scope.row.executors"></build-executors>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="180">
             <template slot-scope="scope">
-              <build-operation :build="scope.row"></build-operation>
+              <build-operation :build="scope.row" :job="ciJob"></build-operation>
             </template>
           </el-table-column>
         </el-table>
@@ -144,11 +119,9 @@
   import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
   import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
-
+  import BuildStatus from '@/components/opscloud/build/summary/BuildStatus'
   import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
-
-  // Filters
-  import { getJobBuildStatusType, getJobBuildStatusText } from '@/filters/jenkins.js'
+  import BuildBranch from '@/components/opscloud/build/summary/BuildBranch'
 
   import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
   import {
@@ -203,10 +176,11 @@
       BuildExecutors,
       BuildChanges,
       BuildVerison,
-      BuildOperation
+      BuildOperation,
+      BuildStatus,
+      BuildBranch
     },
     filters: {
-      getJobBuildStatusType, getJobBuildStatusText
     },
     computed: {},
     mounted () {
