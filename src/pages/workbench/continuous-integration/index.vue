@@ -4,10 +4,12 @@
     <el-row :gutter="10">
       <el-col :span="7">
         <el-card shadow="hover">
-          <my-application-table ref="myApplicationTable" @handlerSelApplication="handlerSelApplication"></my-application-table>
+          <my-application-table ref="myApplicationTable"
+                                @handlerSelApplication="handlerSelApplication"></my-application-table>
         </el-card>
       </el-col>
       <el-col :span="17">
+        <announcement-carousel></announcement-carousel>
         <el-card shadow="hover" v-show="buildType">
           <div slot="header" class="clearfix">
             <span>All build jobs</span>
@@ -38,6 +40,7 @@
   import JenkinsEngineStatus from '@/components/opscloud/jenkins/JenkinsEngineStatus.vue'
   import MyCiJobTable from '@/components/opscloud/application/MyCiJobTable.vue'
   import MyCdJobTable from '@/components/opscloud/application/MyCdJobTable.vue'
+  import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
 
   export default {
     data () {
@@ -52,7 +55,8 @@
       MyApplicationTable,
       JenkinsEngineStatus,
       MyCiJobTable,
-      MyCdJobTable
+      MyCdJobTable,
+      AnnouncementCarousel
     },
     beforeDestroy () {
       clearInterval(this.timer) // 销毁定时器
