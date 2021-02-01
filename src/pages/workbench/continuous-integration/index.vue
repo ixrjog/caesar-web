@@ -10,6 +10,7 @@
       </el-col>
       <el-col :span="17">
         <announcement-carousel></announcement-carousel>
+        <block-platform-status></block-platform-status>
         <el-card shadow="hover" v-show="buildType">
           <div slot="header" class="clearfix">
             <span>All build jobs</span>
@@ -41,6 +42,7 @@
   import MyCiJobTable from '@/components/opscloud/application/MyCiJobTable.vue'
   import MyCdJobTable from '@/components/opscloud/application/MyCdJobTable.vue'
   import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
+  import BlockPlatformStatus from '@/components/opscloud/platform/BlockPlatformStatus.vue'
 
   export default {
     data () {
@@ -56,7 +58,8 @@
       JenkinsEngineStatus,
       MyCiJobTable,
       MyCdJobTable,
-      AnnouncementCarousel
+      AnnouncementCarousel,
+      BlockPlatformStatus
     },
     beforeDestroy () {
       clearInterval(this.timer) // 销毁定时器
