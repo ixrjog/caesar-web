@@ -90,7 +90,7 @@
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item icon="fa fa-plane"><span @click="handlerRowEngineEdit(scope.row)">工作引擎</span>
               </el-dropdown-item>
-              <el-dropdown-item icon="el-icon-edit"><span @click="handlerRowDeploymentEdit(scope.row)">部署配置</span>
+              <el-dropdown-item icon="el-icon-edit"><span @click="handlerRowCreateDeployment(scope.row)">新建部署</span>
               </el-dropdown-item>
               <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span>
               </el-dropdown-item>
@@ -316,28 +316,23 @@
             this.$message.error('部署任务类型配置错误!')
         }
       },
-      handlerRowDeploymentEdit (row) {
-        if (row.cdJob === null) {
-          let cdJob = {
-            id: '',
-            ciJobId: row.id,
-            applicationId: row.applicationId,
-            jobTpl: null,
-            name: '',
-            jobKey: '',
-            envType: 0,
-            jotTplId: '',
-            jobType: '',
-            parameterYaml: '',
-            jobBuildNumber: 0,
-            comment: ''
-          }
-          this.formCdJobStatus.operationType = true
-          this.$refs.cdJobDialog.initData(this.application, cdJob)
-        } else {
-          this.formCdJobStatus.operationType = false
-          this.$refs.cdJobDialog.initData(this.application, Object.assign({}, row.cdJob))
+      handlerRowCreateDeployment (row) {
+        let cdJob = {
+          id: '',
+          ciJobId: row.id,
+          applicationId: row.applicationId,
+          jobTpl: null,
+          name: '',
+          jobKey: '',
+          envType: 0,
+          jotTplId: '',
+          jobType: '',
+          parameterYaml: '',
+          jobBuildNumber: 0,
+          comment: ''
         }
+        this.formCdJobStatus.operationType = true
+        this.$refs.cdJobDialog.initData(this.application, cdJob)
         this.formCdJobStatus.visible = true
       },
       handlerRowPermissionEdit (row) {
