@@ -50,7 +50,7 @@
     </el-table>
 
     <el-pagination background @current-change="paginationCurrentChange"
-                   @size-change="handleSizeChange" :pager-count="4"
+                   @size-change="handleSizeChange" :pager-count="5"
                    layout="prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
                    :page-size="pagination.pageSize">
     </el-pagination>
