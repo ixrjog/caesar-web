@@ -3,6 +3,7 @@
     <el-row style="margin-bottom: 5px" :gutter="24">
       <el-input v-model="application.name" disabled placeholder="应用名称" class="input"></el-input>
       <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询" class="input"></el-input>
+      <el-checkbox v-model="queryParam.showHide" @click="fetchData" class="input">显示隐藏任务</el-checkbox>
       <el-button @click="fetchData" style="margin-left: 5px" :disabled="application === ''">查询</el-button>
       <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
     </el-row>
@@ -168,7 +169,7 @@
           total: 0
         },
         queryParam: {
-          instanceId: '',
+          showHide: false,
           queryName: ''
         },
         formCiJobStatus: {
@@ -383,6 +384,7 @@
         let requestBody = {
           'applicationId': this.application.id,
           'queryName': this.queryParam.queryName,
+          'showHide': this.queryParam.showHide,
           'extend': 1,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
