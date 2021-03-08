@@ -7,6 +7,15 @@
       <el-row style="margin-bottom: 5px" :gutter="24">
         <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
                   class="input"/>
+        <el-select v-model="queryParam.tagId" filterable clearable remote reserve-keyword class="select"
+          placeholder="请输入关键词搜索标签" :remote-method="getTag" :loading="loading">
+          <el-option
+            v-for="item in tagOptions"
+            :key="item.id"
+            :label="item.tagKey"
+            :value="item.id">
+          </el-option>
+        </el-select>
         <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
         <el-button style="margin-left: 5px" @click="handlerAdd">新增</el-button>
       </el-row>
@@ -57,6 +66,7 @@
   // Component
   import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
   import ApplicationDialog from '@/components/opscloud/application/ApplicationDialog'
+  import { queryTagPage } from '@api/tag/tag.js'
 
   import { queryApplicationPage, delApplicationById } from '@api/application/application.js'
 
@@ -77,8 +87,10 @@
         },
         queryParam: {
           instanceId: '',
-          queryName: ''
+          queryName: '',
+          tagId: ''
         },
+        tagOptions: [],
         formStatus: {
           visible: false,
           operationType: true,
@@ -97,6 +109,7 @@
     },
     mounted () {
       this.initPageSize()
+      this.getTag('')
       this.fetchData()
     },
     components: {
@@ -117,6 +130,12 @@
         if (typeof (this.info.pageSize) !== 'undefined') {
           this.pagination.pageSize = this.info.pageSize
         }
+      },
+      getTag (tagKey) {
+        queryTagPage(tagKey, 1, 100)
+          .then(res => {
+            this.tagOptions = res.body.data
+          })
       },
       handlerAdd () {
         this.formStatus.operationType = true
@@ -169,6 +188,7 @@
         this.loading = true
         let requestBody = {
           'queryName': this.queryParam.queryName,
+          'tagId': this.queryParam.tagId,
           'extend': 1,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
