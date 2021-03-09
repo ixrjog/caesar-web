@@ -28,7 +28,7 @@
     mixins: [],
     components: {},
     mounted () {
-      this.queryEngineChart()
+      this.fetchData()
       this.setTimer()
     },
     beforeDestroy () {
@@ -40,12 +40,12 @@
           return
         }
         this.timer = setInterval(() => {
-          this.queryEngineChart()
+          this.fetchData()
           // console.log('开始定时...每N秒执行一次')
         }, 20000)
       },
-      initMyChart (data) {
-        let myChart = echarts.init(document.getElementById('engineChart'))
+      initChart (data) {
+        let chart = echarts.init(document.getElementById('engineChart'))
         // 指定图表的配置项和数据
         let option = {
           title: {
@@ -101,12 +101,12 @@
           ]
         }
         // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option)
+        chart.setOption(option, true)
       },
-      queryEngineChart () {
+      fetchData () {
         queryEngineStatus()
           .then(res => {
-            this.initMyChart(res.body)
+            this.initChart(res.body)
           })
       }
     }
