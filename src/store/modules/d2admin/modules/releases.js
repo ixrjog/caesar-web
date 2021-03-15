@@ -8,7 +8,7 @@ export default {
      * @param {Object} state state
      */
     versionShow () {
-      util.log.capsule('Caesar', `v0.0.1`)
+      util.log.capsule('Caesar', `v1.0.0`)
       console.log('OC Manage  https://github.com/ixrjog/caesar')
       console.log('请不要吝啬您的 star，谢谢 ~')
       util.log.capsule('D2Admin', `v${process.env.VUE_APP_VERSION}`)

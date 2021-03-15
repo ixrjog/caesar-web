@@ -25,7 +25,7 @@
           <!-- logo -->
 <!--          <img class="page-login&#45;&#45;logo" src="./image/d2-admin.svg"  height="40" width="40">-->
 
-              <span style="font-size:30px; color: #2f74ff" class="page-login--content-main">CAESAR CI/CD</span>
+              <span style="font-size:30px; color: #2f74ff" class="page-login--content-main">Caesar Platform</span>
 
           <!-- form -->
           <div class="page-login--form">
