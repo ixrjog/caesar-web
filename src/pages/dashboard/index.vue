@@ -22,7 +22,7 @@
           <jobTypeStatistics></jobTypeStatistics>
         </el-col>
         <el-col :span="15">
-          <jenkinsEngineStatus></jenkinsEngineStatus>
+          <engineChart></engineChart>
         </el-col>
       </el-row>
       <el-row :gutter="24">
@@ -38,7 +38,7 @@
 
   // Component
   import topCard from '@/components/opscloud/dashboard/TopCard'
-  import jenkinsEngineStatus from '@/components/opscloud/jenkins/JenkinsEngineStatus'
+  import engineChart from '@/components/opscloud/jenkins/EngineChart'
   import dashboardLatestTasks from '@/components/opscloud/dashboard/DashboardLatestTasks'
   import taskExecutionGroupByHour from '@/components/opscloud/dashboard/TaskExecutionGroupByHour'
   import taskExecutionGroupByWeek from '@/components/opscloud/dashboard/TaskExecutionGroupByWeek'
@@ -56,11 +56,11 @@
     },
     components: {
       topCard,
-      jenkinsEngineStatus,
       dashboardLatestTasks,
       taskExecutionGroupByHour,
       taskExecutionGroupByWeek,
-      jobTypeStatistics
+      jobTypeStatistics,
+      engineChart
     },
     methods: {}
   }

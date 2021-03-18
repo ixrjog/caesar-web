@@ -29,7 +29,7 @@
           </div>
           <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
         </el-card>
-        <jenkins-engine-status style="margin-top: 10px"></jenkins-engine-status>
+        <engine-chart style="margin-top: 10px"></engine-chart>
       </el-col>
     </el-row>
   </d2-container>
@@ -38,7 +38,7 @@
 <script>
 
   import MyApplicationTable from '@/components/opscloud/application/MyApplicationTable.vue'
-  import JenkinsEngineStatus from '@/components/opscloud/jenkins/JenkinsEngineStatus.vue'
+  import engineChart from '@/components/opscloud/jenkins/EngineChart'
   import MyCiJobTable from '@/components/opscloud/application/MyCiJobTable.vue'
   import MyCdJobTable from '@/components/opscloud/application/MyCdJobTable.vue'
   import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
@@ -55,7 +55,7 @@
     },
     components: {
       MyApplicationTable,
-      JenkinsEngineStatus,
+      engineChart,
       MyCiJobTable,
       MyCdJobTable,
       AnnouncementCarousel,

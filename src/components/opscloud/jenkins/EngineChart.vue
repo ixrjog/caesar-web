@@ -1,0 +1,168 @@
+<template>
+  <div>
+    <el-card class="box-card" shadow="hover">
+      <div id="engineChart" style="width: 100%; height: 400px;"></div>
+    </el-card>
+  </div>
+</template>
+
+<script>
+
+  let echarts = require('echarts/lib/echarts')
+  require('echarts/lib/chart/pie')
+  require('echarts/map/js/china')
+  require('echarts/lib/chart/line')
+  require('echarts/lib/chart/bar')
+  require('echarts/lib/component/tooltip')
+  require('echarts/lib/component/legend')
+
+  const wsUrl = 'ws/engine'
+
+  export default {
+    name: 'EngineChart',
+    data () {
+      return {
+        socket: null,
+        socketURI: ''
+      }
+    },
+    mixins: [],
+    components: {},
+    mounted () {
+      this.initSocket()
+    },
+    created () {
+      this.initWebSocketURL()
+    },
+    destroyed () {
+    },
+    methods: {
+      initWebSocketURL () {
+        if (process.env.NODE_ENV === 'development') {
+          this.socketURI = process.env.VUE_APP_WS_API + wsUrl
+        } else {
+          let host = window.location.host
+          let httpProtocol = window.location.href.split('://')[0]
+          const socketURI = (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/cs/' + wsUrl
+          this.socketURI = socketURI
+        }
+      },
+      /**
+       * WS初始化
+       */
+      initSocket () {
+        this.socket = new WebSocket(this.socketURI)
+        this.socketOnClose()
+        this.socketOnOpen()
+        this.socketOnError()
+        this.socketOnMessage()
+      },
+      socketOnOpen () {
+        this.socket.onopen = () => { // 链接成功后
+          console.log('连接成功！')
+        }
+      },
+      socketOnClose () {
+        this.socket.onclose = () => {
+        }
+      },
+      socketOnError () {
+        this.socket.onerror = () => {
+          // console.log('socket 链接失败')
+        }
+      },
+      socketOnSend (data) {
+        this.socket.send(data)
+      },
+      socketOnMessage () {
+        this.socket.onmessage = (message) => {
+          let messageJson = JSON.parse(message.data)
+          this.initChart(messageJson)
+        }
+      },
+      initChart (data) {
+        let chart = echarts.init(document.getElementById('engineChart'))
+        // 指定图表的配置项和数据
+        let option = {
+          title: {
+            text: 'Jenkins Engine Cluster',
+            subtext: 'Caesar持续集成平台调度多Jenkins集群',
+            textStyle: {
+              fontSize: 14,
+              align: 'center'
+            },
+            subtextStyle: {
+              align: 'center'
+            },
+            sublink: 'http://wiki.xinc818.com/pages/viewpage.action?pageId=17827555'
+          },
+          tooltip: {
+            trigger: 'item',
+            triggerOn: 'mousemove'
+          },
+          series: [
+            {
+              type: 'tree',
+              id: 0,
+              name: 'tree1',
+              data: [data],
+              top: '10%',
+              left: '8%',
+              bottom: '22%',
+              right: '35%',
+              symbolSize: 7,
+              edgeShape: 'polyline',
+              edgeForkPosition: '63%',
+              initialTreeDepth: 3,
+              lineStyle: {
+                width: 2
+              },
+              label: {
+                backgroundColor: '#fff',
+                position: 'left',
+                verticalAlign: 'middle',
+                align: 'right'
+              },
+              leaves: {
+                label: {
+                  position: 'right',
+                  verticalAlign: 'middle',
+                  align: 'left'
+                }
+              },
+              expandAndCollapse: true,
+              animationDuration: 550,
+              animationDurationUpdate: 750
+            }
+          ]
+        }
+        // 使用刚指定的配置项和数据显示图表。
+        chart.setOption(option, true)
+      }
+    }
+  }
+</script>
+
+<style>
+  .table-expand {
+    font-size: 0;
+  }
+
+  .table-expand label {
+    width: 150px;
+    color: #99a9bf;
+  }
+
+  .table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+
+  .el-card__header {
+    padding: 10px 10px;
+    border-bottom: 1px solid #EBEEF5;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+</style>
