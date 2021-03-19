@@ -50,4 +50,18 @@ util.uuid = function () {
     return uuid
 }
 
+/**
+ * 返回ws
+ * @returns {string}
+ */
+util.wsUrl = function (wsUrl) {
+  if (process.env.NODE_ENV === 'development') {
+    return process.env.VUE_APP_WS_API + wsUrl
+  } else {
+    let host = window.location.host
+    let httpProtocol = window.location.href.split('://')[0]
+    return (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/cs/' + wsUrl
+  }
+}
+
 export default util

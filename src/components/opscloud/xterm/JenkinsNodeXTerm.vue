@@ -42,14 +42,14 @@
 
   import { queryUserSettingByGroup } from '@api/user/user.setting.js'
 
-  const xtermUrl = 'ws/xterm'
+  const wsUrl = 'ws/xterm'
   const settingGroup = 'XTERM'
 
   export default {
     data () {
       return {
         title: 'Web-XTerminal',
-        socketURI: '',
+        socketURI: util.wsUrl(wsUrl),
         executor: {},
         server: {},
         // 插件容器
@@ -73,7 +73,6 @@
     mixins: [],
     mounted () {
       this.setXTermSetting()
-      this.initWebSocketURL()
     },
     beforeDestroy () {
       try {
@@ -120,16 +119,6 @@
         this.server = executor.server
         // this.server = server
         this.handlerLogin()
-      },
-      initWebSocketURL () {
-        if (process.env.NODE_ENV === 'development') {
-          this.socketURI = process.env.VUE_APP_WS_API + xtermUrl
-        } else {
-          let host = window.location.host
-          let httpProtocol = window.location.href.split('://')[0]
-          const socketURI = (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/cs/' + xtermUrl
-          this.socketURI = socketURI
-        }
       },
       setTimer () {
         this.timer = setInterval(() => {

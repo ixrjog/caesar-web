@@ -8,6 +8,8 @@
 
 <script>
 
+  // 此组件废弃
+
   import { queryEngineStatus } from '@api/jenkins/jenkins.engine.js'
 
   let echarts = require('echarts/lib/echarts')
