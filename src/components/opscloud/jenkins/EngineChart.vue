@@ -8,6 +8,8 @@
 
 <script>
 
+  import util from '@/libs/util'
+
   let echarts = require('echarts/lib/echarts')
   require('echarts/lib/chart/pie')
   require('echarts/map/js/china')
@@ -23,7 +25,7 @@
     data () {
       return {
         socket: null,
-        socketURI: ''
+        socketURI: util.wsUrl(wsUrl)
       }
     },
     mixins: [],
@@ -31,25 +33,9 @@
     mounted () {
       this.initSocket()
     },
-    created () {
-      this.initWebSocketURL()
-    },
     destroyed () {
     },
     methods: {
-      initWebSocketURL () {
-        if (process.env.NODE_ENV === 'development') {
-          this.socketURI = process.env.VUE_APP_WS_API + wsUrl
-        } else {
-          let host = window.location.host
-          let httpProtocol = window.location.href.split('://')[0]
-          const socketURI = (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/cs/' + wsUrl
-          this.socketURI = socketURI
-        }
-      },
-      /**
-       * WS初始化
-       */
       initSocket () {
         this.socket = new WebSocket(this.socketURI)
         this.socketOnClose()
@@ -59,11 +45,15 @@
       },
       socketOnOpen () {
         this.socket.onopen = () => { // 链接成功后
-          console.log('连接成功！')
+          console.log('引擎视图WebSocket链接成功！')
         }
       },
       socketOnClose () {
         this.socket.onclose = () => {
+          console.log('引擎视图WebSocket链接关闭,尝试重新链接！')
+          setTimeout(() => {
+              this.initSocket()
+            }, 15000)
         }
       },
       socketOnError () {
