@@ -129,7 +129,6 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  // XTerm
   import JenkinsNodeXTerm from '@/components/opscloud/xterm/JenkinsNodeXTerm'
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'

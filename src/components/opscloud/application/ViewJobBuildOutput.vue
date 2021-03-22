@@ -7,15 +7,15 @@
       </el-card>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button size="mini" @click="formStatus.visible = false">关闭</el-button>
-      <el-button size="mini" type="primary" @click="queryJobBuildOutput" v-if="false">刷新</el-button>
+      <el-button size="mini" @click="closeDialog">关闭</el-button>
+      <!--      <el-button size="mini" type="primary" @click="queryJobBuildOutput" v-if="false">刷新</el-button>-->
     </div>
   </el-dialog>
 </template>
 
 <script>
 
-  import { viewJobBuildOutput } from '@api/build/job.build.js'
+  import util from '@/libs/util'
 
   import 'xterm/css/xterm.css'
   import { Terminal } from 'xterm'
@@ -23,12 +23,15 @@
 
   import { queryUserSettingByGroup } from '@api/user/user.setting.js'
 
+  const wsUrl = 'ws/job/output'
   const settingGroup = 'XTERM'
 
   export default {
+    name: 'ViewJobBuildOutput',
     data () {
       return {
         title: '构建日志详情',
+        socketURI: util.wsUrl(wsUrl),
         buildType: '',
         buildId: '',
         output: '',
@@ -46,7 +49,6 @@
         }
       }
     },
-    name: 'ViewJobBuildOutput',
     props: ['formStatus'],
     components: {},
     mounted () {
@@ -72,31 +74,22 @@
             }
           })
       },
+      initSocket () {
+        this.socket = new WebSocket(this.socketURI)
+        this.socketOnClose()
+        this.socketOnOpen()
+        this.socketOnError()
+        this.socketOnMessage()
+      },
       closeDialog () {
-        this.sessionInstance = ''
-        this.term.dispose()
-        this.term = null
+        if (this.term !== null) {
+          this.term.clear()
+          this.term.dispose()
+          this.term = null
+        }
         this.formStatus.visible = false
       },
-      queryJobBuildOutput () {
-        let requestBody = {
-          buildType: this.buildType,
-          buildId: this.buildId
-        }
-        viewJobBuildOutput(requestBody)
-          .then(res => {
-            if (res.success) {
-              this.output = res.body
-              this.handlerOutput()
-            }
-          })
-      },
-      initData (buildType, buildId) {
-        this.buildType = buildType
-        this.buildId = buildId
-        this.queryJobBuildOutput()
-      },
-      handlerOutput () {
+      initLogOutput () {
         if (this.term !== null) {
           this.term.dispose()
         }
@@ -121,11 +114,49 @@
         let fitAddon = new FitAddon()
         term.loadAddon(fitAddon)
         term.open(document.getElementById('outputXterm'))
-        term.write(this.output)
+        // term.write(this.output)
         // 获取对象的高度和宽度
         fitAddon.fit()
         term.focus()
         this.term = term
+      },
+      initData (buildType, buildId) {
+        this.buildType = buildType
+        this.buildId = buildId
+        setTimeout(() => {
+          this.initSocket()
+        }, 1000)
+      },
+      socketOnOpen () {
+        this.socket.onopen = () => { // 链接成功后
+          try {
+            this.$nextTick(() => { // 需要延迟执行
+              this.initLogOutput()
+              let msg = {
+                buildType: this.buildType,
+                buildId: this.buildId
+              }
+              this.socketOnSend(JSON.stringify(msg))
+            })
+          } catch (e) {
+          }
+        }
+      },
+      socketOnClose () {
+        this.socket.onclose = () => {
+        }
+      },
+      socketOnError () {
+        this.socket.onerror = () => {
+        }
+      },
+      socketOnSend (data) {
+        this.socket.send(data)
+      },
+      socketOnMessage () {
+        this.socket.onmessage = (message) => {
+          this.term.write(message.data)
+        }
       },
       handleClick () {
         this.$emit('input', !this.value)
