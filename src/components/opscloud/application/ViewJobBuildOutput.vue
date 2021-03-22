@@ -8,7 +8,6 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button size="mini" @click="closeDialog">关闭</el-button>
-      <!--      <el-button size="mini" type="primary" @click="queryJobBuildOutput" v-if="false">刷新</el-button>-->
     </div>
   </el-dialog>
 </template>
@@ -32,15 +31,15 @@
       return {
         title: '构建日志详情',
         socketURI: util.wsUrl(wsUrl),
-        buildType: '',
-        buildId: '',
-        output: '',
-        xterm: 'auditXterm',
+        timer: null,
+        initParam: {
+          buildType: '',
+          buildId: ''
+        },
         term: null,
         xtermSize: {
           rows: 30
         },
-        sessionInstance: '',
         labelWidth: '100px',
         xtermTheme: { // 终端主题
           foreground: '#FFFFFF', // 字体
@@ -86,7 +85,7 @@
         this.socketOnOpen()
         this.socketOnError()
         this.socketOnMessage()
-        this.setTimer()
+        this.setTimer() // 心跳
       },
       closeDialog () {
         if (this.socket !== null) {
@@ -132,11 +131,13 @@
         this.term = term
       },
       initData (buildType, buildId) {
-        this.buildType = buildType
-        this.buildId = buildId
+        this.initParam = {
+          buildType: buildType,
+          buildId: buildId
+        }
         setTimeout(() => {
           this.initSocket()
-        }, 1000)
+        }, 500)
       },
       socketOnOpen () {
         this.socket.onopen = () => { // 链接成功后
@@ -145,8 +146,8 @@
               this.initLogOutput()
               let msg = {
                 status: 'INITIAL',
-                buildType: this.buildType,
-                buildId: this.buildId
+                buildType: this.initParam.buildType,
+                buildId: this.initParam.buildId
               }
               this.socketOnSend(JSON.stringify(msg))
             })
