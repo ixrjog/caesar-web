@@ -74,14 +74,25 @@
             }
           })
       },
+      setTimer () {
+        this.timer = setInterval(() => {
+          this.handlerHeartbeat()
+          // console.log('开始定时...每10秒执行一次')
+        }, 10000)
+      },
       initSocket () {
         this.socket = new WebSocket(this.socketURI)
         this.socketOnClose()
         this.socketOnOpen()
         this.socketOnError()
         this.socketOnMessage()
+        this.setTimer()
       },
       closeDialog () {
+        if (this.socket !== null) {
+          this.socket.close()
+        }
+        clearInterval(this.timer)
         if (this.term !== null) {
           this.term.clear()
           this.term.dispose()
@@ -133,6 +144,7 @@
             this.$nextTick(() => { // 需要延迟执行
               this.initLogOutput()
               let msg = {
+                status: 'INITIAL',
                 buildType: this.buildType,
                 buildId: this.buildId
               }
@@ -144,6 +156,10 @@
       },
       socketOnClose () {
         this.socket.onclose = () => {
+          if (this.socket !== null) {
+            this.socket.close()
+          }
+          clearInterval(this.timer)
         }
       },
       socketOnError () {
@@ -156,6 +172,15 @@
       socketOnMessage () {
         this.socket.onmessage = (message) => {
           this.term.write(message.data)
+        }
+      },
+      handlerHeartbeat () {
+        let heartbeat = {
+          status: 'HEARTBEAT'
+        }
+        try {
+          this.socketOnSend(JSON.stringify(heartbeat))
+        } catch (e) {
         }
       },
       handleClick () {
