@@ -3,7 +3,7 @@
     <el-card shadow="never">
       <div slot="header" class="clearfix" style="height: 15px">
               <span>
-                <el-tag>日志控制台</el-tag>
+                <el-tag>控制台日志</el-tag>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="closeOutput">关闭
                 </el-button>
               </span>
