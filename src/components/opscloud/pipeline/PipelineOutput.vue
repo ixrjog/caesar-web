@@ -1,10 +1,10 @@
 <template>
   <div>
-    <el-card shadow="never">
+    <el-card shadow="hover">
       <div slot="header" class="clearfix" style="height: 15px">
               <span>
-                <el-tag>控制台日志</el-tag>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOutput">关闭
+                <el-tag>Console Output</el-tag>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOutput">Close
                 </el-button>
               </span>
       </div>

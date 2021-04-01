@@ -11,7 +11,7 @@
                   任务编号 : {{ pipeline.jobBuildNumber }}</el-tag>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
                 <el-button style="float: right; padding: 3px 0" type="text" @click="handlerPipelineOutput(pipeline)">
-                  控制台日志
+                  Log
                 </el-button>
               </el-tooltip>
               </span>
