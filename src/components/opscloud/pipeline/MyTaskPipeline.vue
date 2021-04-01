@@ -1,8 +1,10 @@
 <template>
   <div>
-    <el-col :span="10">
+    <el-row style="margin-bottom: 10px">
       <el-radio v-model="radio" label="build">构建任务</el-radio>
-      <el-radio v-model="radio" label="deployment" style="margin-bottom: 10px">部署任务</el-radio>
+      <el-radio v-model="radio" label="deployment">部署任务</el-radio>
+    </el-row>
+    <el-col :span="10">
       <task-pipeline :buildType="0" @handlerOutput="handlerPipelineOutput" v-show="radio === 'build'"></task-pipeline>
       <task-pipeline :buildType="1" @handlerOutput="handlerPipelineOutput" v-show="radio === 'deployment'"></task-pipeline>
     </el-col>
