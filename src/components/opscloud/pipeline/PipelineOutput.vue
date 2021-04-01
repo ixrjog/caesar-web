@@ -33,6 +33,7 @@
         title: '构建日志详情',
         socketURI: util.wsUrl(wsUrl),
         timer: null,
+        interval: 15000, // INTERVAL
         initParam: {
           buildType: '',
           buildId: ''
@@ -77,8 +78,7 @@
       setTimer () {
         this.timer = setInterval(() => {
           this.handlerHeartbeat()
-          // console.log('开始定时...每10秒执行一次')
-        }, 10000)
+        }, this.interval)
       },
       initSocket () {
         this.socket = new WebSocket(this.socketURI)

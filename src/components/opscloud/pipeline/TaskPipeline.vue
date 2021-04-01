@@ -61,6 +61,7 @@
         socket: null,
         socketURI: util.wsUrl(wsUrl),
         timer: null, // 查询定时器
+        interval: 15000,
         intervalTime: 12000,
         layout: layout,
         pipelines: []
@@ -85,8 +86,7 @@
       setTimer () {
         this.timer = setInterval(() => {
           this.fetchData()
-          // console.log('开始定时...每10秒执行一次')
-        }, 12000)
+        }, this.interval)
       },
       socketOnOpen () {
         let _this = this
