@@ -29,6 +29,7 @@
     "fuse.js": "^3.4.6",
     "github-markdown-css": "^4.0.0",
     "hotkeys-js": "^3.7.3",
+    "jenkins-pipeline-graph-vue": "^1.0.8",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
     "lowdb": "^1.0.0",

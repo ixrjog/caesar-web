@@ -1,37 +1,49 @@
 <template>
   <d2-container>
     <h1>{{title}}</h1>
-    <el-row :gutter="10">
-      <el-col :span="7">
-        <el-card shadow="hover">
-          <my-application-table ref="myApplicationTable"
-                                @handlerSelApplication="handlerSelApplication"></my-application-table>
-        </el-card>
-      </el-col>
-      <el-col :span="17">
-        <announcement-carousel></announcement-carousel>
-        <block-platform-status></block-platform-status>
-        <el-card shadow="hover" v-show="buildType">
-          <div slot="header" class="clearfix">
-            <span>All build jobs</span>
-            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
-              <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
-            </el-button>
-          </div>
-          <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
-        </el-card>
-        <el-card shadow="hover" v-show="!buildType">
-          <div slot="header" class="clearfix">
-            <span>All deploy jobs</span>
-            <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary" @click="handlerSwitch">
-              <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
-            </el-button>
-          </div>
-          <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
-        </el-card>
-        <engine-chart style="margin-top: 10px"></engine-chart>
-      </el-col>
-    </el-row>
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="我的应用" name="application">
+        <el-row :gutter="10">
+          <el-col :span="7">
+            <el-card shadow="hover">
+              <my-application-table ref="myApplicationTable"
+                                    @handlerSelApplication="handlerSelApplication"></my-application-table>
+            </el-card>
+          </el-col>
+          <el-col :span="17">
+            <announcement-carousel></announcement-carousel>
+            <block-platform-status></block-platform-status>
+            <el-card shadow="hover" v-show="buildType">
+              <div slot="header" class="clearfix">
+                <span>All build jobs</span>
+                <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
+                           @click="handlerSwitch">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+                </el-button>
+              </div>
+              <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
+            </el-card>
+            <el-card shadow="hover" v-show="!buildType">
+              <div slot="header" class="clearfix">
+                <span>All deploy jobs</span>
+                <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
+                           @click="handlerSwitch">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+                </el-button>
+              </div>
+              <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
+            </el-card>
+            <engine-chart style="margin-top: 10px"></engine-chart>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="构建任务流水线" name="buildTaskPipeline">
+        <my-task-pipeline :buildType="0"></my-task-pipeline>
+      </el-tab-pane>
+      <el-tab-pane label="部署任务流水线" name="deploymentTaskPipeline">
+        <my-task-pipeline :buildType="1"></my-task-pipeline>
+      </el-tab-pane>
+    </el-tabs>
   </d2-container>
 </template>
 
@@ -44,10 +56,13 @@
   import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
   import BlockPlatformStatus from '@/components/opscloud/platform/BlockPlatformStatus.vue'
 
+  import MyTaskPipeline from '@/components/opscloud/pipeline/MyTaskPipeline.vue'
+
   export default {
     data () {
       return {
-        title: '我的应用',
+        title: '持续集成',
+        activeName: 'application',
         buildType: true,
         timer: null, // 查询定时器
         intervalTime: 12000
@@ -59,7 +74,8 @@
       MyCiJobTable,
       MyCdJobTable,
       AnnouncementCarousel,
-      BlockPlatformStatus
+      BlockPlatformStatus,
+      MyTaskPipeline
     },
     beforeDestroy () {
       clearInterval(this.timer) // 销毁定时器
@@ -77,6 +93,8 @@
             }
           }, this.intervalTime)
         }
+      },
+      handleClick () {
       },
       handlerSwitch () {
         this.buildType = !this.buildType
