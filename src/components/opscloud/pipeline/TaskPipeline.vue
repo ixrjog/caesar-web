@@ -16,7 +16,7 @@
               </el-tooltip>
               </span>
           </div>
-          <div style="height: 80px">
+          <div style="height: 120px">
             <!--        :onNodeClick='nodeClick'-->
             <!--        :selectedStage='selectedNode'-->
             <!--        layout='layout'-->
@@ -39,13 +39,13 @@
   import PipelineGraph from 'jenkins-pipeline-graph-vue'
 
   const layout = {
-    nodeSpacingH: 110, // 节点间距
-    parallelSpacingH: 500, // 平行间距
+    nodeSpacingH: 90, // 节点间距
+    parallelSpacingH: 400, // 平行间距
     nodeRadius: 12, // 节点半径
     terminalRadius: 10, // 终端半径
-    curveRadius: 20,
+    curveRadius: 5, // 跳过连接线半径
     connectorStrokeWidth: 8,
-    labelOffsetV: 20,
+    labelOffsetV: 20, // 文字标签向上位移
     smallLabelOffsetV: 10
   }
 
