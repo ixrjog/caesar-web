@@ -73,7 +73,7 @@
       },
       saveInfo () {
         setTimeout(() => {
-          var requestBody = Object.assign({}, this.formData)
+          let requestBody = Object.assign({}, this.formData)
           addUserRole(requestBody)
             .then(res => {
               // 返回数据

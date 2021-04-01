@@ -37,11 +37,8 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="构建任务流水线" name="buildTaskPipeline">
-        <my-task-pipeline :buildType="0"></my-task-pipeline>
-      </el-tab-pane>
-      <el-tab-pane label="部署任务流水线" name="deploymentTaskPipeline">
-        <my-task-pipeline :buildType="1"></my-task-pipeline>
+      <el-tab-pane label="任务流水线" name="taskPipeline" >
+        <my-task-pipeline></my-task-pipeline>
       </el-tab-pane>
     </el-tabs>
   </d2-container>

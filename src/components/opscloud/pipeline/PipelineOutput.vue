@@ -1,16 +1,16 @@
 <template>
-    <div>
-      <el-card shadow="never">
-        <div slot="header" class="clearfix" style="height: 15px">
+  <div>
+    <el-card shadow="never">
+      <div slot="header" class="clearfix" style="height: 15px">
               <span>
                 <el-tag>日志控制台</el-tag>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="closeOutput">关闭
                 </el-button>
               </span>
-        </div>
-        <div id="outputXterm" class="xterm"></div>
-      </el-card>
-    </div>
+      </div>
+      <div id="outputXterm" class="xterm"></div>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -98,7 +98,6 @@
           this.term.dispose()
           this.term = null
         }
-        this.formStatus.visible = false
       },
       initLogOutput () {
         if (this.term !== null) {
@@ -127,15 +126,12 @@
         term.open(document.getElementById('outputXterm'))
         // term.write(this.output)
         // 获取对象的高度和宽度
-        fitAddon.fit()
+        // fitAddon.fit()
         term.focus()
         this.term = term
       },
-      initData (buildType, buildId) {
-        this.initParam = {
-          buildType: buildType,
-          buildId: buildId
-        }
+      initData (param) {
+        this.initParam = param
         setTimeout(() => {
           this.initSocket()
         }, 500)
