@@ -60,9 +60,6 @@
         activeName: 'myApplication',
         socket: null,
         socketURI: util.wsUrl(wsUrl),
-        timer: null, // 查询定时器
-        interval: 15000,
-        intervalTime: 12000,
         layout: layout,
         pipelines: []
       }
@@ -83,21 +80,16 @@
         this.socketOnError()
         this.socketOnMessage()
       },
-      setTimer () {
-        this.timer = setInterval(() => {
-          this.fetchData()
-        }, this.interval)
-      },
       socketOnOpen () {
         let _this = this
         this.socket.onopen = () => { // 链接成功后
           console.log('WebSocket链接成功！')
           let message = {
             status: 'INITIAL',
-            token: util.cookies.get('token')
+            token: util.cookies.get('token'),
+            buildType: this.buildType
           }
           _this.socketOnSend(JSON.stringify(message))
-          _this.setTimer()
         }
       },
       socketOnClose () {
@@ -127,16 +119,6 @@
           buildId: pipeline.id
         }
         this.$emit('handlerOutput', param)
-      },
-      fetchData () {
-        let message = {
-          status: 'QUERY_TASK',
-          buildType: this.buildType
-        }
-        try {
-          this.socketOnSend(JSON.stringify(message))
-        } catch (e) {
-        }
       }
     }
   }
