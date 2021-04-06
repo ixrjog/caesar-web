@@ -38,9 +38,8 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="引擎视图" name="taskPipeline">
-        <engine-chart style="margin-top: 10px"></engine-chart>
-        <!--        <my-task-pipeline></my-task-pipeline>-->
+      <el-tab-pane label="引擎视图" name="engineChart">
+        <engine-chart style="margin-top: 10px" v-if="activeName === 'engineChart'"></engine-chart>
       </el-tab-pane>
     </el-tabs>
   </d2-container>

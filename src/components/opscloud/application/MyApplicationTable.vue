@@ -39,12 +39,6 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <!--          -->
-          <!--          <el-button-group>-->
-          <!--            <el-button type="primary" plain size="mini" icon="el-icon-search" @click="handlerSelRow(scope.row)"></el-button>-->
-          <!--            <el-button type="primary" plain size="mini" icon="el-icon-search" @click="handlerSelRow(scope.row)"></el-button>-->
-          <!--          </el-button-group>-->
-          <!--          <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>-->
         </template>
       </el-table-column>
     </el-table>
