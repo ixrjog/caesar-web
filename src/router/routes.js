@@ -63,6 +63,15 @@ const frameIn = [
           title: '热门排行'
         }
       },
+      {
+        path: '/dashboard/pipeline',
+        name: 'dashboard-pipeline',
+        component: () => import('@/pages/dashboard/pipeline'),
+        meta: {
+          auth: true,
+          title: '任务视图'
+        }
+      },
       // env
       {
         path: '/env',

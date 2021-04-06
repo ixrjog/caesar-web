@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div v-for="pipeline in pipelines" :key="pipeline.id" style="font-size: 12px">
+    <div v-for="(pipeline,i) in pipelines" :key="pipeline.id" style="font-size: 12px">
       <template>
         <el-card shadow="hover" body-style="padding: 2px" style="margin-right: 10px;margin-bottom: 10px">
           <div slot="header" class="clearfix" style="height: 15px">
               <span>
                 <el-tag>{{ pipeline.jobName }}</el-tag>
-                <el-tag style="margin-left: 5px">
-                  <i class="el-icon-loading" v-show="pipeline.isRunning"></i>
-                  任务编号 : {{ pipeline.jobBuildNumber }}</el-tag>
+                <span class="buildNumber"><i class="el-icon-loading" v-show="pipeline.isRunning"></i>
+                  #{{ pipeline.jobBuildNumber }}</span>
+                <span class="ago"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
-                <el-button style="float: right; padding: 3px 0" type="text" @click="handlerPipelineOutput(pipeline)">
+                <el-button style="float: right; padding: 3px 0" type="text" @click="handlerPipelineOutput(i)">
                   Log
                 </el-button>
               </el-tooltip>
@@ -25,6 +25,7 @@
               :layout='layout'
             />
           </div>
+          <pipeline-output :buildType="buildType" :buildId="pipeline.id" :ref="`pipelines${i}`"></pipeline-output>
         </el-card>
       </template>
     </div>
@@ -37,6 +38,7 @@
 
   // pipeline 图形
   import PipelineGraph from 'jenkins-pipeline-graph-vue'
+  import PipelineOutput from '@/components/opscloud/pipeline/PipelineOutput'
 
   const layout = {
     nodeSpacingH: 90, // 节点间距
@@ -53,7 +55,7 @@
 
   export default {
     name: 'TaskPipeline',
-    props: ['buildType'],
+    props: ['buildType', 'queryParam'],
     data () {
       return {
         title: '持续集成',
@@ -65,7 +67,8 @@
       }
     },
     components: {
-      PipelineGraph
+      PipelineGraph,
+      PipelineOutput
     },
     mounted () {
       this.initSocket()
@@ -87,7 +90,9 @@
           let message = {
             status: 'INITIAL',
             token: util.cookies.get('token'),
-            buildType: this.buildType
+            buildType: this.buildType,
+            queryType: this.queryParam.queryType,
+            querySize: this.queryParam.querySize
           }
           _this.socketOnSend(JSON.stringify(message))
         }
@@ -113,17 +118,28 @@
           this.pipelines = JSON.parse(message.data)
         }
       },
-      handlerPipelineOutput (pipeline) {
-        let param = {
-          buildType: this.buildType,
-          buildId: pipeline.id
-        }
-        this.$emit('handlerOutput', param)
+      handlerPipelineOutput (i) {
+        this.$refs[`pipelines${i}`][0].doOutput()
       }
     }
   }
 </script>
 
-<style scoped>
+<style>
+  .el-card__header {
+    padding: 10px 10px;
+    border-bottom: 1px solid #EBEEF5;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 
+  .buildNumber {
+    color: #5b5d66;
+    margin-left: 10px;
+  }
+
+  .ago {
+    color: #5b5d66;
+    margin-left: 10px;
+  }
 </style>

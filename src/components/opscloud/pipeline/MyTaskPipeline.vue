@@ -5,8 +5,8 @@
       <el-radio v-model="radio" label="deployment">部署任务</el-radio>
     </el-row>
     <el-col :span="11">
-      <task-pipeline :buildType="0" @handlerOutput="handlerPipelineOutput" v-show="radio === 'build'"></task-pipeline>
-      <task-pipeline :buildType="1" @handlerOutput="handlerPipelineOutput" v-show="radio === 'deployment'"></task-pipeline>
+      <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOutput="handlerPipelineOutput" v-show="radio === 'build'"></task-pipeline>
+      <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOutput="handlerPipelineOutput" v-show="radio === 'deployment'"></task-pipeline>
     </el-col>
     <el-col :span="13">
       <pipeline-output ref="pipelineOutput"></pipeline-output>
@@ -22,7 +22,11 @@
   export default {
     data () {
       return {
-        radio: 'build'
+        radio: 'build',
+        queryParam: {
+          queryType: 'MY',
+          querySize: 3
+        }
       }
     },
     components: {

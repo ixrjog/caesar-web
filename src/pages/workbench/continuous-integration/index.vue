@@ -13,7 +13,7 @@
           <el-col :span="17">
             <announcement-carousel></announcement-carousel>
             <block-platform-status></block-platform-status>
-            <el-card shadow="hover" v-show="buildType">
+            <el-card shadow="hover" v-show="buildType" style="margin-bottom: 10px">
               <div slot="header" class="clearfix">
                 <span>All build jobs</span>
                 <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
@@ -23,7 +23,7 @@
               </div>
               <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
             </el-card>
-            <el-card shadow="hover" v-show="!buildType">
+            <el-card shadow="hover" v-show="!buildType" style="margin-bottom: 10px">
               <div slot="header" class="clearfix">
                 <span>All deploy jobs</span>
                 <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
@@ -33,12 +33,14 @@
               </div>
               <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
             </el-card>
-            <engine-chart style="margin-top: 10px"></engine-chart>
+            <task-pipeline v-show="buildType" class="pipeline" :buildType="0" :queryParam="queryParam"></task-pipeline>
+            <task-pipeline v-show="!buildType" class="pipeline" :buildType="1" :queryParam="queryParam"></task-pipeline>
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="任务流水线" name="taskPipeline" >
-        <my-task-pipeline></my-task-pipeline>
+      <el-tab-pane label="引擎视图" name="taskPipeline">
+        <engine-chart style="margin-top: 10px"></engine-chart>
+        <!--        <my-task-pipeline></my-task-pipeline>-->
       </el-tab-pane>
     </el-tabs>
   </d2-container>
@@ -52,8 +54,8 @@
   import MyCdJobTable from '@/components/opscloud/application/MyCdJobTable.vue'
   import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
   import BlockPlatformStatus from '@/components/opscloud/platform/BlockPlatformStatus.vue'
-
-  import MyTaskPipeline from '@/components/opscloud/pipeline/MyTaskPipeline.vue'
+  import TaskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
+  // import MyTaskPipeline from '@/components/opscloud/pipeline/MyTaskPipeline.vue'
 
   export default {
     data () {
@@ -62,7 +64,11 @@
         activeName: 'application',
         buildType: true,
         timer: null, // 查询定时器
-        intervalTime: 12000
+        intervalTime: 12000,
+        queryParam: {
+          queryType: 'MY',
+          querySize: 2
+        }
       }
     },
     components: {
@@ -72,7 +78,8 @@
       MyCdJobTable,
       AnnouncementCarousel,
       BlockPlatformStatus,
-      MyTaskPipeline
+      TaskPipeline
+      // MyTaskPipeline
     },
     beforeDestroy () {
       clearInterval(this.timer) // 销毁定时器
@@ -119,5 +126,9 @@
     margin-right: 0;
     margin-bottom: 0;
     width: 50%;
+  }
+
+  .pipeline {
+    margin-top: 10px;
   }
 </style>

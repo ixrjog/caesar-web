@@ -1,15 +1,13 @@
 <template>
   <div>
-    <el-card shadow="hover">
-      <div slot="header" class="clearfix" style="height: 15px">
-              <span>
-                <el-tag>Console Output</el-tag>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="closeOutput">Close
-                </el-button>
-              </span>
-      </div>
-      <div id="outputXterm" class="xterm"></div>
-    </el-card>
+    <div v-show="showOutput">
+      <el-divider></el-divider>
+      <el-row>
+        <b class="outputTitle">Console Output</b>
+        <el-button class="outputButton" type="text" @click="closeOutput">Close</el-button>
+      </el-row>
+      <div :id="`outputXterm${buildId}`" class="xterm"></div>
+    </div>
   </div>
 </template>
 
@@ -31,13 +29,10 @@
     data () {
       return {
         title: '构建日志详情',
+        showOutput: false,
         socketURI: util.wsUrl(wsUrl),
         timer: null,
         interval: 15000, // INTERVAL
-        initParam: {
-          buildType: '',
-          buildId: ''
-        },
         term: null,
         xtermSize: {
           rows: 30
@@ -50,7 +45,7 @@
         }
       }
     },
-    props: ['formStatus'],
+    props: ['buildType', 'buildId'],
     components: {},
     mounted () {
       this.setXTermSetting()
@@ -89,6 +84,7 @@
         this.setTimer() // 心跳
       },
       closeOutput () {
+        this.showOutput = false
         if (this.socket !== null) {
           this.socket.close()
         }
@@ -123,15 +119,15 @@
         })
         let fitAddon = new FitAddon()
         term.loadAddon(fitAddon)
-        term.open(document.getElementById('outputXterm'))
+        term.open(document.getElementById('outputXterm' + this.buildId))
         // term.write(this.output)
         // 获取对象的高度和宽度
         // fitAddon.fit()
         term.focus()
         this.term = term
       },
-      initData (param) {
-        this.initParam = param
+      doOutput () {
+        this.showOutput = true
         setTimeout(() => {
           this.initSocket()
         }, 500)
@@ -143,8 +139,8 @@
               this.initLogOutput()
               let msg = {
                 status: 'INITIAL',
-                buildType: this.initParam.buildType,
-                buildId: this.initParam.buildId
+                buildType: this.buildType,
+                buildId: this.buildId
               }
               this.socketOnSend(JSON.stringify(msg))
             })
@@ -189,5 +185,22 @@
 </script>
 
 <style scoped>
+  .outputTitle {
+    color: #5b5d66;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .outputButton {
+    float: right;
+    padding: 3px 0;
+    margin-right: 5px;
+  }
+
+  .xterm {
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
 
 </style>
