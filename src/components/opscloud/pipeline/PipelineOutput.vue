@@ -187,14 +187,13 @@
 <style scoped>
   .outputTitle {
     color: #5b5d66;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 10px;
   }
 
   .outputButton {
     float: right;
     padding: 3px 0;
-    margin-right: 5px;
+    margin-right: 10px;
   }
 
   .xterm {
