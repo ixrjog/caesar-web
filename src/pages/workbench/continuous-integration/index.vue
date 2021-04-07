@@ -114,10 +114,9 @@
         this.$refs.myCdJobTable.initData(application)
         this.setTimer() // 启动定时器查询任务列表
       },
-      handlerOpenExecutor (server) {
-        console.log(server)
+      handlerOpenExecutor (executor) {
         this.formTerminalStatus.visible = true
-        this.$refs.terminalDialog.initData(server)
+        this.$refs.terminalDialog.open(executor)
       }
     }
   }

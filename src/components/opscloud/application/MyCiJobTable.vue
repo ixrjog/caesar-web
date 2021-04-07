@@ -42,40 +42,7 @@
       </el-table-column>
       <el-table-column prop="name" label="最新构建" width="210">
         <template slot-scope="props">
-          <el-button-group>
-            <el-button v-for="item in props.row.buildViews" :key="item.buildNumber"
-                       :style="{ backgroundColor: item.color, color: '#FFFFFF',width: '50px' }">
-              <el-popover placement="top-start" trigger="hover">
-                <el-card class="box-card" shadow="never">
-                  <div slot="header" class="clearfix">
-                    <span>控制台</span>
-                    <el-button style="float: right; padding: 3px 0" type="text"
-                               @click="handlerAbortBuild(item.executors)" v-show="item.building">中止任务
-                    </el-button>
-                  </div>
-                  <el-form>
-                  <span v-show="item.executors.length > 0">
-                    <el-tag type="primary">构建日志
-                      <el-button type="text" style="margin-left: 10px; padding: 3px 0"
-                                 @click="handlerOpenViewBuildOutput(item.executors)"><span
-                        style="color: #535353">查看</span></el-button>
-                    </el-tag>
-                    <el-divider></el-divider>
-                    <div v-for="executor in item.executors" :key="executor.id">
-                      <el-tag type="primary">{{ executor.nodeName }}:{{ executor.privateIp}}
-                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
-                                   @click="handlerOpenXTerm(executor)"><span
-                          style="color: #535353">打开终端</span></el-button>
-                      </el-tag>
-                    </div>
-                  </span>
-                    <span v-show="item.executors.length === 0">No Executors</span>
-                  </el-form>
-                </el-card>
-                <span slot="reference"><i class="el-icon-loading" v-if="item.building"></i>{{item.buildNumber}}</span>
-              </el-popover>
-            </el-button>
-          </el-button-group>
+          <build-view :items="props.row.buildViews" @handlerOpenExecutor="handlerOpenExecutor" @handlerOpenOutput="handlerOpenOutput"></build-view>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="210">
@@ -118,9 +85,9 @@
     <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
-    <!--    @openXTerm="handlerOpenXTerm"-->
-    <terminal ref="xtermDialog" :formStatus="formXtermStatus"></terminal>
-    <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
+
+    <terminal ref="terminalDialog" :formStatus="formXtermStatus"></terminal>
+    <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
     <ciJobPermissionDialog ref="ciJobPermissionDialog" :formStatus="formPermissionStatus"></ciJobPermissionDialog>
   </div>
 </template>
@@ -133,7 +100,8 @@
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
-  import ViewJobBuildOutput from '@/components/opscloud/application/ViewJobBuildOutput'
+  import buildOutput from '@/components/opscloud/application/BuildOutput'
+  import buildView from '@/components/opscloud/application/BuildView'
   // Component Build
   import H5JobBuildDialog from '@/components/opscloud/build/H5JobBuildDialog'
   import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
@@ -220,9 +188,10 @@
       PythonJobBuildDialog,
       AndroidJobBuildDialog,
       AndroidReinforceJobBuildDialog,
-      ViewJobBuildOutput,
+      buildOutput,
       CiJobPermissionDialog,
-      SonarPopover
+      SonarPopover,
+      buildView
     },
     methods: {
       ...mapActions({
@@ -352,9 +321,9 @@
         this.formCiJobStatus.visible = true
         this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
       },
-      handlerOpenXTerm (executor) {
+      handlerOpenExecutor (executor) {
         this.formXtermStatus.visible = true
-        this.$refs.xtermDialog.initData(executor)
+        this.$refs.terminalDialog.open(executor)
       },
       handlerAbortBuild (executors) {
         abortBuildCiJob(executors[0].buildId)
@@ -369,9 +338,9 @@
             }
           })
       },
-      handlerOpenViewBuildOutput (executors) {
+      handlerOpenOutput (executor) {
         this.formBuildOutputStatus.visible = true
-        this.$refs.viewJobBuildOutput.initData(0, executors[0].buildId)
+        this.$refs.buildOutput.open(0, executor.buildId)
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage

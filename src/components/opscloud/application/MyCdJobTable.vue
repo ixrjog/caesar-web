@@ -25,34 +25,7 @@
       </el-table-column>
       <el-table-column prop="name" label="最新构建" width="210">
         <template slot-scope="props">
-          <el-button-group>
-            <el-button v-for="item in props.row.buildViews" :key="item.buildNumber"
-                       :style="{ backgroundColor: item.color, color: '#FFFFFF',width: '50px' }">
-              <el-popover placement="top-start" trigger="hover">
-                <el-form>
-                  <span v-show="item.executors.length > 0">
-                          <el-tag type="primary">构建日志
-                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
-                                   @click="handlerOpenViewBuildOutput(item.executors)"><span
-                          style="color: #535353">查看</span></el-button>
-                      </el-tag>
-                     <el-divider></el-divider>
-                            <div v-for="executor in item.executors" :key="executor.id">
-                      <el-tag type="primary">{{ executor.nodeName }}:{{ executor.privateIp}}
-                        <el-button type="text" style="margin-left: 10px; padding: 3px 0"
-                                   @click="handlerOpenXTerm(executor)"><span
-                          style="color: #535353">打开终端</span></el-button>
-                      </el-tag>
-                    </div>
-                  </span>
-                  <span v-show="item.executors.length === 0">
-                    No Executors
-                  </span>
-                </el-form>
-                <span slot="reference"><i class="el-icon-loading" v-if="item.building"></i>{{item.buildNumber}}</span>
-              </el-popover>
-            </el-button>
-          </el-button-group>
+          <build-view :items="props.row.buildViews" @handlerOpenExecutor="handlerOpenExecutor" @handlerOpenOutput="handlerOpenOutput"></build-view>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="210">
@@ -84,8 +57,8 @@
     <android-reinforce-job-build-dialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></android-reinforce-job-build-dialog>
     <java-job-deploy-dialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></java-job-deploy-dialog>
-    <terminal ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></terminal>
-    <view-job-build-output ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></view-job-build-output>
+    <terminal ref="terminalDialog" :formStatus="formXtermStatus"></terminal>
+    <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
   </div>
 </template>
 
@@ -98,7 +71,8 @@
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
   import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
-  import ViewJobBuildOutput from '@/components/opscloud/application/ViewJobBuildOutput'
+  import buildOutput from '@/components/opscloud/application/BuildOutput'
+  import buildView from '@/components/opscloud/application/BuildView'
 
   import { queryCdJobPage } from '@api/application/cd.job.js'
 
@@ -167,7 +141,8 @@
       JobEngineDialog,
       AndroidReinforceJobBuildDialog,
       JavaJobDeployDialog,
-      ViewJobBuildOutput
+      buildOutput,
+      buildView
     },
     methods: {
       ...mapActions({
@@ -215,13 +190,13 @@
         this.formEngineStatus.visible = true
         this.$refs.jobEngineDialog.initData(data)
       },
-      handlerOpenXTerm (executor) {
-        this.formXtermStatus.visible = true
-        this.$refs.xtermDialog.initData(executor)
-      },
-      handlerOpenViewBuildOutput (executors) {
+      handlerOpenOutput (executor) {
         this.formBuildOutputStatus.visible = true
-        this.$refs.viewJobBuildOutput.initData(1, executors[0].buildId)
+        this.$refs.buildOutput.open(1, executor.buildId)
+      },
+      handlerOpenExecutor (executor) {
+        this.formXtermStatus.visible = true
+        this.$refs.terminalDialog.open(executor)
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage

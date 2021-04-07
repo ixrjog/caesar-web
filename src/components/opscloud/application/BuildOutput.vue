@@ -130,7 +130,8 @@
         term.focus()
         this.term = term
       },
-      initData (buildType, buildId) {
+      // 对外函数
+      open (buildType, buildId) {
         this.initParam = {
           buildType: buildType,
           buildId: buildId

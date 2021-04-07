@@ -48,7 +48,7 @@
     methods: {
       handlerOpenExecutor (executor) {
         this.formTerminalStatus.visible = true
-        this.$refs.terminalDialog.initData(executor)
+        this.$refs.terminalDialog.open(executor)
       }
     }
   }
@@ -57,7 +57,8 @@
 <style>
   .el-row {
     margin-left: 0px;
-    margin-bottom: 5px;  &  :last-child {}
+    margin-bottom: 5px;
+    &:last-child {}
   }
 
   .title {

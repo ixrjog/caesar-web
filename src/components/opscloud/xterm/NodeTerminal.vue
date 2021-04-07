@@ -49,7 +49,7 @@
   export default {
     data () {
       return {
-        title: '工作节点Terminal',
+        title: '工作节点',
         socketURI: util.wsUrl(wsUrl),
         executor: {},
         server: {},
@@ -116,7 +116,7 @@
         this.formStatus.visible = false
       },
       // 对外
-      initData (executor) {
+      open (executor) {
         this.executor = executor
         this.server = executor.server
         this.handlerLogin()
