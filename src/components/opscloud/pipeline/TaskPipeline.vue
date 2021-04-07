@@ -10,10 +10,16 @@
                   #{{ pipeline.jobBuildNumber }}</span>
                 <span class="ago"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
-                <el-button style="float: right; padding: 3px 0" type="text" @click="handlerPipelineOutput(i)">
-                  Log
-                </el-button>
-              </el-tooltip>
+                  <el-button class="btn" type="text" @click="handlerPipelineOutput(i)">
+                   <d2-icon name="television"/>
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip class="item" effect="light" content="登录节点(管理员专用)" placement="top-start"
+                  v-if="pipeline.executors != null">
+                  <el-button class="btn" type="text" @click="handlerOpenTerminal(pipeline)">
+                    <d2-icon name="terminal"/>
+                  </el-button>
+                </el-tooltip>
               </span>
           </div>
           <div style="height: 120px">
@@ -120,6 +126,9 @@
       },
       handlerPipelineOutput (i) {
         this.$refs[`pipelines${i}`][0].doOutput()
+      },
+      handlerOpenTerminal (pipeline) {
+        this.$emit('handlerOpenTerminal', pipeline.executors[0].server)
       }
     }
   }
@@ -142,4 +151,11 @@
     color: #5b5d66;
     margin-left: 10px;
   }
+
+  .btn {
+    float: right;
+    padding: 3px 0;
+    margin-left: 10px;
+  }
+
 </style>

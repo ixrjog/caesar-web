@@ -5,12 +5,13 @@
       <el-radio v-model="radio" label="deployment">部署任务</el-radio>
     </el-row>
     <el-col :span="11">
-      <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOutput="handlerPipelineOutput" v-show="radio === 'build'"></task-pipeline>
-      <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOutput="handlerPipelineOutput" v-show="radio === 'deployment'"></task-pipeline>
+      <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOpenServer="handlerOpenXTerm" v-show="radio === 'build'"></task-pipeline>
+      <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOpenServer="handlerOpenXTerm" v-show="radio === 'deployment'"></task-pipeline>
     </el-col>
     <el-col :span="13">
       <pipeline-output ref="pipelineOutput"></pipeline-output>
     </el-col>
+    <XTerm :formStatus="formXtermStatus" ref="xtermDialog"></XTerm>
   </div>
 </template>
 
@@ -19,6 +20,8 @@
   import TaskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
   import PipelineOutput from '@/components/opscloud/pipeline/PipelineOutput'
 
+  import XTerm from '@/components/opscloud/xterm/XTerm'
+
   export default {
     data () {
       return {
@@ -26,23 +29,26 @@
         queryParam: {
           queryType: 'MY',
           querySize: 3
+        },
+        formXtermStatus: {
+          visible: false
         }
       }
     },
     components: {
       TaskPipeline,
-      PipelineOutput
+      PipelineOutput,
+      XTerm
     },
     beforeDestroy () {
     },
     mounted () {
     },
     methods: {
-      handlerSwitch () {
-        this.buildType = !this.buildType
-      },
-      handlerPipelineOutput (param) {
-        this.$refs.pipelineOutput.initData(param)
+      handlerOpenXTerm (server) {
+        console.log(server)
+        this.formXtermStatus.visible = true
+        this.$refs.xtermDialog.initData(server)
       }
     }
   }

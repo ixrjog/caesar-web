@@ -6,12 +6,13 @@
       </div>
       <el-col :span="12">
         <span class="title">Build Pipeline</span>
-        <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOutput="handlerPipelineOutput"></task-pipeline>
+        <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOpenTerminal="handlerOpenTerminal"></task-pipeline>
       </el-col>
       <el-col :span="12">
         <span class="title">Deployment Pipeline</span>
-        <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOutput="handlerPipelineOutput"></task-pipeline>
+        <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOpenTerminal="handlerOpenTerminal"></task-pipeline>
       </el-col>
+      <terminal :formStatus="formTerminalStatus" ref="terminalDialog"></terminal>
     </template>
   </d2-container>
 </template>
@@ -20,6 +21,8 @@
 
   // Component
   import taskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
+  // XTerm
+  import terminal from '@/components/opscloud/xterm/XTerm'
 
   export default {
     name: 'HotTop',
@@ -29,6 +32,9 @@
         queryParam: {
           queryType: 'ALL',
           querySize: 4
+        },
+        formTerminalStatus: {
+          visible: false
         }
       }
     },
@@ -36,11 +42,14 @@
     mounted () {
     },
     components: {
-      taskPipeline
+      taskPipeline,
+      terminal
     },
     methods: {
-      handlerPipelineOutput (param) {
-        // this.$refs.pipelineOutput.initData(param)
+      handlerOpenTerminal (server) {
+        console.log(server)
+        this.formTerminalStatus.visible = true
+        this.$refs.terminalDialog.initData(server)
       }
     }
   }
