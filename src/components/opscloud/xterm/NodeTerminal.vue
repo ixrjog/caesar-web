@@ -319,7 +319,7 @@
           }
           this.socketOnSend(JSON.stringify(command))
         }
-        this.$refs['pipelines0'].focus() // 强制焦点
+        this.$refs['terminal0'].focus() // 强制焦点
       }
     }
   }
