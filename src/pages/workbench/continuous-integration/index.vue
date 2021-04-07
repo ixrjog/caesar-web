@@ -18,7 +18,7 @@
                 <span>All build jobs</span>
                 <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
                            @click="handlerSwitch">
-                  <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
+                  <span style="margin-left: 5px;margin-right: 5px"><i class="fa fa-refresh" aria-hidden="true"></i>SWITCH</span>
                 </el-button>
               </div>
               <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
