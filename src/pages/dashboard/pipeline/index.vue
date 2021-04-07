@@ -4,14 +4,26 @@
       <div>
         <h1>{{title}}</h1>
       </div>
-      <el-col :span="12">
-        <span class="title">Build Pipeline</span>
-        <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-      </el-col>
-      <el-col :span="12">
-        <span class="title">Deployment Pipeline</span>
-        <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-      </el-col>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-tabs type="border-card">
+            <el-tab-pane>
+              <span slot="label"><span class="title">Build Pipeline</span></span>
+              <task-pipeline :buildType="0" :queryParam="queryParam"
+                             @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+        <el-col :span="12">
+          <el-tabs type="border-card">
+            <el-tab-pane>
+              <span slot="label">  <span class="title">Deployment Pipeline</span></span>
+              <task-pipeline :buildType="1" :queryParam="queryParam"
+                             @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+      </el-row>
       <terminal :formStatus="formTerminalStatus" ref="terminalDialog"></terminal>
     </template>
   </d2-container>
@@ -58,7 +70,11 @@
   .el-row {
     margin-left: 0px;
     margin-bottom: 5px;
-    &:last-child {}
+
+  &
+  :last-child {
+  }
+
   }
 
   .title {
