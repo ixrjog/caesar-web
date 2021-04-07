@@ -49,7 +49,7 @@
   export default {
     data () {
       return {
-        title: 'Web-XTerminal',
+        title: '工作节点Terminal',
         socketURI: util.wsUrl(wsUrl),
         executor: {},
         server: {},
@@ -57,7 +57,7 @@
         addonMap: [],
         // XTerm
         xterms: [],
-        xtermMap: {},
+        terminalMap: {},
         timer: null, // 心跳定时器
         xtermSize: {
           rows: 30
@@ -69,7 +69,7 @@
         }
       }
     },
-    name: 'JenkinsNodeXTerm',
+    name: 'NodeTerminal',
     props: ['formStatus'],
     mixins: [],
     mounted () {
@@ -78,8 +78,8 @@
     beforeDestroy () {
       try {
         this.socket.close()
-        for (let instanceId in this.xtermMap) {
-          this.xtermMap[instanceId].dispose()
+        for (let instanceId in this.terminalMap) {
+          this.terminalMap[instanceId].dispose()
         }
       } catch (e) {
       }
@@ -108,23 +108,22 @@
         this.handlerClose()
         try {
           this.socket.close()
-          for (let instanceId in this.xtermMap) {
-            this.xtermMap[instanceId].dispose()
+          for (let instanceId in this.terminalMap) {
+            this.terminalMap[instanceId].dispose()
           }
         } catch (e) {
         }
         this.formStatus.visible = false
       },
+      // 对外
       initData (executor) {
         this.executor = executor
         this.server = executor.server
-        // this.server = server
         this.handlerLogin()
       },
       setTimer () {
         this.timer = setInterval(() => {
           this.handlerSSHHeartbeat()
-          // console.log('开始定时...每10秒执行一次')
         }, 10000)
       },
       /**
@@ -140,7 +139,6 @@
         }
       },
       initTermInstance (server) {
-        let _this = this
         let id = server.name
         const term = new Terminal({
           rendererType: 'canvas', // 渲染类型
@@ -159,12 +157,13 @@
           cursorBlink: true, // 光标闪烁
           convertEol: true // 启用时，光标将设置为下一行的开头
         })
-        _this.addonMap[id] = new FitAddon()
-        term.loadAddon(_this.addonMap[id])
+        this.addonMap[id] = new FitAddon()
+        term.loadAddon(this.addonMap[id])
         term.open(document.getElementById(id))
         // 获取对象的高度和宽度
-        _this.addonMap[id].fit()
+        this.addonMap[id].fit()
         term.focus()
+        let _this = this
         term.onData(function (cmd) {
           let command = {
             data: cmd,
@@ -173,13 +172,13 @@
           }
           _this.socketOnSend(JSON.stringify(command))
         })
-        this.xtermMap[id] = term
+        this.terminalMap[id] = term
       },
       /**
        * 后端调整体型
        */
       handlerResize () {
-        for (let instanceId in this.xtermMap) {
+        for (let instanceId in this.terminalMap) {
           // 获取对象的高度和宽度
           this.addonMap[instanceId].fit()
           let xtermResize = {
@@ -190,7 +189,7 @@
           }
           this.socketOnSend(JSON.stringify(xtermResize))
           // 滚动到底部
-          this.xtermMap[instanceId].scrollToBottom()
+          this.terminalMap[instanceId].scrollToBottom()
         }
       },
       /**
@@ -229,9 +228,9 @@
           instanceId: id
         }
         this.socketOnSend(JSON.stringify(logout))
-        let term = this.xtermMap[id]
+        let term = this.terminalMap[id]
         term.dispose()
-        delete (this.xtermMap[id])
+        delete (this.terminalMap[id])
         this.xterms = this.xterms.filter(function (n) {
           return n !== id
         })
@@ -243,14 +242,14 @@
         }
         this.socketOnSend(JSON.stringify(close))
         this.xterms = []
-        this.xtermMap = {}
+        this.terminalMap = {}
         clearInterval(this.timer)
       },
       /**
        * 批量登录
        */
       handlerLogin () {
-        this.xtermMap = {}
+        this.terminalMap = {}
         this.initSocket()
         this.setTimer()
       },
@@ -306,12 +305,12 @@
           let messageJson = JSON.parse(message.data)
           let _this = this
           messageJson.map(function (n) {
-            _this.xtermMap[n.instanceId].write(n.output)
+            _this.terminalMap[n.instanceId].write(n.output)
           })
         }
       },
       handlerSendCmd () {
-        for (let id in this.xtermMap) {
+        for (let id in this.terminalMap) {
           let command = {
             data: 'cd ' + this.executor.workspace + '\n',
             status: 'COMMAND',
@@ -319,7 +318,7 @@
           }
           this.socketOnSend(JSON.stringify(command))
         }
-        this.$refs['terminal0'].focus() // 强制焦点
+        this.terminalMap[this.server.name].focus() // 强制焦点
       }
     }
   }
