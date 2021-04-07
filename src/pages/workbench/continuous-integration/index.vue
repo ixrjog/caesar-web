@@ -33,8 +33,8 @@
               </div>
               <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
             </el-card>
-            <task-pipeline v-show="buildType" class="pipeline" :buildType="0" :queryParam="queryParam" @handlerOpenTerminal="handlerOpenTerminal"></task-pipeline>
-            <task-pipeline v-show="!buildType" class="pipeline" :buildType="1" :queryParam="queryParam" @handlerOpenTerminal="handlerOpenTerminal"></task-pipeline>
+            <task-pipeline v-show="buildType" class="pipeline" :buildType="0" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+            <task-pipeline v-show="!buildType" class="pipeline" :buildType="1" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -57,7 +57,7 @@
   import TaskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
   // import MyTaskPipeline from '@/components/opscloud/pipeline/MyTaskPipeline.vue'
   // XTerm
-  import terminal from '@/components/opscloud/xterm/XTerm'
+  import terminal from '@/components/opscloud/xterm/NodeTerminal'
 
   export default {
     data () {
@@ -114,7 +114,7 @@
         this.$refs.myCdJobTable.initData(application)
         this.setTimer() // 启动定时器查询任务列表
       },
-      handlerOpenTerminal (server) {
+      handlerOpenExecutor (server) {
         console.log(server)
         this.formTerminalStatus.visible = true
         this.$refs.terminalDialog.initData(server)

@@ -66,14 +66,14 @@
         </el-card>
       </el-tab-pane>
     </el-tabs>
-    <XTerm :formStatus="formXtermStatus" ref="xtermDialog"></XTerm>
+    <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>
   </div>
 </template>
 
 <script>
 
   // XTerm
-  import XTerm from '@/components/opscloud/xterm/XTerm'
+  import terminal from '@/components/opscloud/xterm/Terminal'
 
   import { queryServerTaskById, abortServerTaskById, abortServerTaskMemberById } from '@api/server/server.task.js'
 
@@ -105,7 +105,7 @@
     mounted () {
     },
     components: {
-      XTerm
+      terminal
     },
     methods: {
       initData (taskId) {

@@ -84,7 +84,7 @@
     <android-reinforce-job-build-dialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></android-reinforce-job-build-dialog>
     <java-job-deploy-dialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></java-job-deploy-dialog>
-    <jenkins-node-x-term ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></jenkins-node-x-term>
+    <terminal ref="xtermDialog" :formStatus="formXtermStatus" @openXTerm="handlerOpenXTerm"></terminal>
     <view-job-build-output ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></view-job-build-output>
   </div>
 </template>
@@ -93,7 +93,7 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  import JenkinsNodeXTerm from '@/components/opscloud/xterm/JenkinsNodeXTerm'
+  import terminal from '@/components/opscloud/xterm/NodeTerminal'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
@@ -162,7 +162,7 @@
     beforeDestroy () {
     },
     components: {
-      JenkinsNodeXTerm,
+      terminal,
       CdJobDialog,
       JobEngineDialog,
       AndroidReinforceJobBuildDialog,

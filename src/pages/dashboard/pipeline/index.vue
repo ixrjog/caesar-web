@@ -6,11 +6,11 @@
       </div>
       <el-col :span="12">
         <span class="title">Build Pipeline</span>
-        <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOpenTerminal="handlerOpenTerminal"></task-pipeline>
+        <task-pipeline :buildType="0" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
       </el-col>
       <el-col :span="12">
         <span class="title">Deployment Pipeline</span>
-        <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOpenTerminal="handlerOpenTerminal"></task-pipeline>
+        <task-pipeline :buildType="1" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
       </el-col>
       <terminal :formStatus="formTerminalStatus" ref="terminalDialog"></terminal>
     </template>
@@ -22,7 +22,7 @@
   // Component
   import taskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
   // XTerm
-  import terminal from '@/components/opscloud/xterm/XTerm'
+  import terminal from '@/components/opscloud/xterm/NodeTerminal'
 
   export default {
     name: 'HotTop',
@@ -46,10 +46,9 @@
       terminal
     },
     methods: {
-      handlerOpenTerminal (server) {
-        console.log(server)
+      handlerOpenExecutor (executor) {
         this.formTerminalStatus.visible = true
-        this.$refs.terminalDialog.initData(server)
+        this.$refs.terminalDialog.initData(executor)
       }
     }
   }
@@ -58,12 +57,7 @@
 <style>
   .el-row {
     margin-left: 0px;
-    margin-bottom: 5px;
-
-  &
-  :last-child {
-  }
-
+    margin-bottom: 5px;  &  :last-child {}
   }
 
   .title {

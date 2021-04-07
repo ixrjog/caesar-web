@@ -119,7 +119,7 @@
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
     <!--    @openXTerm="handlerOpenXTerm"-->
-    <jenkinsNodeXTerm ref="xtermDialog" :formStatus="formXtermStatus"></jenkinsNodeXTerm>
+    <terminal ref="xtermDialog" :formStatus="formXtermStatus"></terminal>
     <viewJobBuildOutput ref="viewJobBuildOutput" :formStatus="formBuildOutputStatus"></viewJobBuildOutput>
     <ciJobPermissionDialog ref="ciJobPermissionDialog" :formStatus="formPermissionStatus"></ciJobPermissionDialog>
   </div>
@@ -129,7 +129,7 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  import JenkinsNodeXTerm from '@/components/opscloud/xterm/JenkinsNodeXTerm'
+  import terminal from '@/components/opscloud/xterm/NodeTerminal'
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
@@ -209,7 +209,7 @@
     beforeDestroy () {
     },
     components: {
-      JenkinsNodeXTerm,
+      terminal,
       CiJobDialog,
       CdJobDialog,
       JobEngineDialog,

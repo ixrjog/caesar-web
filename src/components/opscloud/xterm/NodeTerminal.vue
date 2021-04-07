@@ -1,10 +1,11 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" @close='handlerExit'>
-    <div v-for="xterm in xterms" :key="xterm">
+    <div v-for="(xterm,i) in xterms" :key="xterm">
       <template>
         <el-col :span="24">
           <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
-            <el-button type="text" style="margin-left: 10px; padding: 3px 0" @click="handlerSendCmd(0)">[点击进入工作目录] cd {{executor.workspace}}
+            <el-button type="text" style="margin-left: 10px; padding: 3px 0" @click="handlerSendCmd(0)">[点击进入工作目录] cd
+              {{executor.workspace}}
             </el-button>
           </el-alert>
           <el-card shadow="hover" body-style="padding: 2px" style="margin-right: 10px;margin-bottom: 10px">
@@ -21,7 +22,7 @@
                 </el-button>
               </el-tooltip>
             </div>
-            <div :id="xterm" class="xterm">
+            <div :id="xterm" class="xterm" :ref="`terminal${i}`">
             </div>
           </el-card>
         </el-col>
@@ -318,6 +319,7 @@
           }
           this.socketOnSend(JSON.stringify(command))
         }
+        this.$refs['pipelines0'].focus() // 强制焦点
       }
     }
   }
