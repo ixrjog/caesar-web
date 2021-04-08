@@ -5,6 +5,7 @@
       <el-row>
         <b class="outputTitle">Console Output</b>
         <el-button class="outputButton" type="text" @click="closeOutput">Close</el-button>
+        <el-button class="outputButton" type="text" @click="fitOutput">Fit</el-button>
       </el-row>
       <div :id="`console${buildId}`" class="xterm"></div>
     </div>
@@ -42,7 +43,8 @@
           foreground: '#FFFFFF', // 字体
           background: '#606266', // 背景色
           cursor: 'help'// 设置光标
-        }
+        },
+        fitAddon: null
       }
     },
     props: ['buildType', 'buildId'],
@@ -83,6 +85,9 @@
         this.socketOnMessage()
         this.setTimer() // 心跳
       },
+      fitOutput () {
+        this.fitAddon.fit()
+      },
       closeOutput () {
         this.showOutput = false
         if (this.socket !== null) {
@@ -117,12 +122,12 @@
           convertEol: true, // 启用时，光标将设置为下一行的开头
           disableStdin: true // 是否应禁用输入
         })
-        let fitAddon = new FitAddon()
-        term.loadAddon(fitAddon)
+        this.fitAddon = new FitAddon()
+        term.loadAddon(this.fitAddon)
         term.open(document.getElementById('console' + this.buildId))
         // term.write(this.output)
         // 获取对象的高度和宽度
-        fitAddon.fit()
+        this.fitAddon.fit()
         term.focus()
         this.term = term
       },
