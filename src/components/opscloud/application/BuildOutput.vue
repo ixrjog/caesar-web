@@ -145,7 +145,7 @@
         this.socket.onopen = () => { // 链接成功后
           try {
             this.$nextTick(() => { // 需要延迟执行
-              // this.initLogOutput()
+              this.initLogOutput()
               let msg = {
                 status: 'INITIAL',
                 buildType: this.initParam.buildType,
