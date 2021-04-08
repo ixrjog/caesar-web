@@ -6,7 +6,7 @@
         <b class="outputTitle">Console Output</b>
         <el-button class="outputButton" type="text" @click="closeOutput">Close</el-button>
       </el-row>
-      <div :id="`outputXterm${buildId}`" class="xterm"></div>
+      <div :id="`console${buildId}`" class="xterm"></div>
     </div>
   </div>
 </template>
@@ -119,10 +119,10 @@
         })
         let fitAddon = new FitAddon()
         term.loadAddon(fitAddon)
-        term.open(document.getElementById('outputXterm' + this.buildId))
+        term.open(document.getElementById('console' + this.buildId))
         // term.write(this.output)
         // 获取对象的高度和宽度
-        // fitAddon.fit()
+        fitAddon.fit()
         term.focus()
         this.term = term
       },

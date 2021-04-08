@@ -3,7 +3,7 @@
              :visible.sync="formStatus.visible" :before-close="closeDialog" width="80%">
     <el-form>
       <el-card shadow="never">
-        <div id="outputXterm" class="xterm"></div>
+        <div id="console" class="xterm"></div>
       </el-card>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -45,7 +45,8 @@
           foreground: '#FFFFFF', // 字体
           background: '#606266', // 背景色
           cursor: 'help'// 设置光标
-        }
+        },
+        fitAddon: null
       }
     },
     props: ['formStatus'],
@@ -121,12 +122,12 @@
           convertEol: true, // 启用时，光标将设置为下一行的开头
           disableStdin: true // 是否应禁用输入
         })
-        let fitAddon = new FitAddon()
-        term.loadAddon(fitAddon)
-        term.open(document.getElementById('outputXterm'))
+        this.fitAddon = new FitAddon()
+        term.loadAddon(this.fitAddon)
+        term.open(document.getElementById('console'))
         // term.write(this.output)
         // 获取对象的高度和宽度
-        fitAddon.fit()
+        this.fitAddon.fit()
         term.focus()
         this.term = term
       },
@@ -144,7 +145,7 @@
         this.socket.onopen = () => { // 链接成功后
           try {
             this.$nextTick(() => { // 需要延迟执行
-              this.initLogOutput()
+              // this.initLogOutput()
               let msg = {
                 status: 'INITIAL',
                 buildType: this.initParam.buildType,

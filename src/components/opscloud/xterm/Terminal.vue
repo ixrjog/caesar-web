@@ -132,7 +132,6 @@
         }
       },
       initTermInstance (server) {
-        let _this = this
         let id = server.name
         const term = new Terminal({
           rendererType: 'canvas', // 渲染类型
@@ -151,12 +150,13 @@
           cursorBlink: true, // 光标闪烁
           convertEol: true // 启用时，光标将设置为下一行的开头
         })
-        _this.addonMap[id] = new FitAddon()
-        term.loadAddon(_this.addonMap[id])
+        this.addonMap[id] = new FitAddon()
+        term.loadAddon(this.addonMap[id])
         term.open(document.getElementById(id))
         // 获取对象的高度和宽度
-        _this.addonMap[id].fit()
+        this.addonMap[id].fit()
         term.focus()
+        let _this = this
         term.onData(function (cmd) {
           let commond = {
             data: cmd,
