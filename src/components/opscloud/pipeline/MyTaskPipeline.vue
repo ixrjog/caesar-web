@@ -11,7 +11,7 @@
     <el-col :span="13">
       <pipeline-output ref="pipelineOutput"></pipeline-output>
     </el-col>
-    <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>
+    <terminalMaster :formStatus="formXtermStatus" ref="xtermDialog"></terminalMaster>
   </div>
 </template>
 
@@ -20,7 +20,7 @@
   import TaskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
   import PipelineOutput from '@/components/opscloud/pipeline/PipelineOutput'
 
-  import terminal from '@/components/opscloud/xterm/Terminal'
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
 
   export default {
     data () {
@@ -38,7 +38,7 @@
     components: {
       TaskPipeline,
       PipelineOutput,
-      terminal
+      terminalMaster
     },
     beforeDestroy () {
     },
@@ -46,7 +46,6 @@
     },
     methods: {
       handlerOpenXTerm (server) {
-        console.log(server)
         this.formXtermStatus.visible = true
         this.$refs.xtermDialog.initData(server)
       }

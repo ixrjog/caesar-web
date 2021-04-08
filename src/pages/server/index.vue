@@ -143,7 +143,8 @@
       <!-- tag编辑-->
       <TagTransferDialog :formStatus="formTagTransferStatus" ref="tagTransferDialog"
                          @closeDialog="fetchData"></TagTransferDialog>
-      <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>
+<!--      <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>-->
+      <terminalMaster :formStatus="formXtermStatus" ref="xtermDialog"></terminalMaster>
     </template>
   </d2-container>
 </template>
@@ -153,8 +154,8 @@
   // Component
   import ServerDialog from '@/components/opscloud/dialog/ServerDialog'
   import TagTransferDialog from '@/components/opscloud/dialog/TagTransferDialog'
-  // XTerm
-  import terminal from '@/components/opscloud/xterm/Terminal'
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
+
   // Filters
   import {
     getLoginTypeText, getMonitorStatusText, getMonitorStatusType, getServerTypeText, getServerStatusType,
@@ -243,7 +244,7 @@
     components: {
       ServerDialog,
       TagTransferDialog,
-      terminal
+      terminalMaster
     },
     filters: {
       getLoginTypeText,
@@ -289,9 +290,9 @@
       handleClick () {
         this.$emit('input', !this.value)
       },
-      handlerXTerm (row) {
+      handlerXTerm (server) {
         this.formXtermStatus.visible = true
-        this.$refs.xtermDialog.initData(row)
+        this.$refs.xtermDialog.open(server)
       },
       handlerRowDel (row) {
         this.$confirm('此操作将删除当前配置?', '提示', {

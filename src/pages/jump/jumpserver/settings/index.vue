@@ -159,7 +159,7 @@
           </el-tab-pane>
         </el-tabs>
       </el-col>
-      <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>
+      <terminalMaster :formStatus="formXtermStatus" ref="xtermDialog"></terminalMaster>
     </template>
   </d2-container>
 </template>
@@ -167,9 +167,7 @@
 <script>
   import { mapState, mapActions } from 'vuex'
   // Component
-  // XTerm
-  import terminal from '@/components/opscloud/xterm/Terminal'
-
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
   import doc from '@/static/md/jump.jumpserver.settings.md'
   // Filters
   import { getUserRoleType, getUserRoleText } from '@/filters/jumpserver.js'
@@ -233,7 +231,7 @@
       this.fetchTerminalSessionData()
     },
     components: {
-      terminal
+      terminalMaster
     },
     filters: {
       getUserRoleType,

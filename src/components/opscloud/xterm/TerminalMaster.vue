@@ -1,13 +1,13 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" :before-close='handlerCloseDialog'>
-    <div v-for="xterm in xterms" :key="xterm">
+    <div v-for="s in servers" :key="s.name">
       <template>
         <el-col :span="24">
           <el-card shadow="hover" body-style="padding: 2px" style="margin-right: 10px;margin-bottom: 10px">
             <div slot="header" class="clearfix" style="height: 15px">
-              <span> <el-tag> {{ xterm }}</el-tag></span>
+              <span> <el-tag> {{ s.name }}</el-tag></span>
               <el-tooltip class="item" effect="light" content="退出" placement="top-start">
-                <el-button style="float: right; padding: 3px 0" type="text" @click="handlerLogout(xterm)">
+                <el-button style="float: right; padding: 3px 0" type="text" @click="handlerLogout(s.name)">
                   Logout
                 </el-button>
               </el-tooltip>
@@ -17,8 +17,8 @@
                 </el-button>
               </el-tooltip>
             </div>
-            <div :id="xterm" class="xterm">
-            </div>
+            <terminal-item :terminalSetting="terminalSetting" :server="s" @sendMessage="sendMessage"
+                           :ref="`terminal_${s.name}`" :id="`${s.name}`"></terminal-item>
           </el-card>
         </el-col>
       </template>
@@ -31,10 +31,8 @@
 
 <script>
   import util from '@/libs/util'
-  // X-Terminal
-  import 'xterm/css/xterm.css'
-  import { Terminal } from 'xterm'
-  import { FitAddon } from 'xterm-addon-fit'
+
+  import terminalItem from '@/components/opscloud/xterm/TerminalItem.vue'
 
   import { queryUserSettingByGroup } from '@api/user/user.setting.js'
 
@@ -44,37 +42,31 @@
   export default {
     data () {
       return {
-        title: 'Web-XTerminal',
+        title: '超级终端',
         socketURI: util.wsUrl(wsUrl),
-        server: {},
-        // 插件容器
-        addonMap: [],
-        // XTerm
-        xterms: [],
-        xtermMap: {},
+        server: {}, // 原服务器
+        servers: [], // 所有服务器列表
         timer: null, // 心跳定时器
-        xtermSize: {
-          rows: 30
-        },
-        xtermTheme: { // 终端主题
+        // xtermTheme
+        terminalSetting: { // 终端主题
           foreground: '#FFFFFF', // 字体
           background: '#606266', // 背景色
           cursor: 'help'// 设置光标
         }
       }
     },
-    name: 'XTerm',
+    name: 'TerminalMaster',
     props: ['formStatus'],
     mixins: [],
+    components: {
+      terminalItem
+    },
     mounted () {
-      this.setXTermSetting()
+      this.initTerminalSetting()
     },
     beforeDestroy () {
       try {
         this.socket.close()
-        for (let instanceId in this.xtermMap) {
-          this.xtermMap[instanceId].dispose()
-        }
       } catch (e) {
       }
       clearInterval(this.timer) // 销毁定时器
@@ -83,14 +75,14 @@
       /**
        * 设置终端主题色彩
        */
-      setXTermSetting () {
+      initTerminalSetting () {
         queryUserSettingByGroup(settingGroup)
           .then(res => {
             if (res.success) {
               try {
-                this.xtermTheme.foreground = res.body['XTERM_FOREGROUND']
-                this.xtermTheme.background = res.body['XTERM_BACKGROUND']
-                this.xtermSize.rows = res.body['XTERM_ROWS'] || 30
+                this.terminalSetting.foreground = res.body['XTERM_FOREGROUND']
+                this.terminalSetting.background = res.body['XTERM_BACKGROUND']
+                this.terminalSetting.rows = res.body['XTERM_ROWS'] || 30
               } catch (e) {
               }
             } else {
@@ -100,18 +92,18 @@
       },
       handlerExit () {
         this.handlerClose()
-        try {
-          this.socket.close()
-          for (let instanceId in this.xtermMap) {
-            this.xtermMap[instanceId].dispose()
-          }
-        } catch (e) {
-        }
         this.formStatus.visible = false
       },
-      initData (server) {
+      open (server) {
         this.server = server
+        this.servers.push(server)
+        this.initTerminal(server)
         this.handlerLogin()
+      },
+      initTerminal (server) {
+        this.$nextTick(() => {
+          this.$refs[`terminal_${server.name}`][0].init()
+        })
       },
       setTimer () {
         this.timer = setInterval(() => {
@@ -131,59 +123,11 @@
         } catch (e) {
         }
       },
-      initTermInstance (server) {
-        let id = server.name
-        const term = new Terminal({
-          rendererType: 'canvas', // 渲染类型
-          allowTransparency: true,
-          fontSize: 11,
-          rows: this.xtermSize.rows,
-          theme: this.xtermTheme,
-          termName: 'xterm',
-          visualBell: false,
-          popOnBell: false,
-          scrollback: 1000, // 最大滚动行数
-          screenKeys: false,
-          debug: false,
-          cancelEvents: false,
-          cursorStyle: 'underline', // 光标样式
-          cursorBlink: true, // 光标闪烁
-          convertEol: true // 启用时，光标将设置为下一行的开头
-        })
-        this.addonMap[id] = new FitAddon()
-        term.loadAddon(this.addonMap[id])
-        term.open(document.getElementById(id))
-        // 获取对象的高度和宽度
-        this.addonMap[id].fit()
-        term.focus()
-        let _this = this
-        term.onData(function (cmd) {
-          let commond = {
-            data: cmd,
-            status: 'COMMAND',
-            instanceId: id
-          }
-          _this.socketOnSend(JSON.stringify(commond))
-        })
-        this.xtermMap[id] = term
-      },
       /**
        * 后端调整体型
        */
-      handlerResize () {
-        for (let instanceId in this.xtermMap) {
-          // 获取对象的高度和宽度
-          this.addonMap[instanceId].fit()
-          let xtermResize = {
-            status: 'RESIZE',
-            instanceId: instanceId,
-            xtermWidth: this.addonMap[instanceId]._terminal.cols * 7, // 边界扣除
-            xtermHeight: document.getElementById(instanceId).clientHeight
-          }
-          this.socketOnSend(JSON.stringify(xtermResize))
-          // 滚动到底部
-          this.xtermMap[instanceId].scrollToBottom()
-        }
+      handlerResize (server) {
+        this.$refs[`terminal_${server.name}`][0].resize()
       },
       /**
        * 复制会话，重开一个终端（支持变更用户类型）
@@ -192,50 +136,47 @@
       handlerDuplicateSession () {
         // 计算 instanceId  源id  server-prod-1#1
         const instanceId = this.server.name + '#' + util.uuid()
-
-        let duplicateSession = {
+        let sourceTerminal = this.$refs[`terminal_${this.server.name}`][0]
+        let duplicateSessionMessage = {
           status: 'DUPLICATE_SESSION_IP',
           duplicateInstanceId: this.server.name,
           token: util.cookies.get('token'),
           instanceId: instanceId,
-          xtermWidth: this.addonMap[instanceId.split('#')[0]]._terminal.cols * 7,
+          xtermWidth: sourceTerminal.fitAddon._terminal.cols * 7,
           xtermHeight: document.getElementById(instanceId.split('#')[0]).clientHeight
         }
-        this.xterms.push(instanceId)
         let server = {
           name: instanceId,
           ip: this.server.privateIp
         }
+        this.servers.push(server)
         this.$nextTick(() => {
-          this.initTermInstance(server)
-          this.socketOnSend(JSON.stringify(duplicateSession))
+          this.initTerminal(server)
+          this.sendMessage(JSON.stringify(duplicateSessionMessage))
         })
       },
       /**
        * 单个终端退出
        * @param id
        */
-      handlerLogout (id) {
-        let logout = {
+      handlerLogout (name) {
+        let logoutMessage = {
           status: 'LOGOUT',
-          instanceId: id
+          instanceId: name
         }
-        this.socketOnSend(JSON.stringify(logout))
-        let term = this.xtermMap[id]
-        term.dispose()
-        delete (this.xtermMap[id])
-        this.xterms = this.xterms.filter(function (n) {
-          return n !== id
+        this.sendMessage(JSON.stringify(logoutMessage))
+        this.$refs[`terminal_${name}`][0].logout()
+        this.servers = this.servers.filter(function (s) {
+          return s.name !== name
         })
-        this.$message.warning(id + '终端已关闭')
+        this.$message.warning(name + '终端已关闭')
       },
       handlerClose () {
         let close = {
           status: 'CLOSE'
         }
         this.socketOnSend(JSON.stringify(close))
-        this.xterms = []
-        this.xtermMap = {}
+        this.servers = []
         clearInterval(this.timer)
       },
       handlerCloseDialog (done) {
@@ -248,12 +189,14 @@
           })
       },
       /**
-       * 批量登录
+       * 登录
        */
       handlerLogin () {
-        this.xtermMap = {}
         this.initSocket()
         this.setTimer()
+      },
+      sendMessage (message) {
+        this.socketOnSend(message)
       },
       /**
        * WS初始化
@@ -268,11 +211,11 @@
       socketOnOpen () {
         this.socket.onopen = () => { // 链接成功后
           try {
-            this.xterms = []
-            this.xterms.push(this.server.name)
+            this.servers = []
+            this.servers.push(this.server)
+            // this.xterms.push(this.server.name)
             this.$nextTick(() => { // 需要延迟执行
-              this.initTermInstance(this.server)
-              let initXterm = {
+              let initMessage = {
                 token: util.cookies.get('token'),
                 instanceId: this.server.name,
                 ip: this.server.privateIp,
@@ -280,9 +223,9 @@
                 xtermWidth: 0,
                 xtermHeight: 308
               }
-              this.socketOnSend(JSON.stringify(initXterm))
+              this.socketOnSend(JSON.stringify(initMessage))
               this.$nextTick(() => {
-                this.handlerResize()
+                this.handlerResize(this.server)
               })
             })
           } catch (e) {
@@ -307,7 +250,7 @@
           let messageJson = JSON.parse(message.data)
           let _this = this
           messageJson.map(function (n) {
-            _this.xtermMap[n.instanceId].write(n.output)
+            _this.$refs[`terminal_${n.instanceId}`][0].write(n.output)
           })
         }
       }
