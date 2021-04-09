@@ -13,25 +13,16 @@
           <el-col :span="17">
             <announcement-carousel></announcement-carousel>
             <block-platform-status></block-platform-status>
-            <el-card shadow="hover" v-show="buildType" style="margin-bottom: 10px">
+            <el-card shadow="hover" style="margin-bottom: 10px" v-show="application !== null">
               <div slot="header" class="clearfix">
-                <span>All build jobs</span>
+                <el-tag>{{ application !== null ?application.name : '' }}{{buildType? ' build Job' : ' deployment Job' }}</el-tag>
                 <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
                            @click="handlerSwitch">
                   <span style="margin-left: 5px;margin-right: 5px"><i class="fa fa-refresh" aria-hidden="true"></i>SWITCH</span>
                 </el-button>
               </div>
-              <my-ci-job-table ref="myCiJobTable"></my-ci-job-table>
-            </el-card>
-            <el-card shadow="hover" v-show="!buildType" style="margin-bottom: 10px">
-              <div slot="header" class="clearfix">
-                <span>All deploy jobs</span>
-                <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
-                           @click="handlerSwitch">
-                  <i class="fa fa-refresh" aria-hidden="true"></i>SWITCH
-                </el-button>
-              </div>
-              <my-cd-job-table ref="myCdJobTable"></my-cd-job-table>
+              <my-ci-job-table ref="myCiJobTable" v-show="buildType" ></my-ci-job-table>
+              <my-cd-job-table ref="myCdJobTable" v-show="!buildType"></my-cd-job-table>
             </el-card>
             <task-pipeline v-show="buildType" :buildType="0" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
             <task-pipeline v-show="!buildType" :buildType="1" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
@@ -72,6 +63,7 @@
       return {
         title: '持续集成',
         activeName: 'application',
+        application: null,
         buildType: true,
         timer: null, // 查询定时器
         intervalTime: 12000,
@@ -118,6 +110,7 @@
         this.buildType = !this.buildType
       },
       handlerSelApplication (application) {
+        this.application = application
         this.$refs.myCiJobTable.initData(application)
         this.$refs.myCdJobTable.initData(application)
         this.setTimer() // 启动定时器查询任务列表

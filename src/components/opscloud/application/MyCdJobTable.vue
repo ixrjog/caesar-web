@@ -1,8 +1,8 @@
 <template>
   <div>
-    <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model.trim="application.name" disabled placeholder="应用名称"></el-input>
-    </el-row>
+<!--    <el-row style="margin-bottom: 5px" :gutter="24">-->
+<!--      <el-input v-model.trim="application.name" disabled placeholder="应用名称"></el-input>-->
+<!--    </el-row>-->
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">

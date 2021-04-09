@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model="application.name" disabled placeholder="应用名称"></el-input>
+<!--      <el-input v-model="application.name" disabled placeholder="应用名称"></el-input>-->
       <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询"></el-input>
       <el-checkbox v-model="queryParam.showHide" @click="fetchData">显示隐藏任务</el-checkbox>
       <el-button @click="fetchData" style="margin-left: 5px" :disabled="application === ''">查询</el-button>
