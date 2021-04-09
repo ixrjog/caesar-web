@@ -31,6 +31,12 @@
   const wsUrl = 'ws/job/output'
   const settingGroup = 'XTERM'
 
+  const theme = {
+    foreground: '#FFFFFF', // 字体
+    background: '#606266', // 背景色
+    cursor: 'help' // 设置光标
+  }
+
   export default {
     name: 'PipelineOutput',
     data () {
@@ -45,10 +51,8 @@
           name: util.uuid()
         },
         loading: true,
-        terminalSetting: { // 终端主题
-          foreground: '#FFFFFF', // 字体
-          background: '#606266', // 背景色
-          cursor: 'help'// 设置光标
+        terminalSetting: {
+          theme: theme
         }
       }
     },
@@ -70,8 +74,8 @@
           .then(res => {
             if (res.success) {
               try {
-                this.terminalSetting.foreground = res.body['XTERM_FOREGROUND']
-                this.terminalSetting.background = res.body['XTERM_BACKGROUND']
+                this.terminalSetting.theme.foreground = res.body['XTERM_FOREGROUND']
+                this.terminalSetting.theme.background = res.body['XTERM_BACKGROUND']
                 this.terminalSetting.rows = res.body['XTERM_ROWS'] || 30
               } catch (e) {
               }

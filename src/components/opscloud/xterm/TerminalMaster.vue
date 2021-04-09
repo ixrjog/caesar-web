@@ -38,6 +38,12 @@
   const wsUrl = 'ws/xterm'
   const settingGroup = 'XTERM'
 
+  const theme = {
+    foreground: '#FFFFFF', // 字体
+    background: '#606266', // 背景色
+    cursor: 'help' // 设置光标
+  }
+
   export default {
     data () {
       return {
@@ -46,11 +52,8 @@
         server: {}, // 原服务器
         servers: [], // 所有服务器列表
         timer: null, // 心跳定时器
-        // xtermTheme
         terminalSetting: { // 终端主题
-          foreground: '#FFFFFF', // 字体
-          background: '#606266', // 背景色
-          cursor: 'help'// 设置光标
+          theme: theme
         }
       }
     },
@@ -79,8 +82,8 @@
           .then(res => {
             if (res.success) {
               try {
-                this.terminalSetting.foreground = res.body['XTERM_FOREGROUND']
-                this.terminalSetting.background = res.body['XTERM_BACKGROUND']
+                this.terminalSetting.theme.foreground = res.body['XTERM_FOREGROUND']
+                this.terminalSetting.theme.background = res.body['XTERM_BACKGROUND']
                 this.terminalSetting.rows = res.body['XTERM_ROWS'] || 30
               } catch (e) {
               }
