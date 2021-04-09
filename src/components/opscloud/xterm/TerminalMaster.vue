@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" :before-close='handlerCloseDialog'>
+  <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" :before-close='handlerClose'>
     <div v-for="s in servers" :key="s.name">
       <template>
         <el-col :span="24">
@@ -37,6 +37,12 @@
 
   const wsUrl = 'ws/xterm'
   const settingGroup = 'XTERM'
+
+  const message = {
+    close: {
+      status: 'CLOSE'
+    }
+  }
 
   const theme = {
     foreground: '#FFFFFF', // 字体
@@ -93,7 +99,9 @@
           })
       },
       handlerExit () {
-        this.handlerClose()
+        this.sendMessage(JSON.stringify(message.close))
+        this.servers = []
+        clearInterval(this.timer)
         this.formStatus.visible = false
       },
       open (server) {
@@ -173,15 +181,7 @@
         })
         this.$message.warning(name + '终端已关闭')
       },
-      handlerClose () {
-        let close = {
-          status: 'CLOSE'
-        }
-        this.socketOnSend(JSON.stringify(close))
-        this.servers = []
-        clearInterval(this.timer)
-      },
-      handlerCloseDialog (done) {
+      handlerClose (done) {
         this.$confirm('确定退出Web终端,并关闭所有会话?')
           .then(_ => {
             done()
