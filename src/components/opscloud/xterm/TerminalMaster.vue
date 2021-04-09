@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" :before-close='handlerClose'>
-    <slot></slot> 
+    <slot></slot>
     <div v-for="s in servers" :key="s.name">
       <template>
         <el-col :span="24">

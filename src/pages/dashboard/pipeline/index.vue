@@ -26,12 +26,18 @@
       </el-row>
       <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
         <template :slot-scope="executor">
-          <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
-            <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+          <div class="tips" v-if="executor != null" >
+            <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                        @click="handlerSendCmd()">[点击进入工作目录] `cd
               {{executor.workspace}}`
             </el-button>
-          </el-alert>
+          </div>
+<!--          <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">-->
+<!--            <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"-->
+<!--                       @click="handlerSendCmd()">[点击进入工作目录] `cd-->
+<!--              {{executor.workspace}}`-->
+<!--            </el-button>-->
+<!--          </el-alert>-->
         </template>
       </terminalMaster>
     </template>
@@ -84,7 +90,14 @@
   }
 </script>
 
-<style>
+<style scoped>
+  .tips {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 10px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+  }
+
   .el-row {
     margin-left: 0px;
     margin-bottom: 5px;
