@@ -1,13 +1,21 @@
 <template>
   <div>
-    <div v-show="showOutput">
+    <div v-if="showOutput">
       <el-divider></el-divider>
       <el-row>
         <b class="outputTitle">Console Output</b>
-        <el-button class="outputButton" type="text" @click="closeOutput">Close</el-button>
-        <el-button class="outputButton" type="text" @click="fitOutput">Fit</el-button>
+        <i style="margin-left: 5px" class="el-icon-loading" v-if="loading"></i>
+        <el-button class="outputButton" type="text" @click="closeOutput"><i class="el-icon-close"
+                                                                            aria-hidden="true"></i>
+        </el-button>
+        <el-tooltip class="item" effect="light" content="适应窗体" placement="top-start" v-if="false">
+          <el-button class="outputButton" type="text" @click="fit">
+            <i class="fa fa-object-ungroup" aria-hidden="true"></i>
+          </el-button>
+        </el-tooltip>
       </el-row>
-      <div :id="`console${buildId}`" class="xterm"></div>
+      <terminal-item :terminalSetting="terminalSetting" :server="item" @sendMessage="sendMessage"
+                     :ref="`terminal_${uuid}`" :id="`terminal_${uuid}`"></terminal-item>
     </div>
   </div>
 </template>
@@ -16,9 +24,7 @@
 
   import util from '@/libs/util'
 
-  import 'xterm/css/xterm.css'
-  import { Terminal } from 'xterm'
-  import { FitAddon } from 'xterm-addon-fit'
+  import terminalItem from '@/components/opscloud/xterm/TerminalItem.vue'
 
   import { queryUserSettingByGroup } from '@api/user/user.setting.js'
 
@@ -34,23 +40,24 @@
         socketURI: util.wsUrl(wsUrl),
         timer: null,
         interval: 15000, // INTERVAL
-        term: null,
-        xtermSize: {
-          rows: 30
+        uuid: util.uuid(),
+        item: {
+          name: util.uuid()
         },
-        labelWidth: '100px',
-        xtermTheme: { // 终端主题
+        loading: true,
+        terminalSetting: { // 终端主题
           foreground: '#FFFFFF', // 字体
           background: '#606266', // 背景色
           cursor: 'help'// 设置光标
-        },
-        fitAddon: null
+        }
       }
     },
     props: ['buildType', 'buildId'],
-    components: {},
+    components: {
+      terminalItem
+    },
     mounted () {
-      this.setXTermSetting()
+      this.initTerminalSetting()
     },
     beforeDestroy () {
     },
@@ -58,13 +65,14 @@
       /**
        * 设置终端主题色彩
        */
-      setXTermSetting () {
+      initTerminalSetting () {
         queryUserSettingByGroup(settingGroup)
           .then(res => {
             if (res.success) {
               try {
-                this.xtermTheme.foreground = res.body['XTERM_FOREGROUND']
-                this.xtermTheme.background = res.body['XTERM_BACKGROUND']
+                this.terminalSetting.foreground = res.body['XTERM_FOREGROUND']
+                this.terminalSetting.background = res.body['XTERM_BACKGROUND']
+                this.terminalSetting.rows = res.body['XTERM_ROWS'] || 30
               } catch (e) {
               }
             } else {
@@ -77,6 +85,17 @@
           this.handlerHeartbeat()
         }, this.interval)
       },
+      output () {
+        this.loading = true
+        this.showOutput = true
+        this.initTerminal()
+        this.doOutput()
+      },
+      initTerminal () {
+        this.$nextTick(() => {
+          this.$refs[`terminal_${this.uuid}`].init()
+        })
+      },
       initSocket () {
         this.socket = new WebSocket(this.socketURI)
         this.socketOnClose()
@@ -85,8 +104,8 @@
         this.socketOnMessage()
         this.setTimer() // 心跳
       },
-      fitOutput () {
-        this.fitAddon.fit()
+      fit () {
+        // this.fitAddon.fit()
       },
       closeOutput () {
         this.showOutput = false
@@ -100,39 +119,7 @@
           this.term = null
         }
       },
-      initLogOutput () {
-        if (this.term !== null) {
-          this.term.dispose()
-        }
-        const term = new Terminal({
-          rendererType: 'canvas', // 渲染类型 canvas dom
-          allowTransparency: true,
-          fontSize: 11,
-          rows: this.xtermSize.rows,
-          theme: this.xtermTheme,
-          termName: 'xterm',
-          visualBell: false,
-          popOnBell: false,
-          scrollback: 5000, // 最大滚动行数
-          screenKeys: false,
-          debug: false,
-          cancelEvents: false,
-          cursorStyle: 'bar', // 光标样式
-          cursorBlink: false, // 光标闪烁
-          convertEol: true, // 启用时，光标将设置为下一行的开头
-          disableStdin: true // 是否应禁用输入
-        })
-        this.fitAddon = new FitAddon()
-        term.loadAddon(this.fitAddon)
-        term.open(document.getElementById('console' + this.buildId))
-        // term.write(this.output)
-        // 获取对象的高度和宽度
-        this.fitAddon.fit()
-        term.focus()
-        this.term = term
-      },
       doOutput () {
-        this.showOutput = true
         setTimeout(() => {
           this.initSocket()
         }, 500)
@@ -141,20 +128,23 @@
         this.socket.onopen = () => { // 链接成功后
           try {
             this.$nextTick(() => { // 需要延迟执行
-              this.initLogOutput()
               let msg = {
                 status: 'INITIAL',
                 buildType: this.buildType,
                 buildId: this.buildId
               }
-              this.socketOnSend(JSON.stringify(msg))
+              this.sendMessage(JSON.stringify(msg))
             })
           } catch (e) {
           }
         }
       },
+      sendMessage (message) {
+        this.socketOnSend(message)
+      },
       socketOnClose () {
         this.socket.onclose = () => {
+          this.loading = false
           if (this.socket !== null) {
             this.socket.close()
           }
@@ -170,7 +160,7 @@
       },
       socketOnMessage () {
         this.socket.onmessage = (message) => {
-          this.term.write(message.data)
+          this.$refs[`terminal_${this.uuid}`].write(message.data)
         }
       },
       handlerHeartbeat () {
@@ -178,7 +168,7 @@
           status: 'HEARTBEAT'
         }
         try {
-          this.socketOnSend(JSON.stringify(heartbeat))
+          this.sendMessage(JSON.stringify(heartbeat))
         } catch (e) {
         }
       },
@@ -190,6 +180,14 @@
 </script>
 
 <style scoped>
+
+  .el-divider--horizontal {
+    display: block;
+    height: 1px;
+    width: 100%;
+    margin: 5px 0;
+  }
+
   .outputTitle {
     color: #5b5d66;
     margin-left: 10px;

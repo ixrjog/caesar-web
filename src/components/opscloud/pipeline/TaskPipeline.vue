@@ -125,7 +125,7 @@
         }
       },
       handlerPipelineOutput (i) {
-        this.$refs[`pipelines${i}`][0].doOutput()
+        this.$refs[`pipelines${i}`][0].output()
       },
       handlerOpenExecutor (pipeline) {
         this.$emit('handlerOpenExecutor', pipeline.executors[0])

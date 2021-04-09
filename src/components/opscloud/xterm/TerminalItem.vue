@@ -81,12 +81,6 @@
         // 滚动到底部
         this.term.scrollToBottom()
       },
-      /**
-       * 复制会话，重开一个终端（支持变更用户类型）
-       * @param id
-       */
-      handlerDuplicateSession () {
-      },
       write (output) {
         this.term.write(output)
       },
