@@ -57,7 +57,16 @@
     <android-reinforce-job-build-dialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></android-reinforce-job-build-dialog>
     <java-job-deploy-dialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></java-job-deploy-dialog>
-    <terminal ref="terminalDialog" :formStatus="formXtermStatus"></terminal>
+    <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
+      <template :slot-scope="executor">
+        <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
+          <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+                     @click="handlerSendCmd()">[点击进入工作目录] `cd
+            {{executor.workspace}}`
+          </el-button>
+        </el-alert>
+      </template>
+    </terminalMaster>
     <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
   </div>
 </template>
@@ -66,7 +75,7 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  import terminal from '@/components/opscloud/xterm/NodeTerminal'
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
@@ -86,6 +95,7 @@
           stripe: true
         },
         loading: false,
+        executor: null,
         pagination: {
           currentPage: 1,
           pageSize: 10,
@@ -117,7 +127,7 @@
         formJavaDeployStatus: {
           visible: false
         },
-        formXtermStatus: {
+        formTerminalStatus: {
           visible: false
         },
         formBuildOutputStatus: {
@@ -136,7 +146,7 @@
     beforeDestroy () {
     },
     components: {
-      terminal,
+      terminalMaster,
       CdJobDialog,
       JobEngineDialog,
       AndroidReinforceJobBuildDialog,
@@ -195,8 +205,17 @@
         this.$refs.buildOutput.open(1, executor.buildId)
       },
       handlerOpenExecutor (executor) {
-        this.formXtermStatus.visible = true
-        this.$refs.terminalDialog.open(executor)
+        this.executor = executor
+        this.formTerminalStatus.visible = true
+        this.$refs.terminalMaster.open(executor.server)
+      },
+      handlerSendCmd () {
+        let commandMessage = {
+          data: 'cd ' + this.executor.workspace + '\n',
+          status: 'COMMAND',
+          instanceId: this.executor.server.name
+        }
+        this.$refs.terminalMaster.sendCmd(this.executor.server, commandMessage)
       },
       paginationCurrentChange (currentPage) {
         this.pagination.currentPage = currentPage

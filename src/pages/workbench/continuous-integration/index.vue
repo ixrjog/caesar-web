@@ -42,7 +42,16 @@
         <engine-chart style="margin-top: 10px" v-if="activeName === 'engineChart'"></engine-chart>
       </el-tab-pane>
     </el-tabs>
-    <terminal :formStatus="formTerminalStatus" ref="terminalDialog"></terminal>
+    <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
+      <template :slot-scope="executor">
+        <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
+          <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+                     @click="handlerSendCmd()">[点击进入工作目录] `cd
+            {{executor.workspace}}`
+          </el-button>
+        </el-alert>
+      </template>
+    </terminalMaster>
   </d2-container>
 </template>
 
@@ -55,9 +64,8 @@
   import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
   import BlockPlatformStatus from '@/components/opscloud/platform/BlockPlatformStatus.vue'
   import TaskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
-  // import MyTaskPipeline from '@/components/opscloud/pipeline/MyTaskPipeline.vue'
-  // XTerm
-  import terminal from '@/components/opscloud/xterm/NodeTerminal'
+
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
 
   export default {
     data () {
@@ -67,6 +75,7 @@
         buildType: true,
         timer: null, // 查询定时器
         intervalTime: 12000,
+        executor: null,
         queryParam: {
           queryType: 'MY',
           querySize: 2
@@ -84,7 +93,7 @@
       AnnouncementCarousel,
       BlockPlatformStatus,
       TaskPipeline,
-      terminal
+      terminalMaster
       // MyTaskPipeline
     },
     beforeDestroy () {
@@ -115,8 +124,17 @@
         this.setTimer() // 启动定时器查询任务列表
       },
       handlerOpenExecutor (executor) {
+        this.executor = executor
         this.formTerminalStatus.visible = true
-        this.$refs.terminalDialog.open(executor)
+        this.$refs.terminalMaster.open(executor.server)
+      },
+      handlerSendCmd () {
+        let commandMessage = {
+          data: 'cd ' + this.executor.workspace + '\n',
+          status: 'COMMAND',
+          instanceId: this.executor.server.name
+        }
+        this.$refs.terminalMaster.sendCmd(this.executor.server, commandMessage)
       }
     }
   }

@@ -1,5 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="80%" :before-close='handlerClose'>
+    <slot></slot> 
     <div v-for="s in servers" :key="s.name">
       <template>
         <el-col :span="24">
@@ -199,6 +200,11 @@
       },
       sendMessage (message) {
         this.socketOnSend(message)
+      },
+      sendCmd (server, command) {
+        this.sendMessage(JSON.stringify(command))
+        this.$refs[`terminal_${server.name}`][0].focus()
+        // this.terminalMap[this.server.name].focus() // 强制焦点
       },
       /**
        * WS初始化

@@ -81,6 +81,12 @@
         // 滚动到底部
         this.term.scrollToBottom()
       },
+      /**
+       * 聚焦
+       */
+      focus () {
+         this.term.focus()
+      },
       write (output) {
         this.term.write(output)
       },

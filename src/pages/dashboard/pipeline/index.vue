@@ -24,7 +24,16 @@
           </el-tabs>
         </el-col>
       </el-row>
-      <terminal :formStatus="formTerminalStatus" ref="terminalDialog"></terminal>
+      <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
+        <template :slot-scope="executor">
+          <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
+            <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+                       @click="handlerSendCmd()">[点击进入工作目录] `cd
+              {{executor.workspace}}`
+            </el-button>
+          </el-alert>
+        </template>
+      </terminalMaster>
     </template>
   </d2-container>
 </template>
@@ -33,8 +42,7 @@
 
   // Component
   import taskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
-  // XTerm
-  import terminal from '@/components/opscloud/xterm/NodeTerminal'
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
 
   export default {
     name: 'HotTop',
@@ -45,6 +53,7 @@
           queryType: 'ALL',
           querySize: 4
         },
+        executor: null,
         formTerminalStatus: {
           visible: false
         }
@@ -55,12 +64,21 @@
     },
     components: {
       taskPipeline,
-      terminal
+      terminalMaster
     },
     methods: {
       handlerOpenExecutor (executor) {
+        this.executor = executor
         this.formTerminalStatus.visible = true
-        this.$refs.terminalDialog.open(executor)
+        this.$refs.terminalMaster.open(executor.server)
+      },
+      handlerSendCmd () {
+        let commandMessage = {
+          data: 'cd ' + this.executor.workspace + '\n',
+          status: 'COMMAND',
+          instanceId: this.executor.server.name
+        }
+        this.$refs.terminalMaster.sendCmd(this.executor.server, commandMessage)
       }
     }
   }
@@ -70,6 +88,7 @@
   .el-row {
     margin-left: 0px;
     margin-bottom: 5px;
+
   &
   :last-child {
   }

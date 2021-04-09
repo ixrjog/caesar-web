@@ -42,7 +42,8 @@
       </el-table-column>
       <el-table-column prop="name" label="最新构建" width="210">
         <template slot-scope="props">
-          <build-view :items="props.row.buildViews" @handlerOpenExecutor="handlerOpenExecutor" @handlerOpenOutput="handlerOpenOutput"></build-view>
+          <build-view :items="props.row.buildViews" @handlerOpenExecutor="handlerOpenExecutor"
+                      @handlerOpenOutput="handlerOpenOutput"></build-view>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="210">
@@ -85,8 +86,16 @@
     <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
                                     :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
-
-    <terminal ref="terminalDialog" :formStatus="formXtermStatus"></terminal>
+    <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
+      <template :slot-scope="executor">
+        <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
+          <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+                     @click="handlerSendCmd()">[点击进入工作目录] `cd
+            {{executor.workspace}}`
+          </el-button>
+        </el-alert>
+      </template>
+    </terminalMaster>
     <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
     <ciJobPermissionDialog ref="ciJobPermissionDialog" :formStatus="formPermissionStatus"></ciJobPermissionDialog>
   </div>
@@ -96,7 +105,7 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  import terminal from '@/components/opscloud/xterm/NodeTerminal'
+  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
@@ -130,6 +139,7 @@
           stripe: true
         },
         loading: false,
+        executor: null,
         pagination: {
           currentPage: 1,
           pageSize: 10,
@@ -160,7 +170,7 @@
         formAndroidBuildStatus: Object.assign({}, defaultFormStatus),
         // cd Reinforce
         formAndroidReinforceBuildStatus: Object.assign({}, defaultFormStatus),
-        formXtermStatus: Object.assign({}, defaultFormStatus),
+        formTerminalStatus: Object.assign({}, defaultFormStatus),
         formBuildOutputStatus: Object.assign({}, defaultFormStatus),
         formPermissionStatus: Object.assign({}, defaultFormStatus),
         labelWidth: '100px'
@@ -177,7 +187,7 @@
     beforeDestroy () {
     },
     components: {
-      terminal,
+      terminalMaster,
       CiJobDialog,
       CdJobDialog,
       JobEngineDialog,
@@ -322,8 +332,17 @@
         this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
       },
       handlerOpenExecutor (executor) {
-        this.formXtermStatus.visible = true
-        this.$refs.terminalDialog.open(executor)
+        this.executor = executor
+        this.formTerminalStatus.visible = true
+        this.$refs.terminalMaster.open(executor.server)
+      },
+      handlerSendCmd () {
+        let commandMessage = {
+          data: 'cd ' + this.executor.workspace + '\n',
+          status: 'COMMAND',
+          instanceId: this.executor.server.name
+        }
+        this.$refs.terminalMaster.sendCmd(this.executor.server, commandMessage)
       },
       handlerAbortBuild (executors) {
         abortBuildCiJob(executors[0].buildId)
