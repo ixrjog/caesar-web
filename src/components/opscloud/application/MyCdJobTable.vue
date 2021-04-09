@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model.trim="application.name" disabled placeholder="应用名称" class="input"></el-input>
+      <el-input v-model.trim="application.name" disabled placeholder="应用名称"></el-input>
     </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
@@ -59,12 +59,12 @@
     <java-job-deploy-dialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></java-job-deploy-dialog>
     <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
       <template :slot-scope="executor">
-        <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
-          <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+        <div class="tips" v-if="executor != null" >
+          <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                      @click="handlerSendCmd()">[点击进入工作目录] `cd
             {{executor.workspace}}`
           </el-button>
-        </el-alert>
+        </div>
       </template>
     </terminalMaster>
     <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
@@ -241,7 +241,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .table-expand {
     font-size: 0;
   }
@@ -269,12 +269,17 @@
     font-size: 12px;
   }
 
-  .input {
+  .el-input {
     display: inline-block;
     max-width: 200px;
+    margin-right: 10px;
   }
 
-  .select {
-    margin-right: 5px;
+  .tips {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 10px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 15px;
   }
 </style>

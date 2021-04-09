@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model="application.name" disabled placeholder="应用名称" class="input"></el-input>
-      <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询" class="input"></el-input>
-      <el-checkbox v-model="queryParam.showHide" @click="fetchData" class="input">显示隐藏任务</el-checkbox>
+      <el-input v-model="application.name" disabled placeholder="应用名称"></el-input>
+      <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询"></el-input>
+      <el-checkbox v-model="queryParam.showHide" @click="fetchData">显示隐藏任务</el-checkbox>
       <el-button @click="fetchData" style="margin-left: 5px" :disabled="application === ''">查询</el-button>
       <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
     </el-row>
@@ -88,12 +88,12 @@
                                     :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
     <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
       <template :slot-scope="executor">
-        <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
-          <el-button v-if="executor != null" type="text" style="margin-left: 10px; padding: 3px 0"
+        <div class="tips" v-if="executor != null" >
+          <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                      @click="handlerSendCmd()">[点击进入工作目录] `cd
             {{executor.workspace}}`
           </el-button>
-        </el-alert>
+        </div>
       </template>
     </terminalMaster>
     <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
@@ -387,7 +387,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .table-expand {
     font-size: 0;
   }
@@ -415,12 +415,22 @@
     font-size: 12px;
   }
 
-  .input {
+  .el-input {
+    display: inline-block;
+    max-width: 200px;
+    margin-right: 10px;
+  }
+
+  .el-checkbox{
     display: inline-block;
     max-width: 200px;
   }
 
-  .select {
-    margin-right: 5px;
+  .tips {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 10px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 15px;
   }
 </style>
