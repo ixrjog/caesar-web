@@ -15,14 +15,14 @@
                   </el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="light" content="登录节点(管理员专用)" placement="top-start"
-                  v-if="pipeline.executors != null">
+                            v-if="pipeline.executors != null">
                   <el-button class="btn" type="text" @click="handlerOpenExecutor(pipeline)">
                     <d2-icon name="terminal"/>
                   </el-button>
                 </el-tooltip>
               </span>
           </div>
-          <div style="height: 120px">
+          <div :style='{height: pipeline.chartHeight}'>
             <!--        :onNodeClick='nodeClick'-->
             <!--        :selectedStage='selectedNode'-->
             <!--        layout='layout'-->
