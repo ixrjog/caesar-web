@@ -34,6 +34,7 @@
       this.initSocket()
     },
     destroyed () {
+      this.socket.close()
     },
     methods: {
       initSocket () {
@@ -45,15 +46,12 @@
       },
       socketOnOpen () {
         this.socket.onopen = () => { // 链接成功后
-          console.log('引擎视图WebSocket链接成功！')
+          console.log('引擎视图链接成功！')
         }
       },
       socketOnClose () {
         this.socket.onclose = () => {
-          console.log('引擎视图WebSocket链接关闭,尝试重新链接！')
-          setTimeout(() => {
-              this.initSocket()
-            }, 15000)
+          console.log('引擎视图链接关闭！')
         }
       },
       socketOnError () {
