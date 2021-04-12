@@ -180,8 +180,7 @@
       BuildStatus,
       BuildBranch
     },
-    filters: {
-    },
+    filters: {},
     computed: {},
     mounted () {
     },
@@ -211,11 +210,7 @@
         this.setTimer()
         this.fetchData()
         if (ciJob.parameters.isSonar !== null) {
-          if (ciJob.parameters.isSonar === 'true') {
-            this.buildParam.isSonar = true
-          } else {
-            this.buildParam.isSonar = false
-          }
+          this.buildParam.isSonar = ciJob.parameters.isSonar === 'true'
         }
       },
       getBranches () {
@@ -251,6 +246,7 @@
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
           'isSilence': this.buildParam.isSilence,
+          'isSonar': this.buildParam.isSonar,
           'paramMap': {}
         }
         buildCiJob(requestBody)

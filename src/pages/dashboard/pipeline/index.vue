@@ -5,7 +5,7 @@
         <h1>{{title}}</h1>
       </div>
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :span="14">
           <el-tabs type="border-card">
             <el-tab-pane>
               <span slot="label"><span class="title">Build Pipeline</span></span>
@@ -14,7 +14,7 @@
             </el-tab-pane>
           </el-tabs>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="10">
           <el-tabs type="border-card">
             <el-tab-pane>
               <span slot="label">  <span class="title">Deployment Pipeline</span></span>

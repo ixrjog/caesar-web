@@ -2,8 +2,8 @@
   <div>
     <div v-for="(pipeline,i) in pipelines" :key="pipeline.id" style="font-size: 12px">
       <template>
-        <el-card shadow="hover" body-style="padding: 2px" style="margin-right: 10px;margin-bottom: 10px">
-          <div slot="header" class="clearfix" style="height: 15px">
+        <el-card shadow="hover" body-style="padding: 2px" class="card">
+          <div slot="header" class="clearfix">
               <span>
                 <el-tag>{{ pipeline.jobName }}</el-tag>
                 <span class="buildNumber"><i class="el-icon-loading" v-show="pipeline.isRunning"></i>
@@ -22,7 +22,7 @@
                 </el-tooltip>
               </span>
           </div>
-          <div :style='{height: pipeline.chartHeight}'>
+          <div :style='{ height: pipeline.chartHeight }'>
             <!--        :onNodeClick='nodeClick'-->
             <!--        :selectedStage='selectedNode'-->
             <!--        layout='layout'-->
@@ -134,8 +134,9 @@
   }
 </script>
 
-<style>
+<style scoped>
   .el-card__header {
+    height: 15px;
     padding: 10px 10px;
     border-bottom: 1px solid #EBEEF5;
     -webkit-box-sizing: border-box;
@@ -156,6 +157,10 @@
     float: right;
     padding: 3px 0;
     margin-left: 10px;
+  }
+
+  .card {
+    margin-bottom: 10px
   }
 
 </style>
