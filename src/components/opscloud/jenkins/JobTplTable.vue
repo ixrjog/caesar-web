@@ -1,40 +1,41 @@
 <template>
   <div>
-    <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
-                class="input"/>
-      <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
-    </el-row>
-    <el-table :data="tableData" style="width: 100%" v-loading="loading">
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="tplType" label="模版类型">
-        <template slot-scope="props">
-          <el-tag disable-transitions type="primary" plain size="mini">{{props.row.tplType}}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="tplVersion" label="模版版本"></el-table-column>
-      <el-table-column prop="tags" label="标签">
-        <template slot-scope="props">
-          <div class="tag-group">
+    <el-card shadow="hover">
+      <el-row style="margin-bottom: 5px" :gutter="24">
+        <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"/>
+        <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
+      </el-row>
+      <el-table :data="tableData" style="width: 100%" v-loading="loading">
+        <el-table-column prop="name" label="名称"></el-table-column>
+        <el-table-column prop="tplType" label="模版类型">
+          <template slot-scope="props">
+            <el-tag disable-transitions type="primary" plain size="mini">{{props.row.tplType}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="tplVersion" label="模版版本"></el-table-column>
+        <el-table-column prop="tags" label="标签">
+          <template slot-scope="props">
+            <div class="tag-group">
               <span v-for="item in props.row.tags" :key="item.id">
                 <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
                   <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
                 </el-tooltip>
               </span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="80">
-        <template slot-scope="scope">
-          <el-button type="primary" plain size="mini" @click="handlerRowSel(scope.row)">详情</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination background @current-change="paginationCurrentChange"
-                   :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
-                   layout="sizes, prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
-                   :page-size="pagination.pageSize">
-    </el-pagination>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="80">
+          <template slot-scope="scope">
+            <el-button type="primary" plain size="mini" @click="handlerRowSel(scope.row)">详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background @current-change="paginationCurrentChange"
+                     :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
+                     layout="sizes, prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
+                     :page-size="pagination.pageSize">
+      </el-pagination>
+    </el-card>
   </div>
 </template>
 
@@ -127,15 +128,12 @@
   }
 </script>
 
-<style>
-
-  .input {
+<style scoped>
+  .el-input {
     display: inline-block;
     max-width: 200px;
     margin-left: 10px;
+    margin-right: 10px;
   }
 
-  .select {
-    margin-right: 5px;
-  }
 </style>

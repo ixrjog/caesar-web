@@ -1,18 +1,5 @@
 <template>
   <div>
-    <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model.trim="jobTpl.name" disabled placeholder="应用名称" class="input"></el-input>
-      <el-input v-model.trim="queryParam.queryName" :disabled="jobTpl === ''" placeholder="关键字查询"
-                class="input"></el-input>
-      <el-button @click="fetchData" style="margin-left: 5px" :disabled="jobTpl === ''">查询</el-button>
-      <el-button @click="handlerUpgrade" style="margin-left: 5px" :disabled="jobTpl === ''">全部升级</el-button>
-      <el-button type="primary" @click="handlerSwitch"><i
-        class="fa fa-refresh" aria-hidden="true"></i>SWITCH
-      </el-button>
-
-      <el-tag type="success" style="float: right;margin-right: 45px">{{ queryType ? 'Build Jobs':'Deployment Jobs'}}
-      </el-tag>
-    </el-row>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">
@@ -43,7 +30,8 @@
     </el-table>
     <el-pagination background @current-change="paginationCurrentChange"
                    :page-sizes="[10, 15, 20, 25, 30]" @size-change="handleSizeChange"
-                   layout="sizes, prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
+                   layout="sizes, prev, pager, next" :total="pagination.total"
+                   :current-page="pagination.currentPage"
                    :page-size="pagination.pageSize">
     </el-pagination>
   </div>
@@ -62,10 +50,9 @@
 
   export default {
     name: 'MyCiJobTable',
+    props: ['queryType', 'jobTpl'], // true ciJob ; false cdJob
     data () {
       return {
-        jobTpl: '',
-        queryType: true, // true ciJob ; false cdJob
         tableData: [],
         options: {
           stripe: true
@@ -106,10 +93,6 @@
         if (typeof (this.info.pageSize) !== 'undefined') {
           this.pagination.pageSize = this.info.pageSize
         }
-      },
-      handlerSwitch () {
-        this.queryType = !this.queryType
-        this.fetchData()
       },
       initData (jobTpl) {
         this.jobTpl = jobTpl
@@ -155,9 +138,7 @@
         this.fetchData()
       },
       fetchData () {
-        if (this.tableData.length === 0) {
-          this.loading = true
-        }
+        this.loading = true
         let requestBody = {
           'jobTplId': this.jobTpl.id,
           'queryName': this.queryParam.queryName,
@@ -184,21 +165,7 @@
   }
 </script>
 
-<style>
-  .table-expand {
-    font-size: 0;
-  }
-
-  .table-expand label {
-    width: 150px;
-    color: #99a9bf;
-  }
-
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
+<style scoped>
 
   .el-dropdown {
     vertical-align: top;
@@ -212,12 +179,4 @@
     font-size: 12px;
   }
 
-  .input {
-    display: inline-block;
-    max-width: 200px;
-  }
-
-  .select {
-    margin-right: 5px;
-  }
 </style>
