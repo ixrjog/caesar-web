@@ -62,9 +62,6 @@
           currentPage: 1,
           pageSize: 10,
           total: 0
-        },
-        queryParam: {
-          queryName: ''
         }
       }
     },
@@ -137,11 +134,11 @@
         this.pagination.currentPage = currentPage
         this.fetchData()
       },
-      fetchData () {
+      fetchData (queryName) {
         this.loading = true
         let requestBody = {
           'jobTplId': this.jobTpl.id,
-          'queryName': this.queryParam.queryName,
+          'queryName': queryName,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }

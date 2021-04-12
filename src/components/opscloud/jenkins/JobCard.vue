@@ -61,16 +61,16 @@
       },
       fetchData () {
         if (this.activeName === 'build') {
-          this.$refs.buildJobTable.fetchData()
+          this.$refs.buildJobTable.fetchData(this.queryParam.queryName)
         } else {
-          this.$refs.deploymentJobTable.fetchData()
+          this.$refs.deploymentJobTable.fetchData(this.queryParam.queryName)
         }
       },
       initData (jobTpl) {
         this.jobTpl = jobTpl
         this.tplName = jobTpl.name
         this.$nextTick(() => {
-          this.$refs.buildJobTable.fetchData()
+          this.$refs.buildJobTable.fetchData('')
         })
       }
     }
