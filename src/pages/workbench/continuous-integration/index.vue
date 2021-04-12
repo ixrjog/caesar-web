@@ -15,17 +15,21 @@
             <block-platform-status></block-platform-status>
             <el-card shadow="hover" style="margin-bottom: 10px" v-show="application !== null">
               <div slot="header" class="clearfix">
-                <el-tag>{{ application !== null ?application.name : '' }}{{buildType? ' build Job' : ' deployment Job' }}</el-tag>
+                <el-tag>{{ application !== null ?application.name : '' }}{{buildType? ' build Job' : ' deployment Job'
+                  }}
+                </el-tag>
                 <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
                            @click="handlerSwitch">
                   <span style="margin-left: 5px;margin-right: 5px"><i class="fa fa-refresh" aria-hidden="true"></i>SWITCH</span>
                 </el-button>
               </div>
-              <my-ci-job-table ref="myCiJobTable" v-show="buildType" ></my-ci-job-table>
+              <my-ci-job-table ref="myCiJobTable" v-show="buildType"></my-ci-job-table>
               <my-cd-job-table ref="myCdJobTable" v-show="!buildType"></my-cd-job-table>
             </el-card>
-            <task-pipeline v-show="buildType" :buildType="0" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-            <task-pipeline v-show="!buildType" :buildType="1" :queryParam="queryParam" @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+            <task-pipeline v-show="buildType" :buildType="0" :queryParam="queryParam"
+                           @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+            <task-pipeline v-show="!buildType" :buildType="1" :queryParam="queryParam"
+                           @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -35,7 +39,7 @@
     </el-tabs>
     <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
       <template :slot-scope="executor">
-        <div class="tips" v-if="executor != null" >
+        <div class="tips" v-if="executor != null">
           <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                      @click="handlerSendCmd()">[点击进入工作目录] `cd
             {{executor.workspace}}`
