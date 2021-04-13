@@ -4,29 +4,23 @@
       <div>
         <h1>{{title}}</h1>
       </div>
-      <el-row :gutter="20">
-        <el-col :span="14">
-          <el-tabs type="border-card">
-            <el-tab-pane>
-              <span slot="label"><span class="title">Build Pipeline</span></span>
-              <task-pipeline :buildType="0" :queryParam="queryParam"
-                             @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-            </el-tab-pane>
-          </el-tabs>
-        </el-col>
-        <el-col :span="10">
-          <el-tabs type="border-card">
-            <el-tab-pane>
-              <span slot="label">  <span class="title">Deployment Pipeline</span></span>
-              <task-pipeline :buildType="1" :queryParam="queryParam"
-                             @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-            </el-tab-pane>
-          </el-tabs>
-        </el-col>
+      <el-row>
+        <el-tabs type="border-card">
+          <el-tab-pane>
+            <span slot="label"><span class="title">Build Pipeline</span></span>
+            <task-pipeline :buildType="0" :queryParam="queryParam"
+                           @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+          </el-tab-pane>
+          <el-tab-pane>
+            <span slot="label">  <span class="title">Deployment Pipeline</span></span>
+            <task-pipeline :buildType="1" :queryParam="queryParam"
+                           @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+          </el-tab-pane>
+        </el-tabs>
       </el-row>
       <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
         <template :slot-scope="executor">
-          <div class="tips" v-if="executor != null" >
+          <div class="tips" v-if="executor != null">
             <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                        @click="handlerSendCmd()">[点击进入工作目录] `cd
               {{executor.workspace}}`
