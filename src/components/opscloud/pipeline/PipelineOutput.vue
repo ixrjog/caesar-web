@@ -96,6 +96,18 @@
         this.initTerminal()
         this.doOutput()
       },
+      outputLog (log) {
+        if (this.showOutput) {
+          this.$refs[`terminal_${this.uuid}`].clear()
+        } else {
+          this.showOutput = true
+          this.initTerminal()
+        }
+        this.$nextTick(() => {
+          this.$refs[`terminal_${this.uuid}`].write(log)
+          this.loading = false
+        })
+      },
       initTerminal () {
         this.$nextTick(() => {
           this.$refs[`terminal_${this.uuid}`].init()
@@ -113,7 +125,8 @@
         // this.fitAddon.fit()
       },
       closeOutput () {
-        if (this.socket !== null) {
+        if (this.socket !== undefined && !this.socket) {
+          debugger
           this.socket.close()
         }
         clearInterval(this.timer)

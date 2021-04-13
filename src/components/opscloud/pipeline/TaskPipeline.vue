@@ -24,7 +24,7 @@
           </div>
           <div :style='{ height: pipeline.chartHeight }'>
             <pipeline-graph
-              :onNodeClick='(nodeName,id)=> {nodeClick(nodeName,id,pipeline)}'
+              :onNodeClick='(nodeName,id)=> {nodeClick(id,i,pipeline)}'
               :stages='pipeline.nodes'
               :layout='layout'
             />
@@ -39,6 +39,8 @@
 <script>
 
   import util from '@/libs/util'
+
+  import { queryPipelineNodeStepLog } from '@api/jenkins/jenkins.pipeline.js'
 
   // pipeline 图形
   import PipelineGraph from 'jenkins-pipeline-graph-vue'
@@ -141,10 +143,16 @@
           this.pipelines = JSON.parse(message.data)
         }
       },
-      nodeClick (nodeName, id, pipeline) {
-        console.log('nodeName =' + nodeName)
-        console.log('id =' + id)
-        console.log('pipelineId =' + pipeline.id)
+      nodeClick (nodeId, i, pipeline) {
+        let requestBody = {
+          buildType: pipeline.buildType,
+          buildId: pipeline.buildId,
+          nodeId: nodeId
+        }
+        queryPipelineNodeStepLog(requestBody)
+          .then(res => {
+            this.$refs[`pipelines${i}`][0].outputLog(res.body)
+          })
       },
       handlerPipelineOutput (i) {
         this.$refs[`pipelines${i}`][0].output()
