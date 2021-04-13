@@ -90,6 +90,7 @@
         }, this.interval)
       },
       output () {
+        if (this.showOutput) return
         this.loading = true
         this.showOutput = true
         this.initTerminal()
