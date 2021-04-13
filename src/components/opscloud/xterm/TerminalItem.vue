@@ -90,6 +90,9 @@
       write (output) {
         this.term.write(output)
       },
+      clear () {
+        this.term.clear()
+      },
       /**
        * 单个终端退出
        * @param id
