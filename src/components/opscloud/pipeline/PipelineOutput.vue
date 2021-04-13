@@ -113,16 +113,11 @@
         // this.fitAddon.fit()
       },
       closeOutput () {
-        this.showOutput = false
         if (this.socket !== null) {
           this.socket.close()
         }
         clearInterval(this.timer)
-        if (this.term !== null) {
-          this.term.clear()
-          this.term.dispose()
-          this.term = null
-        }
+        this.showOutput = false
       },
       doOutput () {
         setTimeout(() => {
