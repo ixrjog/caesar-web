@@ -65,11 +65,13 @@
     data () {
       return {
         title: '持续集成',
+        timer: null,
         activeName: 'myApplication',
         socket: null,
         socketURI: util.wsUrl(wsUrl),
         layout: layout,
-        pipelines: []
+        pipelines: [],
+        isDebug: false
       }
     },
     components: {
@@ -80,19 +82,39 @@
       this.initSocket()
     },
     destroyed () {
+      clearInterval(this.timer) // 销毁定时器
+      this.socket.close()
     },
     methods: {
+      setTimer () {
+        if (this.timer !== null) return
+        this.timer = setInterval(() => {
+          this.retrySocket()
+        }, 10000)
+      },
+      retrySocket () {
+        if (this.socket.readyState === 3) {
+          // console.log('服务端链接关闭,尝试重新链接！')
+          try {
+            this.socket.close()
+          } catch (e) {
+          }
+          this.socket = null
+          this.initSocket()
+        }
+      },
       initSocket () {
         this.socket = new WebSocket(this.socketURI)
         this.socketOnClose()
         this.socketOnOpen()
         this.socketOnError()
         this.socketOnMessage()
+        this.setTimer()
       },
       socketOnOpen () {
         let _this = this
         this.socket.onopen = () => { // 链接成功后
-          console.log('WebSocket链接成功！')
+          // console.log('服务端链接成功！')
           let message = {
             status: 'INITIAL',
             token: util.cookies.get('token'),
@@ -105,10 +127,7 @@
       },
       socketOnClose () {
         this.socket.onclose = () => {
-          console.log('WebSocket链接关闭,尝试重新链接！')
-          setTimeout(() => {
-            this.initSocket()
-          }, 15000)
+          // console.log('服务端链接关闭！')
         }
       },
       socketOnError () {
