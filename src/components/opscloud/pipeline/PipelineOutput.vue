@@ -105,6 +105,7 @@
         }
         this.$nextTick(() => {
           this.$refs[`terminal_${this.uuid}`].write(log)
+          this.$refs[`terminal_${this.uuid}`].scrollToBottom()
           this.loading = false
         })
       },

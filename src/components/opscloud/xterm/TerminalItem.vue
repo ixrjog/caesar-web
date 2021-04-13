@@ -85,13 +85,17 @@
        * 聚焦
        */
       focus () {
-         this.term.focus()
+        this.term.focus()
       },
       write (output) {
         this.term.write(output)
       },
       clear () {
         this.term.clear()
+      },
+      scrollToBottom () {
+        // 滚动到底部
+        this.term.scrollToBottom()
       },
       /**
        * 单个终端退出
