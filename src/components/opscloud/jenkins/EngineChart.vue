@@ -48,8 +48,8 @@
         }, 10000)
       },
       retrySocket () {
-        if (this.socket.readyState === 3) {
-          // console.log('服务端链接关闭,尝试重新链接！')
+        if (this.socket.readyState !== 1) {
+          // console.log('WS链接状态异常！readyState :' + this.socket.readyState)
           try {
             this.socket.close()
           } catch (e) {

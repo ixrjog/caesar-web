@@ -93,7 +93,7 @@
         }, 10000)
       },
       retrySocket () {
-        if (this.socket.readyState === 3) {
+        if (this.socket.readyState !== 1) {
           // console.log('服务端链接关闭,尝试重新链接！')
           try {
             this.socket.close()
