@@ -23,10 +23,8 @@
               </span>
           </div>
           <div :style='{ height: pipeline.chartHeight }'>
-            <!--        :onNodeClick='nodeClick'-->
-            <!--        :selectedStage='selectedNode'-->
-            <!--        layout='layout'-->
             <pipeline-graph
+              :onNodeClick='(nodeName,id)=> {nodeClick(nodeName,id,pipeline)}'
               :stages='pipeline.nodes'
               :layout='layout'
             />
@@ -142,6 +140,11 @@
         this.socket.onmessage = (message) => {
           this.pipelines = JSON.parse(message.data)
         }
+      },
+      nodeClick (nodeName, id, pipeline) {
+        console.log('nodeName =' + nodeName)
+        console.log('id =' + id)
+        console.log('pipelineId =' + pipeline.id)
       },
       handlerPipelineOutput (i) {
         this.$refs[`pipelines${i}`][0].output()

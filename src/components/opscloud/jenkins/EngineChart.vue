@@ -34,7 +34,7 @@
     components: {},
     mounted () {
       this.initSocket()
-      this.initChart ()
+      this.initChart()
     },
     destroyed () {
       clearInterval(this.timer) // 销毁定时器
