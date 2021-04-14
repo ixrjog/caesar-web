@@ -24,7 +24,7 @@
           </div>
           <div :style='{ height: pipeline.chartHeight }'>
             <pipeline-graph
-              :onNodeClick='(nodeName,id)=> {nodeClick(id,i,pipeline)}'
+              :onNodeClick='(nodeName,id)=> {nodeClick(nodeName,id,i,pipeline)}'
               :stages='pipeline.nodes'
               :layout='layout'
             />
@@ -143,7 +143,8 @@
           this.pipelines = JSON.parse(message.data)
         }
       },
-      nodeClick (nodeId, i, pipeline) {
+      nodeClick (nodeName, nodeId, i, pipeline) {
+        if (nodeName === 'Queue') return
         let requestBody = {
           buildType: pipeline.buildType,
           buildId: pipeline.buildId,
