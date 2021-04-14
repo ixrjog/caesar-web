@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="60%" @before-close="closeDialog">
-    <build-layout :buildParam="buildParam" :application="application" :buildJob="ciJob" :ref="`buildLayout_${uuid}`"
+    <build-layout :application="application" :buildJob="ciJob" :ref="`buildLayout_${uuid}`"
                   :id="`buildLayout_${uuid}`">
       <!--      自定义参数-->
       <template v-slot:customParameters>
@@ -33,13 +33,6 @@
         uuid: util.uuid(),
         ciJob: '',
         labelWidth: '150px',
-        buildParam: {
-          versionName: '',
-          versionDesc: '',
-          isSilence: false,
-          isSonar: null,
-          paramMap: {}
-        },
         operationOption: {}
       }
     },

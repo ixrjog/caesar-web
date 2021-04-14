@@ -1,11 +1,12 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="60%" @before-close="closeDialog">
-    <build-layout :buildParam="buildParam" :application="application" :buildJob="ciJob" :operationOption="operationOption" :ref="`buildLayout_${uuid}`"
+    <build-layout :application="application" :buildJob="ciJob" :operationOption="operationOption"
+                  :ref="`buildLayout_${uuid}`"
                   :id="`buildLayout_${uuid}`">
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="构建类型" :label-width="labelWidth">
-          <el-select v-model="buildParam.paramMap.buildType" placeholder="选择类型">
+          <el-select v-model="paramMap.buildType" placeholder="选择类型" @change="changeBuildType">
             <el-option
               v-for="item in buildTypeOptions"
               :key="item.value"
@@ -49,10 +50,8 @@
         uuid: util.uuid(),
         ciJob: '',
         labelWidth: '150px',
-        buildParam: {
-          versionName: '',
-          versionDesc: '',
-          paramMap: {}
+        paramMap: {
+          buildType: ''
         },
         operationOption: {
           buildType: 'IOS_BUILD',
@@ -67,9 +66,14 @@
       initData (application, ciJob) {
         this.application = application
         this.ciJob = ciJob
+        this.paramMap.buildType = this.ciJob.parameters.buildType
         this.$nextTick(() => {
           this.$refs[`buildLayout_${this.uuid}`].init()
+          this.changeBuildType ()
         })
+      },
+      changeBuildType () {
+        this.$refs[`buildLayout_${this.uuid}`].setParamMap('buildType', this.paramMap.buildType)
       },
       closeDialog () {
         this.formStatus.visible = false

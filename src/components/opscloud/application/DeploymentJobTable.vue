@@ -1,8 +1,5 @@
 <template>
   <div>
-<!--    <el-row style="margin-bottom: 5px" :gutter="24">-->
-<!--      <el-input v-model.trim="application.name" disabled placeholder="应用名称"></el-input>-->
-<!--    </el-row>-->
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">
@@ -25,7 +22,8 @@
       </el-table-column>
       <el-table-column prop="name" label="最新构建" width="210">
         <template slot-scope="props">
-          <build-view :items="props.row.buildViews" @handlerOpenExecutor="handlerOpenExecutor" @handlerOpenOutput="handlerOpenOutput"></build-view>
+          <build-view :items="props.row.buildViews" @handlerOpenExecutor="handlerOpenExecutor"
+                      @handlerOpenOutput="handlerOpenOutput"></build-view>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="210">
@@ -51,23 +49,22 @@
                    :page-size="pagination.pageSize">
     </el-pagination>
     <!-- 任务编辑对话框 -->
-    <cd-job-dialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cd-job-dialog>
+    <cd-job-dialog ref="cdJobDialog" :formStatus="formStatus.cdJob" @closeDialog="fetchData"></cd-job-dialog>
     <!-- 任务引擎编辑对话框 -->
-    <job-engine-dialog ref="jobEngineDialog" :formStatus="formEngineStatus"></job-engine-dialog>
-    <android-reinforce-job-build-dialog ref="androidReinforceJobBuildDialog"
-                                    :formStatus="formAndroidReinforceBuildStatus"></android-reinforce-job-build-dialog>
-    <java-job-deploy-dialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></java-job-deploy-dialog>
-    <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
+    <job-engine-dialog ref="jobEngineDialog" :formStatus="formStatus.engine"></job-engine-dialog>
+    <java-deployment-dialog ref="javaDeploymentDialog"
+                            :formStatus="formStatus.deployment.java"></java-deployment-dialog>
+    <terminal-master :formStatus="formStatus.terminal" ref="terminalMaster">
       <template :slot-scope="executor">
-        <div class="tips" v-if="executor != null" >
+        <div class="tips" v-if="executor != null">
           <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                      @click="handlerSendCmd()">[点击进入工作目录] `cd
             {{executor.workspace}}`
           </el-button>
         </div>
       </template>
-    </terminalMaster>
-    <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
+    </terminal-master>
+    <build-output ref="buildOutput" :formStatus="formStatus.buildOutput"></build-output>
   </div>
 </template>
 
@@ -78,8 +75,10 @@
   import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
-  import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
-  import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
+
+  // deployment
+  import javaDeploymentDialog from '@/components/opscloud/build/JavaDeploymentDialog'
+
   import buildOutput from '@/components/opscloud/application/BuildOutput'
   import buildView from '@/components/opscloud/application/BuildView'
 
@@ -105,33 +104,30 @@
           instanceId: '',
           queryName: ''
         },
-        formCiJobStatus: {
-          visible: false,
-          operationType: true,
-          addTitle: '新增任务配置',
-          updateTitle: '更新任务配置'
-        },
-        formCdJobStatus: {
-          visible: false,
-          operationType: true,
-          addTitle: '新增部署任务配置',
-          updateTitle: '更新部署任务配置'
-        },
-        formEngineStatus: {
-          visible: false
-        },
-        // cd Reinforce
-        formAndroidReinforceBuildStatus: {
-          visible: false
-        },
-        formJavaDeployStatus: {
-          visible: false
-        },
-        formTerminalStatus: {
-          visible: false
-        },
-        formBuildOutputStatus: {
-          visible: false
+        formStatus: {
+          engine: { visible: false },
+          terminal: {
+            visible: false
+          },
+          buildOutput: {
+            visible: false
+          },
+          deployment: {
+            java: { visible: false },
+            android: { visible: false }
+          },
+          ciJob: {
+            visible: false,
+            operationType: true,
+            addTitle: '新增任务配置',
+            updateTitle: '更新任务配置'
+          },
+          cdJob: {
+            visible: false,
+            operationType: true,
+            addTitle: '新增部署任务配置',
+            updateTitle: '更新部署任务配置'
+          }
         }
       }
     },
@@ -149,8 +145,7 @@
       terminalMaster,
       CdJobDialog,
       JobEngineDialog,
-      AndroidReinforceJobBuildDialog,
-      JavaJobDeployDialog,
+      javaDeploymentDialog,
       buildOutput,
       buildView
     },
@@ -176,37 +171,35 @@
       handlerRowRunDeployment (row) {
         switch (row.jobType) {
           case 'ANDROID_REINFORCE':
-            this.formAndroidReinforceBuildStatus.visible = true
-            this.$refs.androidReinforceJobBuildDialog.initData(this.application, row)
             break
           case 'JAVA_DEPLOYMENT':
-            this.formJavaDeployStatus.visible = true
-            this.$refs.javaJobDeployDialog.initData(this.application, row)
+            this.formStatus.deployment.java.visible = true
+            this.$refs.javaDeploymentDialog.initData(this.application, row)
             break
           default:
             this.$message.error('部署任务类型配置错误!')
         }
       },
       handlerRowDeploymentEdit (row) {
-        this.formCdJobStatus.operationType = false
+        this.formStatus.cdJob.operationType = false
         this.$refs.cdJobDialog.initData(this.application, Object.assign({}, row))
-        this.formCdJobStatus.visible = true
+        this.formStatus.cdJob.visible = true
       },
       handlerRowEngineEdit (row) {
         let data = {
           ciJobId: row.ciJobId,
           cdJobId: row.id
         }
-        this.formEngineStatus.visible = true
+        this.formStatus.engine.visible = true
         this.$refs.jobEngineDialog.initData(data)
       },
       handlerOpenOutput (executor) {
-        this.formBuildOutputStatus.visible = true
+        this.formStatus.buildOutput.visible = true
         this.$refs.buildOutput.open(1, executor.buildId)
       },
       handlerOpenExecutor (executor) {
         this.executor = executor
-        this.formTerminalStatus.visible = true
+        this.formStatus.terminal.visible = true
         this.$refs.terminalMaster.open(executor.server)
       },
       handlerSendCmd () {

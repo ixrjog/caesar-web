@@ -173,11 +173,14 @@
         this.activeName = 'build'
         this.commit = ''
         this.getBranches()
-        // this.setTimer()
         this.fetchData()
         if (this.buildJob.parameters.isSonar !== null) {
           this.buildParam.isSonar = this.buildJob.parameters.isSonar === 'true'
         }
+      },
+      setParamMap (key, value) {
+        this.buildParam.paramMap[key] = value
+        debugger
       },
       getBranches () {
         this.branchesLoading = true
@@ -213,7 +216,7 @@
           'versionDesc': this.buildParam.versionDesc,
           'isSilence': this.buildParam.isSilence,
           'isSonar': this.buildParam.isSonar,
-          'paramMap': {}
+          'paramMap': this.buildParam.paramMap
         }
         buildCiJob(requestBody)
           .then(res => {

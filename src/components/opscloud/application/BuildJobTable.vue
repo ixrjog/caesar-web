@@ -73,20 +73,18 @@
                    :page-size="pagination.pageSize">
     </el-pagination>
     <!-- 任务编辑对话框 -->
-    <ciJobDialog ref="ciJobDialog" :formStatus="formCiJobStatus" @closeDialog="fetchData"></ciJobDialog>
-    <cdJobDialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cdJobDialog>
-
-    <jobEngineDialog ref="jobEngineDialog" :formStatus="formStatus.engine.visible"></jobEngineDialog>
+    <ci-job-dialog ref="ciJobDialog" :formStatus="formStatus.ciJob" @closeDialog="fetchData"></ci-job-dialog>
+    <cd-job-dialog ref="cdJobDialog" :formStatus="formStatus.cdJob" @closeDialog="fetchData"></cd-job-dialog>
+    <!-- 引擎配置-->
+    <job-engine-dialog ref="jobEngineDialog" :formStatus="formStatus.engine"></job-engine-dialog>
     <!-- 构建对话框 -->
     <java-build-dialog ref="javaBuildDialog" :formStatus="formStatus.build.java"></java-build-dialog>
     <h5-build-dialog ref="h5BuildDialog" :formStatus="formStatus.build.h5"></h5-build-dialog>
     <ios-build-dialog ref="iosBuildDialog" :formStatus="formStatus.build.ios"></ios-build-dialog>
-    <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formStatus.build.android"></androidJobBuildDialog>
+    <android-build-dialog ref="androidBuildDialog" :formStatus="formStatus.build.android"></android-build-dialog>
     <!-- 部署对话框 -->
-    <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formStatus.deployment.java"></javaJobDeployDialog>
-    <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
-                                    :formStatus="formStatus.deployment.android"></androidReinforceJobBuildDialog>
-    <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
+    <java-deployment-dialog ref="javaDeploymentDialog" :formStatus="formStatus.deployment.java"></java-deployment-dialog>
+    <terminal-master :formStatus="formStatus.terminal" ref="terminalMaster">
       <template :slot-scope="executor">
         <div class="tips" v-if="executor != null">
           <el-button type="text" style="margin-left: 10px; padding: 3px 0"
@@ -95,9 +93,9 @@
           </el-button>
         </div>
       </template>
-    </terminalMaster>
-    <build-output ref="buildOutput" :formStatus="formBuildOutputStatus"></build-output>
-    <ciJobPermissionDialog ref="ciJobPermissionDialog" :formStatus="formPermissionStatus"></ciJobPermissionDialog>
+    </terminal-master>
+    <build-output ref="buildOutput" :formStatus="formStatus.buildOutput"></build-output>
+    <ci-job-permission-dialog ref="ciJobPermissionDialog" :formStatus="formStatus.permission"></ci-job-permission-dialog>
   </div>
 </template>
 
@@ -111,25 +109,19 @@
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
   import buildOutput from '@/components/opscloud/application/BuildOutput'
   import buildView from '@/components/opscloud/application/BuildView'
-  // Component Build
-  // New
+  // build
   import javaBuildDialog from '@/components/opscloud/build/JavaBuildDialog'
   import h5BuildDialog from '@/components/opscloud/build/H5BuildDialog'
   import iosBuildDialog from '@/components/opscloud/build/IOSBuildDialog'
+  import androidBuildDialog from '@/components/opscloud/build/AndroidBuildDialog'
+  // deployment
+  import javaDeploymentDialog from '@/components/opscloud/build/JavaDeploymentDialog'
 
-  import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
-
-  import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
-  import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
   import CiJobPermissionDialog from '@/components/opscloud/application/CiJobPermissionDialog'
   import SonarPopover from '@/components/opscloud/build/sonar/SonarPopover'
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
   import { abortBuildCiJob } from '@api/build/job.build.js'
-
-  const defaultFormStatus = {
-    visible: false
-  }
 
   export default {
     name: 'BuildJobTable',
@@ -151,20 +143,11 @@
           showHide: false,
           queryName: ''
         },
-        formCiJobStatus: {
-          visible: false,
-          operationType: true,
-          addTitle: '新增任务配置',
-          updateTitle: '更新任务配置'
-        },
-        formCdJobStatus: {
-          visible: false,
-          operationType: true,
-          addTitle: '新增部署任务配置',
-          updateTitle: '更新部署任务配置'
-        },
         formStatus: {
           engine: { visible: false },
+          terminal: { visible: false },
+          buildOutput: { visible: false },
+          permission: { visible: false },
           build: {
             java: { visible: false },
             h5: { visible: false },
@@ -174,11 +157,20 @@
           deployment: {
             java: { visible: false },
             android: { visible: false }
+          },
+          ciJob: {
+            visible: false,
+            operationType: true,
+            addTitle: '新增任务配置',
+            updateTitle: '更新任务配置'
+          },
+          cdJob: {
+            visible: false,
+            operationType: true,
+            addTitle: '新增部署任务配置',
+            updateTitle: '更新部署任务配置'
           }
         },
-        formTerminalStatus: Object.assign({}, defaultFormStatus),
-        formBuildOutputStatus: Object.assign({}, defaultFormStatus),
-        formPermissionStatus: Object.assign({}, defaultFormStatus),
         labelWidth: '100px'
       }
     },
@@ -200,9 +192,8 @@
       javaBuildDialog,
       h5BuildDialog,
       iosBuildDialog,
-      JavaJobDeployDialog,
-      AndroidJobBuildDialog,
-      AndroidReinforceJobBuildDialog,
+      androidBuildDialog,
+      javaDeploymentDialog,
       buildOutput,
       CiJobPermissionDialog,
       SonarPopover,
@@ -253,8 +244,8 @@
           scmMemberId: '',
           comment: ''
         }
-        this.formCiJobStatus.operationType = true
-        this.formCiJobStatus.visible = true
+        this.formStatus.ciJob.operationType = true
+        this.formStatus.ciJob.visible = true
         this.$refs.ciJobDialog.initData(this.application, ciJob)
       },
       handlerRowRunBuild (row) {
@@ -273,7 +264,7 @@
             break
           case 'ANDROID':
             this.formStatus.build.android.visible = true
-            this.$refs.androidJobBuildDialog.initData(this.application, row)
+            this.$refs.androidBuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('构建任务类型配置错误!')
@@ -284,13 +275,9 @@
           this.$message.error('部署任务未创建!')
         }
         switch (row.cdJob.jobType) {
-          case 'ANDROID_REINFORCE':
-            this.formStatus.deployment.android.visible = true
-            this.$refs.androidReinforceJobBuildDialog.initData(this.application, row.cdJob)
-            break
           case 'JAVA_DEPLOYMENT':
             this.formStatus.deployment.java.visible = true
-            this.$refs.javaJobDeployDialog.initData(this.application, row.cdJob)
+            this.$refs.javaDeploymentDialog.initData(this.application, row.cdJob)
             break
           default:
             this.$message.error('部署任务类型配置错误!')
@@ -311,12 +298,12 @@
           jobBuildNumber: 0,
           comment: ''
         }
-        this.formCdJobStatus.operationType = true
+        this.formStatus.cdJob.operationType = true
         this.$refs.cdJobDialog.initData(this.application, cdJob)
-        this.formCdJobStatus.visible = true
+        this.formStatus.cdJob.visible = true
       },
       handlerRowPermissionEdit (row) {
-        this.formPermissionStatus.visible = true
+        this.formStatus.permission.visible = true
         this.$refs.ciJobPermissionDialog.initData(Object.assign({}, row))
       },
       handlerRowEngineEdit (row) {
@@ -328,13 +315,13 @@
         this.$refs.jobEngineDialog.initData(data)
       },
       handlerRowEdit (row) {
-        this.formCiJobStatus.operationType = false
-        this.formCiJobStatus.visible = true
+        this.formStatus.ciJob.operationType = false
+        this.formStatus.ciJob.visible = true
         this.$refs.ciJobDialog.initData(this.application, Object.assign({}, row))
       },
       handlerOpenExecutor (executor) {
         this.executor = executor
-        this.formTerminalStatus.visible = true
+        this.formStatus.terminal.visible = true
         this.$refs.terminalMaster.open(executor.server)
       },
       handlerSendCmd () {
@@ -359,7 +346,7 @@
           })
       },
       handlerOpenOutput (executor) {
-        this.formBuildOutputStatus.visible = true
+        this.formStatus.buildOutput.visible = true
         this.$refs.buildOutput.open(0, executor.buildId)
       },
       paginationCurrentChange (currentPage) {
