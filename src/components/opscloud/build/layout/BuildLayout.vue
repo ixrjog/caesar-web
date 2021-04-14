@@ -79,7 +79,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
           <template slot-scope="scope">
-            <build-operation :build="scope.row" :job="buildJob"></build-operation>
+            <build-operation :build="scope.row" :job="buildJob" :option="operationOption"></build-operation>
           </template>
         </el-table-column>
       </el-table>
@@ -147,7 +147,7 @@
       }
     },
     name: 'BuildDialogTemplate',
-    props: ['title', 'application', 'buildJob'],
+    props: ['title', 'application', 'buildJob', 'operationOption'],
     components: {
       executeCommit,
       buildOperation,

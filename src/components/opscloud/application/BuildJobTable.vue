@@ -80,7 +80,7 @@
     <!-- 构建对话框 -->
     <java-build-dialog ref="javaBuildDialog" :formStatus="formStatus.build.java"></java-build-dialog>
     <h5-build-dialog ref="h5BuildDialog" :formStatus="formStatus.build.h5"></h5-build-dialog>
-    <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formStatus.build.ios"></iOSJobBuildDialog>
+    <ios-build-dialog ref="iosBuildDialog" :formStatus="formStatus.build.ios"></ios-build-dialog>
     <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formStatus.build.android"></androidJobBuildDialog>
     <!-- 部署对话框 -->
     <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formStatus.deployment.java"></javaJobDeployDialog>
@@ -115,9 +115,9 @@
   // New
   import javaBuildDialog from '@/components/opscloud/build/JavaBuildDialog'
   import h5BuildDialog from '@/components/opscloud/build/H5BuildDialog'
+  import iosBuildDialog from '@/components/opscloud/build/IOSBuildDialog'
 
   import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
-  import IOSJobBuildDialog from '@/components/opscloud/build/IOSJobBuildDialog'
 
   import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
@@ -199,8 +199,8 @@
       JobEngineDialog,
       javaBuildDialog,
       h5BuildDialog,
+      iosBuildDialog,
       JavaJobDeployDialog,
-      IOSJobBuildDialog,
       AndroidJobBuildDialog,
       AndroidReinforceJobBuildDialog,
       buildOutput,
@@ -269,7 +269,7 @@
             break
           case 'IOS':
             this.formStatus.build.ios.visible = true
-            this.$refs.iOSJobBuildDialog.initData(this.application, row)
+            this.$refs.iosBuildDialog.initData(this.application, row)
             break
           case 'ANDROID':
             this.formStatus.build.android.visible = true

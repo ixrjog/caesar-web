@@ -18,7 +18,7 @@
   import buildLayout from '@/components/opscloud/build/layout/BuildLayout'
 
   export default {
-    name: 'JavaBuildDialog',
+    name: 'H5BuildDialog',
     props: ['formStatus'],
     data () {
       return {
@@ -28,7 +28,8 @@
         uuid: util.uuid(),
         ciJob: '',
         labelWidth: '150px',
-        buildParam: {}
+        buildParam: {},
+        operationOption: {}
       }
     },
     components: {
