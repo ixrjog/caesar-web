@@ -128,7 +128,6 @@
       },
       closeOutput () {
         if (this.socket !== undefined && !this.socket) {
-          debugger
           this.socket.close()
         }
         clearInterval(this.timer)

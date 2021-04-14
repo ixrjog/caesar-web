@@ -75,19 +75,20 @@
     <!-- 任务编辑对话框 -->
     <ciJobDialog ref="ciJobDialog" :formStatus="formCiJobStatus" @closeDialog="fetchData"></ciJobDialog>
     <cdJobDialog ref="cdJobDialog" :formStatus="formCdJobStatus" @closeDialog="fetchData"></cdJobDialog>
-    <!-- 任务引擎编辑对话框 -->
-    <jobEngineDialog ref="jobEngineDialog" :formStatus="formEngineStatus"></jobEngineDialog>
-    <h5JobBuildDialog ref="h5JobBuildDialog" :formStatus="formH5BuildStatus"></h5JobBuildDialog>
-    <javaJobBuildDialog ref="javaJobBuildDialog" :formStatus="formJavaBuildStatus"></javaJobBuildDialog>
-    <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formJavaDeployStatus"></javaJobDeployDialog>
-    <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formIOSBuildStatus"></iOSJobBuildDialog>
-    <pythonJobBuildDialog ref="pythonJobBuildDialog" :formStatus="formPythonBuildStatus"></pythonJobBuildDialog>
-    <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formAndroidBuildStatus"></androidJobBuildDialog>
+
+    <jobEngineDialog ref="jobEngineDialog" :formStatus="formStatus.engine.visible"></jobEngineDialog>
+    <!-- 构建对话框 -->
+    <java-build-dialog ref="javaBuildDialog" :formStatus="formStatus.build.java"></java-build-dialog>
+    <h5-build-dialog ref="h5BuildDialog" :formStatus="formStatus.build.h5"></h5-build-dialog>
+    <iOSJobBuildDialog ref="iOSJobBuildDialog" :formStatus="formStatus.build.ios"></iOSJobBuildDialog>
+    <androidJobBuildDialog ref="androidJobBuildDialog" :formStatus="formStatus.build.android"></androidJobBuildDialog>
+    <!-- 部署对话框 -->
+    <javaJobDeployDialog ref="javaJobDeployDialog" :formStatus="formStatus.deployment.java"></javaJobDeployDialog>
     <androidReinforceJobBuildDialog ref="androidReinforceJobBuildDialog"
-                                    :formStatus="formAndroidReinforceBuildStatus"></androidReinforceJobBuildDialog>
+                                    :formStatus="formStatus.deployment.android"></androidReinforceJobBuildDialog>
     <terminalMaster :formStatus="formTerminalStatus" ref="terminalMaster">
       <template :slot-scope="executor">
-        <div class="tips" v-if="executor != null" >
+        <div class="tips" v-if="executor != null">
           <el-button type="text" style="margin-left: 10px; padding: 3px 0"
                      @click="handlerSendCmd()">[点击进入工作目录] `cd
             {{executor.workspace}}`
@@ -111,11 +112,13 @@
   import buildOutput from '@/components/opscloud/application/BuildOutput'
   import buildView from '@/components/opscloud/application/BuildView'
   // Component Build
-  import H5JobBuildDialog from '@/components/opscloud/build/H5JobBuildDialog'
-  import JavaJobBuildDialog from '@/components/opscloud/build/JavaJobBuildDialog'
+  // New
+  import javaBuildDialog from '@/components/opscloud/build/JavaBuildDialog'
+  import h5BuildDialog from '@/components/opscloud/build/H5BuildDialog'
+
   import JavaJobDeployDialog from '@/components/opscloud/build/JavaJobDeployDialog'
   import IOSJobBuildDialog from '@/components/opscloud/build/IOSJobBuildDialog'
-  import PythonJobBuildDialog from '@/components/opscloud/build/PythonJobBuildDialog'
+
   import AndroidJobBuildDialog from '@/components/opscloud/build/AndroidJobBuildDialog'
   import AndroidReinforceJobBuildDialog from '@/components/opscloud/build/AndroidReinforceJobBuildDialog'
   import CiJobPermissionDialog from '@/components/opscloud/application/CiJobPermissionDialog'
@@ -129,7 +132,7 @@
   }
 
   export default {
-    name: 'MyCiJobTable',
+    name: 'BuildJobTable',
     data () {
       return {
         application: '',
@@ -160,15 +163,19 @@
           addTitle: '新增部署任务配置',
           updateTitle: '更新部署任务配置'
         },
-        formEngineStatus: Object.assign({}, defaultFormStatus),
-        formH5BuildStatus: Object.assign({}, defaultFormStatus),
-        formJavaBuildStatus: Object.assign({}, defaultFormStatus),
-        formJavaDeployStatus: Object.assign({}, defaultFormStatus),
-        formIOSBuildStatus: Object.assign({}, defaultFormStatus),
-        formPythonBuildStatus: Object.assign({}, defaultFormStatus),
-        formAndroidBuildStatus: Object.assign({}, defaultFormStatus),
-        // cd Reinforce
-        formAndroidReinforceBuildStatus: Object.assign({}, defaultFormStatus),
+        formStatus: {
+          engine: { visible: false },
+          build: {
+            java: { visible: false },
+            h5: { visible: false },
+            ios: { visible: false },
+            android: { visible: false }
+          },
+          deployment: {
+            java: { visible: false },
+            android: { visible: false }
+          }
+        },
         formTerminalStatus: Object.assign({}, defaultFormStatus),
         formBuildOutputStatus: Object.assign({}, defaultFormStatus),
         formPermissionStatus: Object.assign({}, defaultFormStatus),
@@ -190,11 +197,10 @@
       CiJobDialog,
       CdJobDialog,
       JobEngineDialog,
-      H5JobBuildDialog,
-      JavaJobBuildDialog,
+      javaBuildDialog,
+      h5BuildDialog,
       JavaJobDeployDialog,
       IOSJobBuildDialog,
-      PythonJobBuildDialog,
       AndroidJobBuildDialog,
       AndroidReinforceJobBuildDialog,
       buildOutput,
@@ -254,23 +260,19 @@
       handlerRowRunBuild (row) {
         switch (row.jobType) {
           case 'HTML5':
-            this.formH5BuildStatus.visible = true
-            this.$refs.h5JobBuildDialog.initData(this.application, row)
+            this.formStatus.build.h5.visible = true
+            this.$refs.h5BuildDialog.initData(this.application, row)
             break
           case 'JAVA':
-            this.formJavaBuildStatus.visible = true
-            this.$refs.javaJobBuildDialog.initData(this.application, row)
+            this.formStatus.build.java.visible = true
+            this.$refs.javaBuildDialog.initData(this.application, row)
             break
           case 'IOS':
-            this.formIOSBuildStatus.visible = true
+            this.formStatus.build.ios.visible = true
             this.$refs.iOSJobBuildDialog.initData(this.application, row)
             break
-          case 'PYTHON':
-            this.formPythonBuildStatus.visible = true
-            this.$refs.pythonJobBuildDialog.initData(this.application, row)
-            break
           case 'ANDROID':
-            this.formAndroidBuildStatus.visible = true
+            this.formStatus.build.android.visible = true
             this.$refs.androidJobBuildDialog.initData(this.application, row)
             break
           default:
@@ -283,11 +285,11 @@
         }
         switch (row.cdJob.jobType) {
           case 'ANDROID_REINFORCE':
-            this.formAndroidReinforceBuildStatus.visible = true
+            this.formStatus.deployment.android.visible = true
             this.$refs.androidReinforceJobBuildDialog.initData(this.application, row.cdJob)
             break
           case 'JAVA_DEPLOYMENT':
-            this.formJavaDeployStatus.visible = true
+            this.formStatus.deployment.java.visible = true
             this.$refs.javaJobDeployDialog.initData(this.application, row.cdJob)
             break
           default:
@@ -322,7 +324,7 @@
           ciJobId: row.id,
           cdJobId: row.cdJob !== null ? row.cdJob.id : null
         }
-        this.formEngineStatus.visible = true
+        this.formStatus.engine.visible = true
         this.$refs.jobEngineDialog.initData(data)
       },
       handlerRowEdit (row) {
@@ -407,7 +409,7 @@
     margin-right: 10px;
   }
 
-  .el-checkbox{
+  .el-checkbox {
     display: inline-block;
     max-width: 200px;
   }

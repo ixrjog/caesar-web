@@ -148,7 +148,9 @@
           ]
         }
         // 使用刚指定的配置项和数据显示图表。
-        this.engineChart.setOption(option, true)
+        this.$nextTick(() => {
+          this.engineChart.setOption(option, true)
+        })
       }
     }
   }
