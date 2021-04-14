@@ -1,35 +1,32 @@
 <template>
   <d2-container>
     <h1>{{title}}</h1>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName">
       <el-tab-pane label="我的应用" name="application">
         <el-row :gutter="10">
           <el-col :span="7">
-            <el-card shadow="hover">
-              <my-application-table ref="myApplicationTable"
-                                    @handlerSelApplication="handlerSelApplication"></my-application-table>
-            </el-card>
+              <my-application-card @handlerSelApplication="handlerSelApplication"></my-application-card>
           </el-col>
           <el-col :span="17">
             <announcement-carousel></announcement-carousel>
             <block-platform-status></block-platform-status>
-            <el-card shadow="hover" style="margin-bottom: 10px" v-show="application !== null">
-              <div slot="header" class="clearfix">
-                <el-tag>{{ application !== null ?application.name : '' }}{{buildType? ' build Job' : ' deployment Job'
-                  }}
-                </el-tag>
-                <el-button style="float: right; padding: 3px 0;margin-right: 45px" type="primary"
-                           @click="handlerSwitch">
-                  <span style="margin-left: 5px;margin-right: 5px"><i class="fa fa-refresh" aria-hidden="true"></i>SWITCH</span>
-                </el-button>
-              </div>
-              <my-ci-job-table ref="myCiJobTable" v-show="buildType"></my-ci-job-table>
-              <my-cd-job-table ref="myCdJobTable" v-show="!buildType"></my-cd-job-table>
-            </el-card>
-            <task-pipeline v-show="buildType" :buildType="0" :queryParam="queryParam"
-                           @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-            <task-pipeline v-show="!buildType" :buildType="1" :queryParam="queryParam"
-                           @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+
+            <el-tabs type="border-card" style="margin-bottom: 10px">
+              <el-tab-pane>
+                <span slot="label"><span class="title">Build Job</span></span>
+                <build-job-table ref="myCiJobTable"></build-job-table>
+                <el-divider>pipelines</el-divider>
+                <task-pipeline :buildType="0" :queryParam="queryParam"
+                               @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+              </el-tab-pane>
+              <el-tab-pane>
+                <span slot="label"><span class="title">Deployment Job</span></span>
+                <deployment-job-table ref="myCdJobTable"></deployment-job-table>
+                <el-divider>pipelines</el-divider>
+                <task-pipeline :buildType="1" :queryParam="queryParam"
+                               @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+              </el-tab-pane>
+            </el-tabs>
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -52,10 +49,10 @@
 
 <script>
 
-  import MyApplicationTable from '@/components/opscloud/application/MyApplicationTable.vue'
+  import myApplicationCard from '@/components/opscloud/application/MyApplicationCard.vue'
   import engineChart from '@/components/opscloud/jenkins/EngineChart'
-  import MyCiJobTable from '@/components/opscloud/application/MyCiJobTable.vue'
-  import MyCdJobTable from '@/components/opscloud/application/MyCdJobTable.vue'
+  import buildJobTable from '@/components/opscloud/application/BuildJobTable.vue'
+  import deploymentJobTable from '@/components/opscloud/application/DeploymentJobTable.vue'
   import AnnouncementCarousel from '@/components/opscloud/announcement/AnnouncementCarousel.vue'
   import BlockPlatformStatus from '@/components/opscloud/platform/BlockPlatformStatus.vue'
   import TaskPipeline from '@/components/opscloud/pipeline/TaskPipeline.vue'
@@ -68,7 +65,6 @@
         title: '持续集成',
         activeName: 'application',
         application: null,
-        buildType: true,
         timer: null, // 查询定时器
         intervalTime: 12000,
         executor: null,
@@ -82,10 +78,10 @@
       }
     },
     components: {
-      MyApplicationTable,
+      myApplicationCard,
       engineChart,
-      MyCiJobTable,
-      MyCdJobTable,
+      buildJobTable,
+      deploymentJobTable,
       AnnouncementCarousel,
       BlockPlatformStatus,
       TaskPipeline,
@@ -100,18 +96,10 @@
       setTimer () {
         if (this.timer === null) {
           this.timer = setInterval(() => {
-            if (this.buildType) {
               this.$refs.myCiJobTable.fetchData()
-            } else {
               this.$refs.myCdJobTable.fetchData()
-            }
           }, this.intervalTime)
         }
-      },
-      handleClick () {
-      },
-      handlerSwitch () {
-        this.buildType = !this.buildType
       },
       handlerSelApplication (application) {
         this.application = application

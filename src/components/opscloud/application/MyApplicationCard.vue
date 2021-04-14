@@ -1,58 +1,60 @@
 <template>
   <div>
-    <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
-                class="input"/>
-      <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
-    </el-row>
-    <el-table :data="tableData" style="width: 100%" v-loading="loading">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left" inline class="table-expand">
-            <el-form-item label="key">
-              <el-tag disable-transitions type="primary" plain size="mini">{{props.row.applicationKey}}</el-tag>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="应用名称">
-        <template slot-scope="props">
-          <el-tooltip class="item" effect="light" :content="props.row.comment" placement="top-start">
-            <span>{{ props.row.name }}</span>
-          </el-tooltip>
-          <span class="tag-group">
+    <el-card shadow="hover">
+      <el-row style="margin-bottom: 5px" :gutter="24">
+        <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
+                  class="input"/>
+        <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
+      </el-row>
+      <el-table :data="tableData" style="width: 100%" v-loading="loading">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="table-expand">
+              <el-form-item label="key">
+                <el-tag disable-transitions type="primary" plain size="mini">{{props.row.applicationKey}}</el-tag>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="应用名称">
+          <template slot-scope="props">
+            <el-tooltip class="item" effect="light" :content="props.row.comment" placement="top-start">
+              <span>{{ props.row.name }}</span>
+            </el-tooltip>
+            <span class="tag-group">
               <span v-for="item in props.row.tags" :key="item.id">
                 <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
                   <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
                 </el-tooltip>
               </span>
           </span>
-          <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)"></el-rate>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" label="操作" width="120">
-        <template slot-scope="scope">
-          <el-dropdown split-button type="primary" plain @click="handlerRowSel(scope.row)">
-            <i class="el-icon-search"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span>
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </template>
-      </el-table-column>
-    </el-table>
+            <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)"></el-rate>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="120">
+          <template slot-scope="scope">
+            <el-dropdown split-button type="primary" plain @click="handlerRowSel(scope.row)">
+              <i class="el-icon-search"></i>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <el-pagination background @current-change="paginationCurrentChange"
-                   @size-change="handleSizeChange" :pager-count="5"
-                   layout="prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
-                   :page-size="pagination.pageSize">
-    </el-pagination>
-    <!-- application编辑对话框 -->
-    <ApplicationDialog ref="applicationDialog" :formStatus="formStatus"
-                       @closeDialog="fetchData"></ApplicationDialog>
-    <ApplicationPermissionDialog ref="applicationPermissionDialog" :formStatus="formPermissionStatus"
-                                 @closeDialog="fetchData"></ApplicationPermissionDialog>
+      <el-pagination background @current-change="paginationCurrentChange"
+                     @size-change="handleSizeChange" :pager-count="5"
+                     layout="prev, pager, next" :total="pagination.total" :current-page="pagination.currentPage"
+                     :page-size="pagination.pageSize">
+      </el-pagination>
+      <!-- application编辑对话框 -->
+      <ApplicationDialog ref="applicationDialog" :formStatus="formStatus"
+                         @closeDialog="fetchData"></ApplicationDialog>
+      <ApplicationPermissionDialog ref="applicationPermissionDialog" :formStatus="formPermissionStatus"
+                                   @closeDialog="fetchData"></ApplicationPermissionDialog>
+    </el-card>
   </div>
 </template>
 
