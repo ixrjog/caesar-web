@@ -10,8 +10,8 @@
           <el-col :span="17">
             <announcement-carousel></announcement-carousel>
             <block-platform-status></block-platform-status>
-
-            <el-tabs type="border-card" style="margin-bottom: 10px">
+            <el-card shadow="hover">
+            <el-tabs type="card" style="margin-bottom: 10px">
               <el-tab-pane>
                 <span slot="label"><span class="title">Build Job</span></span>
                 <build-job-table ref="myCiJobTable"></build-job-table>
@@ -27,6 +27,7 @@
                                @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
               </el-tab-pane>
             </el-tabs>
+            </el-card>
           </el-col>
         </el-row>
       </el-tab-pane>

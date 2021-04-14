@@ -172,40 +172,6 @@
   }
 </script>
 
-<style>
-  .table-expand {
-    font-size: 0;
-  }
+<style scoped>
 
-  .table-expand label {
-    width: 150px;
-    color: #99a9bf;
-  }
-
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
-
-  .el-dropdown {
-    vertical-align: top;
-  }
-
-  .el-dropdown + .el-dropdown {
-    margin-left: 15px;
-  }
-
-  .el-icon-arrow-down {
-    font-size: 12px;
-  }
-
-  .input {
-    display: inline-block;
-    max-width: 200px;
-  }
-
-  .select {
-    margin-right: 5px;
-  }
 </style>

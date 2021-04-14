@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
-<!--      <el-input v-model="application.name" disabled placeholder="应用名称"></el-input>-->
       <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询"></el-input>
       <el-checkbox v-model="queryParam.showHide" @change="fetchData">显示隐藏任务</el-checkbox>
       <el-button @click="fetchData" style="margin-left: 5px" :disabled="application === ''">查询</el-button>
@@ -388,20 +387,6 @@
 </script>
 
 <style scoped>
-  .table-expand {
-    font-size: 0;
-  }
-
-  .table-expand label {
-    width: 150px;
-    color: #99a9bf;
-  }
-
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
-  }
 
   .el-dropdown {
     vertical-align: top;
@@ -418,6 +403,7 @@
   .el-input {
     display: inline-block;
     max-width: 200px;
+    margin-left: 20px;
     margin-right: 10px;
   }
 
