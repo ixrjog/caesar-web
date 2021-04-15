@@ -7,17 +7,10 @@
       </el-row>
       <el-row :gutter="10">
         <el-col :span="12">
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.bugs.value }}</div>
-            <div style="font-size: 10px; color: #B7B6B6">Bugs</div>
-          </el-card>
+          <content-card :value="sonarQube.measures.bugs.value" comment="Bugs"></content-card>
         </el-col>
         <el-col :span="12" v-if="sonarQube.measures.new_bugs != null">
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.new_bugs.periods[0].value }}
-            </div>
-            <div style="font-size: 10px; color: #B7B6B6">新增Bugs</div>
-          </el-card>
+          <content-card :value="sonarQube.measures.new_bugs.periods[0].value" comment="新增Bugs"></content-card>
         </el-col>
       </el-row>
       <el-row :gutter="10">
@@ -25,51 +18,27 @@
       </el-row>
       <el-row :gutter="10">
         <el-col :span="12">
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.vulnerabilities.value
-              }}
-            </div>
-            <div style="font-size: 10px; color: #B7B6B6">漏洞</div>
-          </el-card>
+          <content-card :value="sonarQube.measures.vulnerabilities.value" comment="漏洞"></content-card>
         </el-col>
-        <el-col :span="12" v-if="sonarQube.measures.new_vulnerabilities != null">
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.new_vulnerabilities.periods[0].value }}
-            </div>
-            <div style="font-size: 10px; color: #B7B6B6">新增漏洞</div>
-          </el-card>
+        <el-col :span="12">
+          <content-card :value="sonarQube.measures.new_vulnerabilities.periods[0].value" comment="新增漏洞"></content-card>
         </el-col>
       </el-row>
       <el-row :gutter="10">
         <span style="margin-left: 5px">覆盖率</span>
       </el-row>
       <el-row :gutter="10">
-        <el-col>
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.coverage.value }}%</div>
-            <div style="font-size: 10px; color: #B7B6B6">覆盖率</div>
-          </el-card>
-        </el-col>
+          <content-card :value="sonarQube.measures.coverage.value" symbol="%" comment="覆盖率"></content-card>
       </el-row>
       <el-row :gutter="10">
         <span style="margin-left: 5px">重复</span>
       </el-row>
       <el-row :gutter="10">
         <el-col :span="12">
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{
-              sonarQube.measures.duplicated_lines_density.value }}%
-            </div>
-            <div style="font-size: 10px; color: #B7B6B6">重复度</div>
-          </el-card>
+          <content-card :value="sonarQube.measures.duplicated_lines_density.value" symbol="%" comment="重复度"></content-card>
         </el-col>
         <el-col :span="12">
-          <el-card class="box-card" shadow="never">
-            <div style="font-size: 30px;color:#20A9D9 ;font-weight: 300">{{ sonarQube.measures.duplicated_blocks.value
-              }}
-            </div>
-            <div style="font-size: 10px; color: #B7B6B6">重复块</div>
-          </el-card>
+          <content-card :value="sonarQube.measures.duplicated_blocks.value" comment="重复块"></content-card>
         </el-col>
       </el-row>
       <el-button slot="reference" type="text"><img :src="sonarQube.alertStatus"></el-button>
@@ -81,12 +50,17 @@
 
   import util from '@/libs/util.js'
 
+  import ContentCard from './child/ContentCard'
+
   export default {
     name: 'SonarPopover',
     data () {
       return {}
     },
     props: ['sonarQube'],
+    components:{
+      ContentCard
+    },
     methods: {
       handlerOpenUrl () {
         util.open(this.sonarQube.projectUrl)
