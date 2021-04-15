@@ -5,7 +5,7 @@
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="质量管理" :label-width="labelWidth" v-show="ciJob.enableSonar">
-          <el-checkbox v-model="buildParam.isSonar">本次构建启用Sonar扫描</el-checkbox>
+          <el-checkbox v-model="paramMap.isSonar">本次构建启用Sonar扫描</el-checkbox>
         </el-form-item>
       </template>
     </build-layout>
@@ -33,7 +33,10 @@
         uuid: util.uuid(),
         ciJob: '',
         labelWidth: '150px',
-        operationOption: {}
+        operationOption: {},
+        paramMap: {
+          isSonar: false
+        }
       }
     },
     components: {

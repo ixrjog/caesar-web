@@ -62,7 +62,7 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
           <template slot-scope="scope">
-            <build-operation :build="scope.row"></build-operation>
+            <build-operation :build="scope.row" :option="operationOption"></build-operation>
           </template>
         </el-table-column>
       </el-table>

@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="60%" @before-close="closeDialog">
-    <deployment-layout :buildParam="buildParam" :application="application" :deploymentJob="cdJob" :ref="`deploymentLayout_${uuid}`"
-                  :id="`deploymentLayout_${uuid}`">
+    <deployment-layout :application="application" :deploymentJob="cdJob" :operationOption="operationOption"
+                       :ref="`deploymentLayout_${uuid}`" :id="`deploymentLayout_${uuid}`">
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="主机分组" :label-width="labelWidth" required>
@@ -45,12 +45,7 @@
 
   import deploymentLayout from './layout/DeploymentLayout'
 
-  import {
-    queryCdJobBuildPage,
-    buildCdJob,
-    queryCiJobBuildArtifact,
-    queryCdJobHostPatternByJobId
-  } from '@api/build/job.build.js'
+  import { queryCdJobHostPatternByJobId } from '@api/build/job.build.js'
 
   export default {
     name: 'JavaDeploymentDialog',
@@ -64,13 +59,14 @@
         cdJob: '',
         labelWidth: '150px',
         concurrent: 1, // 并发
-        hostPattern: '',
         hostPatternOptions: [],
         servers: [],
-        buildParam: {
-          versionName: '',
-          versionDesc: '',
-          paramMap: {}
+        paramMap: {
+          hostPattern: ''
+        },
+        operationOption: {
+          buildType: '',
+          showBuildDetails: false
         }
       }
     },
@@ -78,13 +74,6 @@
       deploymentLayout
     },
     methods: {
-      initData (application, cdJob) {
-        this.application = application
-        this.cdJob = cdJob
-        this.$nextTick(() => {
-          this.$refs[`deploymentLayout_${this.uuid}`].init()
-        })
-      },
       initData (application, cdJob) {
         this.activeName = 'deploy'
         this.buildId = ''
@@ -96,7 +85,7 @@
         this.hostPattern = ''
         // 初始化参数
         if (cdJob.parameters.hostPattern !== null) {
-          this.hostPattern = cdJob.parameters.hostPattern
+          this.paramMap.hostPattern = cdJob.parameters.hostPattern
         }
         this.getHostPattern()
         this.$nextTick(() => {
