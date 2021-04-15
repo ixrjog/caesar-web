@@ -1,10 +1,10 @@
 <template>
   <div>
     <el-card shadow="hover">
-      <div v-for="(value, key) in parameters" :key="key">
-        <div><el-tag>{{key}}</el-tag></div>
-        <span style="margin-top: 2px;margin-bottom: 5px">{{ value }}</span>
-        <el-divider></el-divider>
+      <div v-for="(value,key,i) in parameters" :key="key">
+        <el-tag>{{key}}</el-tag>
+        <el-input class="value" :value="value"></el-input>
+        <el-divider v-if="i !== ( Object.keys(parameters).length -1)"></el-divider>
       </div>
     </el-card>
   </div>
@@ -24,5 +24,11 @@
 </script>
 
 <style scoped>
+
+  .value {
+    margin-top: 2px;
+    margin-bottom: 5px;
+    font-size: 8px
+  }
 
 </style>
