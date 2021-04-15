@@ -47,7 +47,7 @@
         this.application = application
         this.ciJob = ciJob
         if (ciJob.parameters.isSonar !== null) {
-          this.this.paramMap.isSonar = ciJob.parameters.isSonar === 'true'
+          this.paramMap.isSonar = ciJob.parameters.isSonar === 'true'
         }
         this.$nextTick(() => {
           this.$refs[`buildLayout_${this.uuid}`].init()
