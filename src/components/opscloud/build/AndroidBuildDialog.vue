@@ -6,7 +6,7 @@
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="构建类型" :label-width="labelWidth">
-          <el-select v-model="paramMap.BUILD_TYPE" placeholder="选择类型" @change="changeBuildType">
+          <el-select v-model="paramMap.BUILD_TYPE" placeholder="选择类型" @change="setParamBuildType">
             <el-option
               v-for="item in buildTypeOptions"
               :key="item.value"
@@ -16,7 +16,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布类型" :label-width="labelWidth">
-          <el-select v-model="paramMap.PRODUCT_FLAVOR" placeholder="选择类型" @change="changeProductFlavor">
+          <el-select v-model="paramMap.PRODUCT_FLAVOR" placeholder="选择类型" @change="setParamProductFlavor">
             <el-option
               v-for="item in buildProductFlavorOptions"
               :key="item.value"
@@ -98,14 +98,14 @@
         this.paramMap.PRODUCT_FLAVOR = ciJob.parameters['PRODUCT_FLAVOR']
         this.$nextTick(() => {
           this.$refs[`buildLayout_${this.uuid}`].init()
-          this.changeBuildType()
-          this.changeProductFlavor()
+          this.setParamBuildType()
+          this.setParamProductFlavor()
         })
       },
-      changeBuildType () {
+      setParamBuildType () {
         this.$refs[`buildLayout_${this.uuid}`].setParamMap('BUILD_TYPE', this.paramMap.BUILD_TYPE)
       },
-      changeProductFlavor () {
+      setParamProductFlavor () {
         this.$refs[`buildLayout_${this.uuid}`].setParamMap('PRODUCT_FLAVOR', this.paramMap.PRODUCT_FLAVOR)
       },
       closeDialog () {

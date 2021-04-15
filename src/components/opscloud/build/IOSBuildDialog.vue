@@ -6,7 +6,7 @@
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="构建类型" :label-width="labelWidth">
-          <el-select v-model="paramMap.buildType" placeholder="选择类型" @change="changeBuildType">
+          <el-select v-model="paramMap.buildType" placeholder="选择类型" @change="setParamBuildType">
             <el-option
               v-for="item in buildTypeOptions"
               :key="item.value"
@@ -69,10 +69,10 @@
         this.paramMap.buildType = this.ciJob.parameters.buildType
         this.$nextTick(() => {
           this.$refs[`buildLayout_${this.uuid}`].init()
-          this.changeBuildType ()
+          this.setParamBuildTypeuildType ()
         })
       },
-      changeBuildType () {
+      setParamBuildType () {
         this.$refs[`buildLayout_${this.uuid}`].setParamMap('buildType', this.paramMap.buildType)
       },
       closeDialog () {

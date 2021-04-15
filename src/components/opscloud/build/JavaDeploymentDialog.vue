@@ -1,11 +1,11 @@
 <template>
   <el-dialog :title="title" :visible.sync="formStatus.visible" width="60%" @before-close="closeDialog">
     <deployment-layout :application="application" :deploymentJob="cdJob" :operationOption="operationOption"
-                       :ref="`deploymentLayout_${uuid}`" :id="`deploymentLayout_${uuid}`">
+                       :ref="`deploymentLayout_${uuid}`" :id="`deploymentLayout_${uuid}`" @checkParam="checkParam">
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="主机分组" :label-width="labelWidth" required>
-          <el-select v-model.trim="hostPattern" placeholder="选择类型" @change="handlerSelHostPattern">
+          <el-select v-model.trim="paramMap.hostPattern" placeholder="选择类型" @change="setParamHostPattern">
             <el-option
               v-for="item in hostPatternOptions"
               :key="item.hostPattern"
@@ -27,7 +27,8 @@
           </el-card>
         </el-form-item>
         <el-form-item label="并发控制" :label-width="labelWidth">
-          <el-slider style="margin-left: 10px; width: 50%;" v-model="concurrent" mini :min="1" :max="8" :step="1"
+          <el-slider style="margin-left: 10px; width: 50%;" v-model="paramMap.concurrent" mini :min="1" :max="8"
+                     :step="1"
                      show-stops></el-slider>
         </el-form-item>
       </template>
@@ -58,11 +59,11 @@
         uuid: util.uuid(),
         cdJob: '',
         labelWidth: '150px',
-        concurrent: 1, // 并发
         hostPatternOptions: [],
         servers: [],
         paramMap: {
-          hostPattern: ''
+          hostPattern: '',
+          concurrent: 1 // 并发
         },
         operationOption: {
           buildType: '',
@@ -79,9 +80,12 @@
         this.buildId = ''
         this.application = application
         this.cdJob = cdJob
+        this.paramMap = {
+          hostPattern: '',
+          concurrent: 1 // 并发
+        }
         this.hostPatternOptions = []
         this.servers = []
-        this.server = ''
         this.hostPattern = ''
         // 初始化参数
         if (cdJob.parameters.hostPattern !== null) {
@@ -90,27 +94,44 @@
         this.getHostPattern()
         this.$nextTick(() => {
           this.$refs[`deploymentLayout_${this.uuid}`].init()
+          this.setParamHostPattern()
+          this.setParamConcurrent()
         })
       },
-      closeDialog () {
-        this.formStatus.visible = false
-        this.$emit('closeDialog')
+      setParamConcurrent () {
+        this.$refs[`deploymentLayout_${this.uuid}`].setParamMap('concurrent', this.paramMap.concurrent)
       },
-      handlerSelHostPattern () {
-        this.servers = []
+      setParamHostPattern () {
+        this.$refs[`deploymentLayout_${this.uuid}`].setParamMap('hostPattern', this.paramMap.hostPattern)
+        this.selHostPattern()
+      },
+      // 子组件回调函数
+      checkParam (paramMap, callback) {
+        let result = {
+          success: paramMap.hostPattern !== '',
+          message: '未选中主机分组！',
+          type: 'warning'
+        }
+        callback(result)
+      },
+      selHostPattern () {
         for (let hostPattern of this.hostPatternOptions) {
-          if (hostPattern.hostPattern === this.hostPattern) {
+          if (hostPattern.hostPattern === this.paramMap.hostPattern) {
             this.servers = hostPattern.servers
             break
           }
         }
+      },
+      closeDialog () {
+        this.formStatus.visible = false
+        this.$emit('closeDialog')
       },
       getHostPattern () {
         queryCdJobHostPatternByJobId(this.cdJob.id)
           .then(res => {
             if (res.success) {
               this.hostPatternOptions = res.body
-              this.handlerSelHostPattern()
+              this.selHostPattern()
             }
           })
       }

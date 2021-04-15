@@ -154,15 +154,6 @@
             this.loadArtifacts = false
           })
       },
-      getHostPattern () {
-        queryCdJobHostPatternByJobId(this.deploymentJob.id)
-          .then(res => {
-            if (res.success) {
-              this.hostPatternOptions = res.body
-              this.handlerSelHostPattern()
-            }
-          })
-      },
       init () {
         this.activeName = 'deploy'
         this.buildId = ''
@@ -174,37 +165,31 @@
       setParamMap (key, value) {
         this.buildParam.paramMap[key] = value
       },
-      handlerSelHostPattern () {
-        this.servers = []
-        for (let hostPattern of this.hostPatternOptions) {
-          if (hostPattern.hostPattern === this.hostPattern) {
-            this.servers = hostPattern.servers
-            break
-          }
-        }
-      },
       handlerBuild () {
         if (this.buildId === '') {
           this.$message({
             message: '未选中部署构建',
             type: 'warning'
           })
+          return
         }
-        if (this.hostPattern === '') {
+        let result = {}
+        this.$emit('checkParam', this.buildParam.paramMap, val => {
+          result = val
+        })
+        if (!result.success) {
           this.$message({
-            message: '未选中主机分组',
-            type: 'warning'
+            message: result.message,
+            type: result.type
           })
+          return
         }
         this.building = true
-        this.buildParam.paramMap.hostPattern = this.hostPattern // 服务器分组
-        this.buildParam.paramMap.concurrent = this.concurrent // 并发控制
         let requestBody = {
           'cdJobId': this.deploymentJob.id,
           'ciBuildId': this.buildId,
           'versionName': this.buildParam.versionName,
           'versionDesc': this.buildParam.versionDesc,
-          'concurrent': this.buildParam.concurrent,
           'paramMap': this.buildParam.paramMap
         }
         buildCdJob(requestBody)

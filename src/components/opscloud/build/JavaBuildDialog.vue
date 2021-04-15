@@ -5,7 +5,7 @@
       <!--      自定义参数-->
       <template v-slot:customParameters>
         <el-form-item label="质量管理" :label-width="labelWidth" v-show="ciJob.enableSonar">
-          <el-checkbox v-model="paramMap.isSonar">本次构建启用Sonar扫描</el-checkbox>
+          <el-checkbox v-model="paramMap.isSonar" @change="setParamIsSonar">本次构建启用Sonar扫描</el-checkbox>
         </el-form-item>
       </template>
     </build-layout>
@@ -46,9 +46,16 @@
       initData (application, ciJob) {
         this.application = application
         this.ciJob = ciJob
+        if (ciJob.parameters.isSonar !== null) {
+          this.this.paramMap.isSonar = ciJob.parameters.isSonar === 'true'
+        }
         this.$nextTick(() => {
           this.$refs[`buildLayout_${this.uuid}`].init()
+          this.setParamIsSonar()
         })
+      },
+      setParamIsSonar () {
+        this.$refs[`buildLayout_${this.uuid}`].setParamMap('PRODUCT_isSonar', this.paramMap.isSonar)
       },
       closeDialog () {
         this.formStatus.visible = false
