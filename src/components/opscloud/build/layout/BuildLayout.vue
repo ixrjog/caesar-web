@@ -180,7 +180,6 @@
       },
       setParamMap (key, value) {
         this.buildParam.paramMap[key] = value
-        debugger
       },
       getBranches () {
         this.branchesLoading = true
