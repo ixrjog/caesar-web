@@ -9,3 +9,11 @@ export function queryPipelineNodeStepLog (data) {
     data
   })
 }
+
+export function queryPipelineNodeSteps (data) {
+  return request({
+    url: baseUrl + '/node/steps/query',
+    method: 'post',
+    data
+  })
+}

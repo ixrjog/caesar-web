@@ -6,7 +6,8 @@
           <div slot="header" class="clearfix">
               <span>
                 <el-tag @click="openUrl(pipeline.jobUrl)">{{ pipeline.jobName }}</el-tag>
-                <span class="buildNumber" @click="openUrl(pipeline.buildUrl)"><i class="el-icon-loading" v-show="pipeline.isRunning"></i>
+                <span class="buildNumber" @click="openUrl(pipeline.buildUrl)"><i class="el-icon-loading"
+                                                                                 v-show="pipeline.isRunning"></i>
                   #{{ pipeline.jobBuildNumber }}</span>
                 <span class="ago"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
@@ -30,6 +31,7 @@
             />
           </div>
           <pipeline-output :buildType="buildType" :buildId="pipeline.id" :ref="`pipelines${i}`"></pipeline-output>
+          <pipeline-step :ref="`pipelineStep${i}`"></pipeline-step>
         </el-card>
       </template>
     </div>
@@ -40,11 +42,12 @@
 
   import util from '@/libs/util'
 
-  import { queryPipelineNodeStepLog } from '@api/jenkins/jenkins.pipeline.js'
+  import { queryPipelineNodeSteps } from '@api/jenkins/jenkins.pipeline.js'
 
   // pipeline 图形
   import PipelineGraph from 'jenkins-pipeline-graph-vue'
   import PipelineOutput from '@/components/opscloud/pipeline/PipelineOutput'
+  import PipelineStep from './PipelineStep'
 
   const layout = {
     nodeSpacingH: 90, // 节点间距
@@ -76,7 +79,8 @@
     },
     components: {
       PipelineGraph,
-      PipelineOutput
+      PipelineOutput,
+      PipelineStep
     },
     mounted () {
       this.initSocket()
@@ -153,9 +157,9 @@
           buildId: pipeline.buildId,
           nodeId: nodeId
         }
-        queryPipelineNodeStepLog(requestBody)
+        queryPipelineNodeSteps(requestBody)
           .then(res => {
-            this.$refs[`pipelines${i}`][0].outputLog(res.body)
+            this.$refs[`pipelineStep${i}`][0].init(res.body)
           })
       },
       handlerPipelineOutput (i) {
