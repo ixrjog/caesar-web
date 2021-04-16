@@ -83,7 +83,8 @@
     <ios-build-dialog ref="iosBuildDialog" :formStatus="formStatus.build.ios"></ios-build-dialog>
     <android-build-dialog ref="androidBuildDialog" :formStatus="formStatus.build.android"></android-build-dialog>
     <!-- 部署对话框 -->
-    <java-deployment-dialog ref="javaDeploymentDialog" :formStatus="formStatus.deployment.java"></java-deployment-dialog>
+    <java-deployment-dialog ref="javaDeploymentDialog"
+                            :formStatus="formStatus.deployment.java"></java-deployment-dialog>
     <terminal-master :formStatus="formStatus.terminal" ref="terminalMaster">
       <template :slot-scope="executor">
         <div class="tips" v-if="executor != null">
@@ -95,7 +96,8 @@
       </template>
     </terminal-master>
     <build-output ref="buildOutput" :formStatus="formStatus.buildOutput"></build-output>
-    <ci-job-permission-dialog ref="ciJobPermissionDialog" :formStatus="formStatus.permission"></ci-job-permission-dialog>
+    <ci-job-permission-dialog ref="ciJobPermissionDialog"
+                              :formStatus="formStatus.permission"></ci-job-permission-dialog>
   </div>
 </template>
 
@@ -353,6 +355,22 @@
         this.pagination.currentPage = currentPage
         this.fetchData()
       },
+      setRunning () {
+        let args = {
+          type: 0,
+          isRunning: false
+        }
+        for (let job of this.tableData) {
+          for (let view of job.buildViews) {
+            if (view.building) {
+              args.isRunning = true
+              this.$emit('setRunning', args)
+              return
+            }
+          }
+        }
+        this.$emit('setRunning', args)
+      },
       fetchData () {
         if (this.application === '') return
         if (this.tableData.length === 0) this.loading = true
@@ -369,6 +387,7 @@
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum
             this.loading = false
+            this.setRunning()
           })
       }
     }

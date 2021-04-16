@@ -214,6 +214,22 @@
         this.pagination.currentPage = currentPage
         this.fetchData()
       },
+      setRunning () {
+        let args = {
+          type: 0,
+          isRunning: false
+        }
+        for (let job of this.tableData) {
+          for (let view of job.buildViews) {
+            if (view.building) {
+              args.isRunning = true
+              this.$emit('setRunning', args)
+              return
+            }
+          }
+        }
+        this.$emit('setRunning', args)
+      },
       fetchData () {
         if (this.application === '') return
         if (this.tableData.length === 0) this.loading = true
@@ -228,6 +244,7 @@
             this.tableData = res.body.data
             this.pagination.total = res.body.totalNum
             this.loading = false
+            this.setRunning()
           })
       }
     }

@@ -5,28 +5,32 @@
       <el-tab-pane label="我的应用" name="application">
         <el-row :gutter="10">
           <el-col :span="7">
-              <my-application-card @handlerSelApplication="handlerSelApplication"></my-application-card>
+            <my-application-card @handlerSelApplication="handlerSelApplication"></my-application-card>
           </el-col>
           <el-col :span="17">
+            <!--公告-->
             <announcement-carousel></announcement-carousel>
             <block-platform-status></block-platform-status>
             <el-card shadow="hover">
-            <el-tabs type="card" style="margin-bottom: 10px">
-              <el-tab-pane>
-                <span slot="label"><span class="title">Build Job</span></span>
-                <build-job-table ref="myCiJobTable"></build-job-table>
-                <el-divider>pipelines</el-divider>
-                <task-pipeline :buildType="0" :queryParam="queryParam"
-                               @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-              </el-tab-pane>
-              <el-tab-pane>
-                <span slot="label"><span class="title">Deployment Job</span></span>
-                <deployment-job-table ref="myCdJobTable"></deployment-job-table>
-                <el-divider>pipelines</el-divider>
-                <task-pipeline :buildType="1" :queryParam="queryParam"
-                               @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
-              </el-tab-pane>
-            </el-tabs>
+              <el-tabs type="card" style="margin-bottom: 10px">
+                <el-tab-pane>
+                  <span slot="label"><span class="title">
+                    <i class="el-icon-loading" v-if="running.build"></i>Build Job</span></span>
+                  <build-job-table ref="buildJobTable" @setRunning="setRunning"></build-job-table>
+                  <el-divider>pipelines</el-divider>
+                  <task-pipeline :buildType="0" :queryParam="queryParam"
+                                 @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+                </el-tab-pane>
+                <el-tab-pane>
+                  <span slot="label"><span class="title">
+                    <i class="el-icon-loading" v-if="running.deployment"></i>Deployment Job</span></span>
+                  <deployment-job-table ref="deploymentJobTable"
+                                        @setRunning="setRunning"></deployment-job-table>
+                  <el-divider>pipelines</el-divider>
+                  <task-pipeline :buildType="1" :queryParam="queryParam"
+                                 @handlerOpenExecutor="handlerOpenExecutor"></task-pipeline>
+                </el-tab-pane>
+              </el-tabs>
             </el-card>
           </el-col>
         </el-row>
@@ -65,9 +69,13 @@
       return {
         title: '持续集成',
         activeName: 'application',
+        running: {
+          build: false,
+          deployment: false
+        },
         application: null,
         timer: null, // 查询定时器
-        intervalTime: 12000,
+        intervalTime: 10000,
         executor: null,
         queryParam: {
           queryType: 'MY',
@@ -97,21 +105,28 @@
       setTimer () {
         if (this.timer === null) {
           this.timer = setInterval(() => {
-              this.$refs.myCiJobTable.fetchData()
-              this.$refs.myCdJobTable.fetchData()
+            this.$refs.buildJobTable.fetchData()
+            this.$refs.deploymentJobTable.fetchData()
           }, this.intervalTime)
         }
       },
       handlerSelApplication (application) {
         this.application = application
-        this.$refs.myCiJobTable.initData(application)
-        this.$refs.myCdJobTable.initData(application)
+        this.$refs.buildJobTable.initData(application)
+        this.$refs.deploymentJobTable.initData(application)
         this.setTimer() // 启动定时器查询任务列表
       },
       handlerOpenExecutor (executor) {
         this.executor = executor
         this.formTerminalStatus.visible = true
         this.$refs.terminalMaster.open(executor.server)
+      },
+      setRunning (args) {
+        if (args.type === 0) {
+          this.running.build = args.isRunning
+        } else {
+          this.running.deployment = args.isRunning
+        }
       },
       handlerSendCmd () {
         let commandMessage = {
