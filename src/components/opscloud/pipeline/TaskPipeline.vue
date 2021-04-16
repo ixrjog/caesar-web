@@ -5,8 +5,8 @@
         <el-card shadow="hover" body-style="padding: 2px" class="card">
           <div slot="header" class="clearfix">
               <span>
-                <el-tag>{{ pipeline.jobName }}</el-tag>
-                <span class="buildNumber"><i class="el-icon-loading" v-show="pipeline.isRunning"></i>
+                <el-tag @click="openUrl(pipeline.jobUrl)">{{ pipeline.jobName }}</el-tag>
+                <span class="buildNumber" @click="openUrl(pipeline.buildUrl)"><i class="el-icon-loading" v-show="pipeline.isRunning"></i>
                   #{{ pipeline.jobBuildNumber }}</span>
                 <span class="ago"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
@@ -142,6 +142,9 @@
         this.socket.onmessage = (message) => {
           this.pipelines = JSON.parse(message.data)
         }
+      },
+      openUrl (url) {
+        util.open(url)
       },
       nodeClick (nodeName, nodeId, i, pipeline) {
         if (nodeName === 'Queue') return
