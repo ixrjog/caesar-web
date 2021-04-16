@@ -216,7 +216,7 @@
       },
       setRunning () {
         let args = {
-          type: 0,
+          type: 1,
           isRunning: false
         }
         for (let job of this.tableData) {
