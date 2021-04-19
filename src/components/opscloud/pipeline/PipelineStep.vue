@@ -2,15 +2,19 @@
   <div v-if="steps !== null && steps.length !== 0">
     <el-divider></el-divider>
     <b class="stepsTitle">Steps Log</b>
-    <el-button class="stepsButton" type="text" @click="closeSteps"><i class="el-icon-close"
-                                                                      aria-hidden="true"></i>
+    <el-button class="stepsButton" type="text" @click="closeSteps">
+      <i class="el-icon-close" aria-hidden="true"></i>
     </el-button>
+    <el-tooltip class="item" effect="light" content="切换步骤日志/流水线" placement="top-start">
+      <el-button class="stepsButton" type="text" @click="handlerSwitch"><i class="fa fa-exchange"></i></el-button>
+    </el-tooltip>
     <div v-for="(step,i) in steps" :key="step.id" style="font-size: 12px;margin-top: 5px">
       <div class="displayName">
-        <el-tag effect="dark" :type="step.result|  getStepResultType">Step {{i +1}}</el-tag>
+        <el-tag effect="dark" style="margin-left: 5px" :type="step.result|  getStepResultType">Step {{i +1}}
+        </el-tag>
         {{ step.displayName }}
       </div>
-      <terminal-log :terminalSetting="terminalSetting" :log="step.log"></terminal-log>
+      <terminal-log :terminalSetting="terminalSetting" :ref="`terminal-log${i}`" :step="step"></terminal-log>
     </div>
   </div>
 </template>
@@ -77,20 +81,17 @@
             }
           })
       },
+      handlerSwitch () {
+        for (let i = 0; i < this.steps.length; i++) {
+          this.$refs[`terminal-log${i}`][0].doSwitch()
+        }
+      },
       closeSteps () {
         this.steps = []
       },
       init (steps) {
         this.steps = steps
       },
-      // handlerShowLog (i, step) {
-      //   this.$nextTick(() => {
-      //     let terminal = this.$refs[`terminalStep${i}`][0]
-      //     terminal.init()
-      //     terminal.write(step.log)
-      //     debugger
-      //   })
-      // },
       sendMessage (message) {
       }
     }

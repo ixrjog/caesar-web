@@ -4,6 +4,8 @@ export function getStepResultType (value) {
       return 'danger'
     case 'SUCCESS':
       return 'success'
+    case 'UNKNOWN':
+      return 'warning'
     case '':
       return 'info'
     default:

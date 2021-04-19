@@ -17,11 +17,12 @@
       return {
         term: null,
         id: util.uuid(),
-        fitAddon: new FitAddon()
+        fitAddon: new FitAddon(),
+        switch: true
       }
     },
     name: 'TerminalItem',
-    props: ['terminalSetting', 'log'],
+    props: ['terminalSetting', 'step'],
     mixins: [],
     mounted () {
       this.init()
@@ -34,10 +35,9 @@
         }
       },
       init () {
-        let rows = this.log.split('\n').length + 1
-        if (rows > this.terminalSetting.rows) {
-          rows = this.terminalSetting.rows
-        }
+        let log = this.switch ? this.step.log : this.step.displayDescription.replace(/ {24,50}/g, '\n').replace(/^(\t)*$\n/g, '')
+        let line = log.split('\n').length + 1
+        let rows = line > this.terminalSetting.rows ? this.terminalSetting.rows : line
         let term = new Terminal({
           rendererType: 'canvas', // 渲染类型
           allowTransparency: true,
@@ -59,8 +59,15 @@
         term.open(document.getElementById(this.id))
         this.fitAddon.fit() // 获取对象的高度和宽度
         term.focus() // 聚焦
-        term.write(this.log)
+        term.write(log)
         this.term = term
+      },
+      doSwitch () {
+        this.switch = !this.switch
+        this.term.clear()
+        this.term.dispose()
+        this.term = null
+        this.init()
       },
       /**
        * 聚焦
