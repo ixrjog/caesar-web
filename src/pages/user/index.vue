@@ -11,6 +11,7 @@
           <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
           <el-button @click="syncLdapUser" style="margin-left: 5px">同步</el-button>
           <el-button @click="addItem" style="margin-left: 5px">新建</el-button>
+          <el-button @click="handlerRevokeToken" style="margin-left: 5px">吊销令牌</el-button>
         </el-row>
       </div>
       <el-table :data="tableData" style="width: 100%" v-loading="loading">
@@ -36,13 +37,13 @@
                 </div>
               </el-form-item>
               <el-form-item label="服务器组">
-                  <div class="tag-group">
+                <div class="tag-group">
                        <span v-for="item in props.row.serverGroups" :key="item.id">
                           <el-tooltip class="item" effect="light" :content="item.comment || '没有填写'" placement="bottom">
                            <el-tag style="margin-left: 5px"
                                    :type=" item.isAdmin ? 'danger': '' ">{{ item.name }}</el-tag>
                           </el-tooltip></span>
-                  </div>
+                </div>
               </el-form-item>
             </el-form>
           </template>
@@ -95,6 +96,7 @@
   import UserServerGroupDialog from '@/components/opscloud/dialog/UserServerGroupDialog'
   // API
   import { fuzzyQueryUserPage, syncUser, retireUserById } from '@api/user/user.js'
+  import { revokeAllUserToken } from '@api/auth/auth.token.js'
 
   export default {
     data () {
@@ -222,13 +224,22 @@
         })
         done()
       },
+      handlerRevokeToken () {
+        revokeAllUserToken()
+          .then(res => {
+            this.$message({
+              message: '吊销所有用户令牌成功！',
+              type: 'success'
+            })
+          })
+      },
       syncLdapUser () {
         setTimeout(() => {
           this.loading = true
           syncUser()
             .then(res => {
               this.$message({
-                message: '同步成功',
+                message: '同步成功!',
                 type: 'success'
               })
               this.fetchData()
