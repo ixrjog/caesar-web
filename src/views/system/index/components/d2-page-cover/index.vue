@@ -4,7 +4,7 @@
       <slot/>
     </div>
 <!--    <p class="d2-page-cover__title">OPSCLOUD {{$version}}</p>-->
-    <p class="d2-page-cover__title">Caesar Platform v1.0.0</p>
+    <p class="d2-page-cover__title">Caesar Platform v1.0.1</p>
     <p class="d2-page-cover__sub-title"></p>
     <p class="d2-page-cover__build-time">FINAL BUILD TIME {{$buildTime}}</p>
     <slot name="footer"/>
