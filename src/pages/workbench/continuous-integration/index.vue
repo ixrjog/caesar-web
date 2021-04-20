@@ -15,7 +15,7 @@
               <el-tabs type="card" style="margin-bottom: 10px">
                 <el-tab-pane>
                   <span slot="label"><span class="title">
-                    <i class="el-icon-loading" v-if="running.build"></i>Build Job</span></span>
+                    <i class="el-icon-loading" v-if="running.build"></i>Build</span></span>
                   <build-job-table ref="buildJobTable" @setRunning="setRunning"></build-job-table>
                   <el-divider>pipelines</el-divider>
                   <task-pipeline :buildType="0" :queryParam="queryParam"
@@ -23,7 +23,7 @@
                 </el-tab-pane>
                 <el-tab-pane>
                   <span slot="label"><span class="title">
-                    <i class="el-icon-loading" v-if="running.deployment"></i>Deployment Job</span></span>
+                    <i class="el-icon-loading" v-if="running.deployment"></i>Deployment</span></span>
                   <deployment-job-table ref="deploymentJobTable"
                                         @setRunning="setRunning"></deployment-job-table>
                   <el-divider>pipelines</el-divider>
