@@ -78,7 +78,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .tips {
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     padding: 10px 10px;
@@ -89,11 +89,7 @@
   .el-row {
     margin-left: 0px;
     margin-bottom: 5px;
-
-  &
-  :last-child {
-  }
-
+    & :last-child {}
   }
 
   .title {
