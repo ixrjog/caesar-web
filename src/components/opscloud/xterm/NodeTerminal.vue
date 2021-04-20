@@ -4,8 +4,8 @@
       <template>
         <el-col :span="24">
           <el-alert title="常用命令" type="success" show-icon style="margin-bottom: 5px">
-            <el-button type="text" style="margin-left: 10px; padding: 3px 0" @click="handlerSendCmd(0)">[点击进入工作目录] cd
-              {{executor.workspace}}
+            <el-button type="text" @click="handlerSendCmd(0)">
+              <span>[点击进入工作目录] cd {{executor.workspace}}</span>
             </el-button>
           </el-alert>
           <el-card shadow="hover" body-style="padding: 2px" style="margin-right: 10px;margin-bottom: 10px">
@@ -330,5 +330,10 @@
     border-bottom: 1px solid #EBEEF5;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+  }
+
+  .el-button--text {
+    margin-left: 10px;
+    padding: 3px 0;
   }
 </style>

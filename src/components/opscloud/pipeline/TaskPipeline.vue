@@ -17,7 +17,7 @@
                 </el-tooltip>
                 <el-tooltip class="item" effect="light" content="登录节点(管理员专用)" placement="top-start"
                             v-if="pipeline.executors != null">
-                  <el-button class="btn" type="text" @click="handlerOpenExecutor(pipeline)">
+                  <el-button class="btn" type="text" @click="handlerOpenExecutor(pipeline)" :disabled="pipeline.executors.length === 0">
                     <d2-icon name="terminal"/>
                   </el-button>
                 </el-tooltip>
@@ -166,6 +166,7 @@
         this.$refs[`pipelines${i}`][0].output()
       },
       handlerOpenExecutor (pipeline) {
+        debugger
         this.$emit('handlerOpenExecutor', pipeline.executors[0])
       }
     }
