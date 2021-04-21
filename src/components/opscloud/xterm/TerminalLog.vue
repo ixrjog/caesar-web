@@ -65,9 +65,11 @@
       },
       doSwitch () {
         this.switch = !this.switch
-        this.term.clear()
-        this.term.dispose()
-        this.term = null
+        if (this.term !== null) {
+          this.term.clear()
+          this.term.dispose()
+          this.term = null
+        }
         this.init()
       },
       /**

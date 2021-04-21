@@ -183,7 +183,7 @@
                 xtermWidth: 0,
                 xtermHeight: 308
               }
-              this.socketOnSend(JSON.stringify(initMessage))
+              this.sendMessage(initMessage)
             })
             this.$nextTick(() => {
               this.handlerResize()
