@@ -36,6 +36,7 @@
       },
       init () {
         let log = this.switch ? this.step.log : this.step.displayDescription.replace(/ {24,50}/g, '\n').replace(/^(\t)*$\n/g, '')
+        if (log === null) return
         let line = log.split('\n').length + 1
         let rows = line > this.terminalSetting.rows ? this.terminalSetting.rows : line
         let term = new Terminal({

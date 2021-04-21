@@ -101,7 +101,7 @@
           })
       },
       handlerExit () {
-        this.sendMessage(JSON.stringify(message.close))
+        this.sendMessage(message.close)
         this.servers = []
         clearInterval(this.timer)
         this.formStatus.visible = false
@@ -131,7 +131,7 @@
           status: 'HEARTBEAT'
         }
         try {
-          this.socketOnSend(JSON.stringify(heartbeat))
+          this.sendMessage(heartbeat)
         } catch (e) {
         }
       },
@@ -164,7 +164,7 @@
         this.servers.push(server)
         this.$nextTick(() => {
           this.initTerminal(server)
-          this.sendMessage(JSON.stringify(duplicateSessionMessage))
+          this.sendMessage(duplicateSessionMessage)
         })
       },
       /**
@@ -176,7 +176,7 @@
           status: 'LOGOUT',
           instanceId: name
         }
-        this.sendMessage(JSON.stringify(logoutMessage))
+        this.sendMessage(logoutMessage)
         this.$refs[`terminal_${name}`][0].logout()
         this.servers = this.servers.filter(function (s) {
           return s.name !== name
@@ -200,10 +200,10 @@
         this.setTimer()
       },
       sendMessage (message) {
-        this.socketOnSend(message)
+        this.socketOnSend(JSON.stringify(message))
       },
       sendCmd (server, command) {
-        this.sendMessage(JSON.stringify(command))
+        this.sendMessage(command)
         this.$refs[`terminal_${server.name}`][0].focus()
         // this.terminalMap[this.server.name].focus() // 强制焦点
       },
@@ -232,7 +232,7 @@
                 xtermWidth: 0,
                 xtermHeight: 308
               }
-              this.socketOnSend(JSON.stringify(initMessage))
+              this.sendMessage(initMessage)
               this.$nextTick(() => {
                 this.handlerResize(this.server)
               })

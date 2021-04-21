@@ -51,6 +51,15 @@ util.uuid = function () {
 }
 
 /**
+ * Terminal Tools
+ * 返回UUID
+ * @returns {string}
+ */
+util.instanceId = function (id) {
+  return id.split('#')[0] + '#' + this.uuid()
+}
+
+/**
  * 返回ws
  * @returns {string}
  */

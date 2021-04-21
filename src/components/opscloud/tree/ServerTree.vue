@@ -1,27 +1,29 @@
 <template>
-  <el-row style="margin-bottom: 5px;margin-left: 2px">
-    <el-input v-model="queryParam.name" placeholder="名称" :style="searchBarHeadStyle"/>
-    <el-select v-model="queryParam.grpType" filterable clearable :style="searchBarStyle"
-               remote reserve-keyword placeholder="输入关键词搜组类型" :remote-method="getGrpType" :loading="loading">
-      <el-option
-        v-for="item in grpTypeOptions"
-        :key="item.grpType"
-        :label="item.name"
-        :value="item.grpType">
-      </el-option>
-    </el-select>
-    <el-button @click="fetchData" :style="searchBarStyle" :loading="searching">查询</el-button>
-    <el-tooltip content="创建ansible主机配置文件" placement="bottom" effect="light" v-if="false">
-      <el-button @click="createAnsibleHostsCfg" :style="searchBarStyle" :loading="creating">创建</el-button>
-    </el-tooltip>
+  <div>
     <el-card style="margin-top: 5px" class="box-card" shadow="never">
       <div slot="header" class="clearfix">
         <span><i class="fa fa-list" aria-hidden="true"></i></span>
         <el-tag style="float: right" disable-transitions>Size: {{ serverSize }}</el-tag>
       </div>
+      <el-row>
+        <el-input v-model="queryParam.name" placeholder="名称" :style="searchBarHeadStyle"/>
+        <el-select v-model="queryParam.grpType" filterable clearable :style="searchBarStyle"
+                   remote reserve-keyword placeholder="输入关键词搜组类型" :remote-method="getGrpType" :loading="loading">
+          <el-option
+            v-for="item in grpTypeOptions"
+            :key="item.grpType"
+            :label="item.name"
+            :value="item.grpType">
+          </el-option>
+        </el-select>
+        <el-button @click="fetchData" :style="searchBarStyle" :loading="searching">查询</el-button>
+        <el-tooltip content="创建ansible主机配置文件" placement="bottom" effect="light" v-if="false">
+          <el-button @click="createAnsibleHostsCfg" :style="searchBarStyle" :loading="creating">创建</el-button>
+        </el-tooltip>
+      </el-row>
       <el-tree :data="serverTree.tree" show-checkbox ref="myServerTree" node-key="id"></el-tree>
     </el-card>
-  </el-row>
+  </div>
 </template>
 
 <script>
@@ -103,3 +105,12 @@
     }
   }
 </script>
+
+<style>
+  .el-card__header {
+    padding: 10px 10px;
+    border-bottom: 1px solid #EBEEF5;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+</style>

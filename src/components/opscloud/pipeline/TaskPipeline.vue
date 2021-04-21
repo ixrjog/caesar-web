@@ -166,7 +166,6 @@
         this.$refs[`pipelines${i}`][0].output()
       },
       handlerOpenExecutor (pipeline) {
-        debugger
         this.$emit('handlerOpenExecutor', pipeline.executors[0])
       }
     }

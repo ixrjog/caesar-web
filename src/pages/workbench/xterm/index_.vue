@@ -1,9 +1,6 @@
 <template>
   <d2-container>
     <template>
-<!--      <div>-->
-<!--        <h1>{{title}}</h1>-->
-<!--      </div>-->
       <el-row :gutter="10">
         <el-col :span="8" v-show="pageStatus == 0">
           <ServerTree ref="serverTree"></ServerTree>

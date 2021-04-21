@@ -29,6 +29,10 @@
         } catch (e) {
         }
       },
+      // 子组件回调函数
+      getFitAddon () {
+        return this.fitAddon
+      },
       init () {
         let term = new Terminal({
           rendererType: 'canvas', // 渲染类型
@@ -58,7 +62,7 @@
             status: 'COMMAND',
             instanceId: _this.server.name
           }
-          _this.sendMessage(JSON.stringify(command))
+          _this.sendMessage(command)
         })
         this.term = term
       },
@@ -77,7 +81,7 @@
           xtermWidth: this.fitAddon._terminal.cols * 7, // 边界扣除
           xtermHeight: document.getElementById(this.server.name).clientHeight
         }
-        this.sendMessage(JSON.stringify(resizeMessage))
+        this.sendMessage(resizeMessage)
         // 滚动到底部
         this.term.scrollToBottom()
       },
