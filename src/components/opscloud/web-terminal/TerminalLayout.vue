@@ -8,7 +8,7 @@
               <span><el-tag>{{ server.name }}</el-tag></span>
               <el-tooltip class="item" effect="light" content="退出" placement="top-start">
                 <el-button style="float: right; padding: 3px 0" type="text"
-                           @click="handlerLogoutByInstanceId(server.name)">
+                           @click="handlerLogoutByInstance( {id:server.name,isNotify:true})">
                   Logout
                 </el-button>
               </el-tooltip>
@@ -111,14 +111,14 @@
        * 单个终端退出
        * @param id
        */
-      handlerLogoutByInstanceId (id) {
+      handlerLogoutByInstance (args) {
         let logoutMessage = {
           status: 'LOGOUT',
-          instanceId: id
+          instanceId: args.id
         }
         this.sendMessage(logoutMessage)
-        this.$refs[`terminal_${id}`][0].dispose()
-        this.$emit('handlerLogoutByInstanceId', id)
+        this.$refs[`terminal_${args.id}`][0].dispose()
+        this.$emit('handlerLogoutByInstance', args)
       },
       /**
        * 复制会话，重开一个终端（支持变更用户类型）
@@ -141,6 +141,13 @@
         this.$nextTick(() => {
           this.sendMessage(duplicateSessionMessage)
         })
+      },
+      handlerBatch (isBatch) {
+        let batchCommandMessage = {
+          status: 'BATCH_COMMAND',
+          isBatch: isBatch
+        }
+        this.sendMessage(batchCommandMessage)
       },
       handlerResize () {
         for (let server of this.servers) {
@@ -203,7 +210,9 @@
           let messageJson = JSON.parse(message.data)
           let _this = this
           messageJson.map(function (n) {
-            _this.$refs[`terminal_${n.instanceId}`][0].write(n.output)
+            if (_this.$refs[`terminal_${n.instanceId}`] !== null) {
+              _this.$refs[`terminal_${n.instanceId}`][0].write(n.output)
+            }
           })
         }
       }

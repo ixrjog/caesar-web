@@ -70,7 +70,7 @@
 
   export default {
     name: 'TerminalTools',
-    props: ['terminalSetting', 'mode'],
+    props: ['terminalSetting', 'mode', 'batchType'],
     components: {
       DocDialog,
       UserTerminalSetting
@@ -83,7 +83,6 @@
         loginUserType: 0, // 登录用户类型
         loginUserTypeOptions: loginUserTypeOptions,
         layoutModeOptions: layoutModeOptions,
-        batchType: '',
         formStatus: {
           setting: {
             visible: false

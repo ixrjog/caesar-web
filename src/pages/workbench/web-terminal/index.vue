@@ -7,10 +7,12 @@
       <!--      顶部工具栏-->
       <el-row>
         <terminal-tools :terminal-setting="terminalSetting" :mode="terminalTools.mode"
+                        :batch-type="terminalTools.batchType"
                         @handlerLogin="handlerLogin"
                         @handlerLogout="handlerLogout"
                         @resetTerminalSetting="initTerminalSetting"
                         @handlerChangeLoginUserType="handlerChangeLoginUserType"
+                        @handlerChangeBatch="handlerChangeBatch"
                         @handlerChangeLayout="handlerChangeLayout"></terminal-tools>
       </el-row>
       <el-row>
@@ -26,7 +28,7 @@
                            :uuid="terminalLayout.uuid"
                            :login-user-type="terminalLayout.loginUserType"
                            :col-span="terminalLayout.colSpan"
-                           @handlerLogoutByInstanceId="handlerLogoutByInstanceId"
+                           @handlerLogoutByInstance="handlerLogoutByInstance"
                            @handlerLoginByInstanceId="handlerLoginByInstanceId"></terminal-layout>
         </el-col>
       </el-row>
@@ -64,7 +66,8 @@
         },
         terminalSetting: Object.assign({}, terminalSetting), // 终端设置
         terminalTools: {
-          mode: 0 // 0未登录:1登录
+          mode: 0, // 0未登录:1登录
+          batchType: ''
         },
         terminalLayout: {
           instanceIds: [],
@@ -105,6 +108,17 @@
             }
           })
       },
+      handlerChangeBatch () {
+        let isBatch = true
+        debugger
+        if (this.terminalTools.batchType === '') {
+          this.terminalTools.batchType = 'success'
+        } else {
+          this.terminalTools.batchType = ''
+          isBatch = false
+        }
+        this.$refs.terminalLayout.handlerBatch(isBatch)
+      },
       handlerChangeLoginUserType (loginUserType) {
         this.terminalLayout.loginUserType = loginUserType
       },
@@ -113,6 +127,7 @@
         this.terminalLayout.colSpan = mode === 0 ? 12 : 24 // 双列布局:单列布局
       },
       handlerLogin () {
+        this.terminalTools.batchType = ''
         this.terminalLayout.instanceIds = this.$refs.serverTree.getCheckedKeys(true)
         if (this.terminalLayout.instanceIds.length === 0) return
         this.terminalTools.mode = 1
@@ -142,24 +157,30 @@
        */
       handlerLogout () {
         if (this.terminalLayout.instanceIds.length === 0) return
-        this.terminalLayout.instanceIds.forEach(id =>
-          this.$refs.terminalLayout.handlerLogoutByInstanceId(id)
+        this.terminalLayout.instanceIds.forEach(id => {
+            let args = {
+              id: id,
+              isNotify: false
+            }
+            this.$refs.terminalLayout.handlerLogoutByInstance(args)
+          }
         )
-        this.$refs.terminalLayout.close()
+        // this.$refs.terminalLayout.close()
+        this.$message.warning('所有终端已关闭')
         this.terminalTools.mode = 0
       },
       /**
        * 单个终端退出
        * @param id
        */
-      handlerLogoutByInstanceId (id) {
+      handlerLogoutByInstance (args) {
         this.terminalLayout.instanceIds = this.terminalLayout.instanceIds.filter(function (n) {
-          return n !== id
+          return n !== args.id
         })
         this.terminalLayout.servers = this.terminalLayout.servers.filter(function (n) {
-          return n.name !== id
+          return n.name !== args.id
         })
-        this.$message.warning(id + '终端已关闭')
+        if (args.isNotify) this.$message.warning(args.id + '终端已关闭')
         if (this.terminalLayout.instanceIds.length === 0) {
           this.terminalTools.mode = 0
           this.$refs.terminalLayout.close()
@@ -167,6 +188,7 @@
       }
     }
   }
+
 </script>
 
 <style scoped>
