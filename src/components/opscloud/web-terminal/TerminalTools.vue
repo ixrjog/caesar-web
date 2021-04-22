@@ -103,6 +103,9 @@
         this.formStatus.setting.visible = true
         this.$refs.userTerminalSetting.initData(xtermSettingMap)
       },
+      setLayoutMode (layoutMode) {
+        this.layout.mode = layoutMode
+      },
       resetTerminalSetting () {
         this.$emit('resetTerminalSetting')
       },

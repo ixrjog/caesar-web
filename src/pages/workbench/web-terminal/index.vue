@@ -6,7 +6,8 @@
       </div>
       <!--      顶部工具栏-->
       <el-row>
-        <terminal-tools :terminal-setting="terminalSetting" :mode="terminalTools.mode"
+        <terminal-tools ref="terminalTools"
+                        :terminal-setting="terminalSetting" :mode="terminalTools.mode"
                         :batch-type="terminalTools.batchType"
                         @handlerLogin="handlerLogin"
                         @handlerLogout="handlerLogout"
@@ -130,6 +131,11 @@
         this.terminalTools.batchType = ''
         this.terminalLayout.instanceIds = this.$refs.serverTree.getCheckedKeys(true)
         if (this.terminalLayout.instanceIds.length === 0) return
+        // 如果用户只打开一个终端则自动切换为单列模式
+        if (this.terminalLayout.instanceIds.length === 1) {
+          this.handlerChangeLayout(1)
+          this.$refs.terminalTools.setLayoutMode(1)
+        }
         this.terminalTools.mode = 1
         this.terminalLayout.uuid = this.$refs.serverTree.getUuid()
         this.terminalLayout.servers = []
