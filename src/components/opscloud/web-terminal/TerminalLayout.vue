@@ -34,6 +34,15 @@
 
   const wsUrl = 'ws/xterm'
 
+  const message = {
+    heartbeat: {
+      status: 'HEARTBEAT'
+    },
+    close: {
+      status: 'CLOSE'
+    }
+  }
+
   export default {
     name: 'TerminalLayout',
     props: ['terminalSetting', 'servers', 'instanceIds', 'uuid', 'loginUserType', 'colSpan'],
@@ -60,10 +69,7 @@
         this.initTerminal(server)
       },
       close () {
-        let closeMessage = {
-          status: 'CLOSE'
-        }
-        this.sendMessage(closeMessage)
+        this.sendMessage(message.close)
         /**
          *
          0        CONNECTING        连接尚未建立
@@ -94,16 +100,13 @@
       },
       setTimer () {
         this.timer = setInterval(() => {
-          this.handlerSSHHeartbeat()
+          this.handlerHeartbeat()
           // console.log('开始定时...每10秒执行一次')
         }, 10000)
       },
-      handlerSSHHeartbeat () {
-        let heartbeatMessage = {
-          status: 'HEARTBEAT'
-        }
+      handlerHeartbeat () {
         try {
-          this.sendMessage(heartbeatMessage)
+          this.sendMessage(message.heartbeat)
         } catch (e) {
         }
       },
