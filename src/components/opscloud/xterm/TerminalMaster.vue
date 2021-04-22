@@ -182,6 +182,7 @@
           return s.name !== name
         })
         this.$message.warning(name + '终端已关闭')
+        if (this.servers.length === 0) this.handlerExit()
       },
       handlerClose (done) {
         this.$confirm('确定退出Web终端,并关闭所有会话?')

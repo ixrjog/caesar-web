@@ -73,6 +73,7 @@
        * 后端调整体型
        */
       resize () {
+        if (this.term === null) return
         let id = this.server.name
         this.fitAddon.fit() // 获取对象的高度和宽度
         let resizeMessage = {
@@ -89,17 +90,17 @@
        * 聚焦
        */
       focus () {
-        this.term.focus()
+        if (this.term !== null) this.term.focus()
       },
       write (output) {
-        this.term.write(output)
+        if (this.term !== null) this.term.write(output)
       },
       clear () {
-        this.term.clear()
+        if (this.term !== null) this.term.clear()
       },
       scrollToBottom () {
         // 滚动到底部
-        this.term.scrollToBottom()
+        if (this.term !== null) this.term.scrollToBottom()
       },
       /**
        * 单个终端退出

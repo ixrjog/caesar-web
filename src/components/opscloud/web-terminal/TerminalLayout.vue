@@ -211,7 +211,10 @@
           let _this = this
           messageJson.map(function (n) {
             if (_this.$refs[`terminal_${n.instanceId}`] !== null) {
-              _this.$refs[`terminal_${n.instanceId}`][0].write(n.output)
+              try {
+                _this.$refs[`terminal_${n.instanceId}`][0].write(n.output)
+              } catch (e) {
+              }
             }
           })
         }

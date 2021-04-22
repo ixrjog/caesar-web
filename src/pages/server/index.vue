@@ -128,7 +128,7 @@
           <template slot-scope="scope">
             <el-button type="primary" plain size="mini" @click="handlerRowTagEdit(scope.row)">标签</el-button>
             <el-button type="primary" plain size="mini" @click="handlerRowEdit(scope.row)">编辑</el-button>
-            <el-button type="primary" plain size="mini" @click="handlerXTerm(scope.row)">登录</el-button>
+            <el-button type="primary" plain size="mini" @click="handlerTerminal(scope.row)">登录</el-button>
             <el-button type="danger" plain size="mini" @click="handlerRowDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -139,12 +139,12 @@
                      :page-size="pagination.pageSize">
       </el-pagination>
       <!-- server编辑-->
-      <ServerDialog :formStatus="formServerStatus" ref="serverDialog" @closeDialog="fetchData"></ServerDialog>
+      <server-dialog :formStatus="formStatus.server" ref="serverDialog" @closeDialog="fetchData"></server-dialog>
       <!-- tag编辑-->
-      <TagTransferDialog :formStatus="formTagTransferStatus" ref="tagTransferDialog"
-                         @closeDialog="fetchData"></TagTransferDialog>
-<!--      <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>-->
-      <terminalMaster :formStatus="formXtermStatus" ref="xtermDialog"></terminalMaster>
+      <tag-transfer-dialog :formStatus="formStatus.tagTransfer" ref="tagTransferDialog"
+                         @closeDialog="fetchData"></tag-transfer-dialog>
+      <!--      <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>-->
+      <terminal-master :formStatus="formStatus.terminal" ref="terminalMaster"></terminal-master>
     </template>
   </d2-container>
 </template>
@@ -189,19 +189,21 @@
   export default {
     data () {
       return {
-        formTagTransferStatus: {
-          visible: false,
-          title: '编辑服务器标签'
-        },
-        formServerStatus: {
-          visible: false,
-          labelWidth: '150px',
-          operationType: true,
-          addTitle: '新增服务器配置',
-          updateTitle: '更新服务器配置'
-        },
-        formXtermStatus: {
-          visible: false
+        formStatus: {
+          tagTransfer: {
+            visible: false,
+            title: '编辑服务器标签'
+          },
+          server: {
+            visible: false,
+            labelWidth: '150px',
+            operationType: true,
+            addTitle: '新增服务器配置',
+            updateTitle: '更新服务器配置'
+          },
+          terminal: {
+            visible: false
+          }
         },
         tableData: [],
         options: {
@@ -290,9 +292,9 @@
       handleClick () {
         this.$emit('input', !this.value)
       },
-      handlerXTerm (server) {
-        this.formXtermStatus.visible = true
-        this.$refs.xtermDialog.open(server)
+      handlerTerminal (server) {
+        this.formStatus.terminal.visible = true
+        this.$refs.terminalMaster.open(server)
       },
       handlerRowDel (row) {
         this.$confirm('此操作将删除当前配置?', '提示', {
@@ -315,7 +317,7 @@
         })
       },
       handlerRowTagEdit (row) {
-        this.formTagTransferStatus.visible = true
+        this.formStatus.tagTransfer.visible = true
         let tagTransfer = {
           businessId: row.id,
           businessType: this.businessType,
@@ -332,7 +334,7 @@
               tagTransfer.tagIds.push(res.body[index].id)
             }
           })
-        this.formTagTransferStatus.visible = true
+        this.formStatus.tagTransfer.visible = true
         this.$refs.tagTransferDialog.initData(tagTransfer)
       },
       handlerRowEdit (row) {
@@ -341,13 +343,13 @@
         let serverGroupOptions = []
         serverGroupOptions.push(serverData.serverGroup)
         // form
-        this.formServerStatus.visible = true
-        this.formServerStatus.operationType = false
+        this.formStatus.server.visible = true
+        this.formStatus.server.operationType = false
         this.$refs.serverDialog.initData(serverData, serverGroupOptions)
       },
       handlerAdd () {
-        this.formServerStatus.operationType = true
-        this.formServerStatus.visible = true
+        this.formStatus.server.operationType = true
+        this.formStatus.server.visible = true
         let serverData = {
           serverGroup: '',
           id: '',
