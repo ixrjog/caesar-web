@@ -160,7 +160,6 @@
         this.artifactOptions = []
         this.fetchData()
         this.getBuildArtifact()
-        this.getHostPattern()
       },
       setParamMap (key, value) {
         this.buildParam.paramMap[key] = value
@@ -184,7 +183,6 @@
           })
           return
         }
-        this.building = true
         let requestBody = {
           'cdJobId': this.deploymentJob.id,
           'ciBuildId': this.buildId,
@@ -192,6 +190,7 @@
           'versionDesc': this.buildParam.versionDesc,
           'paramMap': this.buildParam.paramMap
         }
+        this.building = false
         buildCdJob(requestBody)
           .then(res => {
             if (res.success) {
