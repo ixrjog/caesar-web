@@ -231,5 +231,8 @@
 </script>
 
 <style scoped>
+ .el-select {
+   width: 500px;
+ }
 
 </style>

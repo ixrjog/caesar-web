@@ -15,16 +15,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="主机详情" :label-width="labelWidth">
-          <el-card shadow="never">
-            <div v-for="server in servers" :key="server.id">
-              <el-tag style="margin-left: 5px" type="primary">{{ server.name }}-{{ server.serialNumber}} - {{
-                server.privateIp}}
-              </el-tag>
-              <el-tag style="margin-left: 2px" type="success" effect="dark">{{ server.deployVersion === null ? '首次发布':
-                server.deployVersion.versionName}}
-              </el-tag>
-            </div>
-          </el-card>
+          <server-version :servers="servers"></server-version>
         </el-form-item>
         <el-form-item label="并发控制" :label-width="labelWidth">
           <el-slider style="margin-left: 10px; width: 50%;" v-model="paramMap.concurrent" mini :min="1" :max="8"
@@ -44,9 +35,11 @@
 
   import util from '@/libs/util'
 
-  import deploymentLayout from './layout/DeploymentLayout'
+  import ServerVersion from './child/ServerVersion'
+  import DeploymentLayout from './layout/DeploymentLayout'
 
   import { queryCdJobHostPatternByJobId } from '@api/build/job.build.js'
+
 
   export default {
     name: 'JavaDeploymentDialog',
@@ -72,7 +65,8 @@
       }
     },
     components: {
-      deploymentLayout
+      DeploymentLayout,
+      ServerVersion
     },
     methods: {
       initData (application, cdJob) {
@@ -140,5 +134,9 @@
 </script>
 
 <style scoped>
+
+  .el-select {
+    width: 500px;
+  }
 
 </style>
