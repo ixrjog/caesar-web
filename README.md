@@ -1,5 +1,14 @@
+## Caesar Platform(发布平台前端源码)
 + 服务端代码
   + https://github.com/ixrjog/caesar
++ 安装参考 https://d2.pub/zh/doc/d2-admin/learn/start.html#%E5%AE%89%E8%A3%85%E7%8E%AF%E5%A2%83
++ 部署打包
+```$xslt
+# 需要安装Node环境（版本>=8）
+$ npm i
+$ npm run build:prod
+# 打包文件在 dist/ 目录下
+```    
 
 
 [D2Admin](https://github.com/d2-projects/d2-admin) is a fully open source and free enterprise back-end product front-end integration solution, using the latest front-end technology stack, javascript files loading of local first screen less than 60kb, has prepared most of the project preparations, and with a lot of sample code to help the management system agile development.
