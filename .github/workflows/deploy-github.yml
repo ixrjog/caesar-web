@@ -17,5 +17,5 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages
         FOLDER: dist
-        BUILD_SCRIPT: npm install && npm run build:github
+        BUILD_SCRIPT: npm i && npm run build:prod
         CLEAN: true
