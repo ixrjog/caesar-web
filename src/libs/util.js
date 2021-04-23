@@ -69,7 +69,7 @@ util.wsUrl = function (wsUrl) {
   } else {
     let host = window.location.host
     let httpProtocol = window.location.href.split('://')[0]
-    return (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + '/cs/' + wsUrl
+    return (httpProtocol === 'http' ? 'ws' : 'wss') + '://' + host + process.env.VUE_APP_WS_API + wsUrl
   }
 }
 
