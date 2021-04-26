@@ -35,7 +35,8 @@
     foreground: '#FFFFFF', // 字体
     background: '#606266', // 背景色
     cursor: 'help', // 设置光标
-    red: '#dd7479'
+    red: '#dd7479',
+    blue: '#1BD1FF'
   }
 
   export default {
