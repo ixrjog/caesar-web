@@ -7,15 +7,11 @@
       <el-row>
         <topCard></topCard>
       </el-row>
-      <el-row :gutter="24">
-        <el-col>
+      <el-row>
           <taskExecutionGroupByWeek></taskExecutionGroupByWeek>
-        </el-col>
       </el-row>
-      <el-row :gutter="24">
-        <el-col>
+      <el-row>
           <taskExecutionGroupByHour></taskExecutionGroupByHour>
-        </el-col>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="9">
@@ -25,10 +21,8 @@
           <engineChart></engineChart>
         </el-col>
       </el-row>
-      <el-row :gutter="24">
-        <el-col>
+      <el-row>
           <dashboardLatestTasks></dashboardLatestTasks>
-        </el-col>
       </el-row>
     </template>
   </d2-container>

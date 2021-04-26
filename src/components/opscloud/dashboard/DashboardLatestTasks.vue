@@ -1,7 +1,7 @@
 <template>
   <div>
-    <el-card shadow="hover">
-      <el-col :span="12">
+    <el-col :span="12">
+      <el-card shadow="hover">
         <div style="margin-bottom: 20px">
           <span style="font-size: 14px">Latest Build Tasks</span>
           <el-tag style="float: right;margin-right: 10px" type="text">Build Total {{latestTasks.buildTaskTotal}}
@@ -34,44 +34,46 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-col>
-      <el-col :span="12">
-        <div style="margin-bottom: 20px">
-          <span style="font-size: 14px">Latest Deployment Tasks</span>
-          <el-tag style="float: right;margin-right: 10px" type="text">Deployment Total
-            {{latestTasks.deploymentTaskTotal}}
-          </el-tag>
-        </div>
-        <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 13px">
-          <el-table-column prop="jobName" label="任务名称">
-            <template slot-scope="scope">
-              <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作者" width="120">
-            <template slot-scope="scope">
-              <span style="color:#5b5d66">{{scope.row.user.displayName}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="时间" width="120">
-            <template slot-scope="scope">
-              <span style="color: #20A9D9">{{scope.row.ago}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="状态" width="100">
-            <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
-                <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
-                  class="el-icon-loading" v-show="!scope.row.finalized"></i>{{scope.row.buildStatus|
-                  getJobBuildStatusText}}
-                </el-tag>
-              </el-tooltip>
-            </template>
-          </el-table-column>
+      </el-card>
+    </el-col>
+    <el-col :span="12">
+      <el-card shadow="hover">
+          <div style="margin-bottom: 20px">
+            <span style="font-size: 14px">Latest Deployment Tasks</span>
+            <el-tag style="float: right;margin-right: 10px" type="text">Deployment Total
+              {{latestTasks.deploymentTaskTotal}}
+            </el-tag>
+          </div>
+          <el-table :data="latestTasks.latestDeploymentTasks" style="width: 100%;margin-bottom: 13px">
+            <el-table-column prop="jobName" label="任务名称">
+              <template slot-scope="scope">
+                <span style="color:#5b5d66;font-weight: 300">{{scope.row.jobName}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作者" width="120">
+              <template slot-scope="scope">
+                <span style="color:#5b5d66">{{scope.row.user.displayName}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="时间" width="120">
+              <template slot-scope="scope">
+                <span style="color: #20A9D9">{{scope.row.ago}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" width="100">
+              <template slot-scope="scope">
+                <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
+                  <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
+                    class="el-icon-loading" v-show="!scope.row.finalized"></i>{{scope.row.buildStatus|
+                    getJobBuildStatusText}}
+                  </el-tag>
+                </el-tooltip>
+              </template>
+            </el-table-column>
 
-        </el-table>
-      </el-col>
-    </el-card>
+          </el-table>
+      </el-card>
+    </el-col>
   </div>
 </template>
 
