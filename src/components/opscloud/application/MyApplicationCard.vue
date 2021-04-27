@@ -4,10 +4,13 @@
       <el-row style="margin-bottom: 5px" :gutter="24">
         <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
                   class="input"/>
+        <el-tooltip class="item" effect="light" content="管理员可查看所有应用" placement="top-start">
+          <el-checkbox v-model="queryParam.isAll" @change="fetchData">显示全部</el-checkbox>
+        </el-tooltip>
         <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
       </el-row>
       <el-table :data="tableData" style="width: 100%" v-loading="loading">
-        <el-table-column type="expand">
+        <el-table-column type="expand" v-if="false">
           <template slot-scope="props">
             <el-form label-position="left" inline class="table-expand">
               <el-form-item label="key">
@@ -28,7 +31,7 @@
                 </el-tooltip>
               </span>
           </span>
-            <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)"></el-rate>
+            <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)" v-if="!queryParam.isAll"></el-rate>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
@@ -84,7 +87,8 @@
         },
         queryParam: {
           instanceId: '',
-          queryName: ''
+          queryName: '',
+          isAll: false
         },
         formStatus: {
           visible: false,
@@ -158,6 +162,7 @@
         let requestBody = {
           'queryName': this.queryParam.queryName,
           'extend': 1,
+          'isAll': this.queryParam.isAll,
           'page': this.pagination.currentPage,
           'length': this.pagination.pageSize
         }
@@ -173,5 +178,9 @@
 </script>
 
 <style scoped>
+
+  .el-checkbox {
+    margin-left: 10px;
+  }
 
 </style>
