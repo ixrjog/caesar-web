@@ -5,7 +5,7 @@
         <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
                   class="input"/>
         <el-tooltip class="item" effect="light" content="管理员可查看所有应用" placement="top-start">
-          <el-checkbox v-model="queryParam.isAll" @change="fetchData">显示全部</el-checkbox>
+          <el-checkbox v-model="queryParam.isAll" @change="handlerChangeAll">显示全部</el-checkbox>
         </el-tooltip>
         <el-button @click="fetchData" style="margin-left: 5px">查询</el-button>
       </el-row>
@@ -31,7 +31,8 @@
                 </el-tooltip>
               </span>
           </span>
-            <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)" v-if="!queryParam.isAll"></el-rate>
+            <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)"
+                     v-if="!queryParam.isAll"></el-rate>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
@@ -156,6 +157,10 @@
               this.fetchData()
             }
           })
+      },
+      handlerChangeAll () {
+        if (!this.queryParam.isAll) this.queryParam.queryName = ''
+        this.fetchData()
       },
       fetchData () {
         this.loading = true
