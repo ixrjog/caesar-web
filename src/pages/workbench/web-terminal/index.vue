@@ -132,6 +132,7 @@
         this.terminalLayout.instanceIds = this.$refs.serverTree.getCheckedKeys(true)
         if (this.terminalLayout.instanceIds.length === 0) return
         // 如果用户只打开一个终端则自动切换为单列模式
+        this.$store.dispatch('d2admin/menu/asideCollapseSet', true)
         if (this.terminalLayout.instanceIds.length === 1) {
           this.handlerChangeLayout(1)
           this.$refs.terminalTools.setLayoutMode(1)
@@ -171,9 +172,8 @@
             this.$refs.terminalLayout.handlerLogoutByInstance(args)
           }
         )
-        // this.$refs.terminalLayout.close()
         this.$message.warning('所有终端已关闭')
-        this.terminalTools.mode = 0
+        this.recovery()
       },
       /**
        * 单个终端退出
@@ -188,9 +188,13 @@
         })
         if (args.isNotify) this.$message.warning(args.id + '终端已关闭')
         if (this.terminalLayout.instanceIds.length === 0) {
-          this.terminalTools.mode = 0
+          this.recovery()
           this.$refs.terminalLayout.close()
         }
+      },
+      recovery () {
+        this.$store.dispatch('d2admin/menu/asideCollapseSet', false)
+        this.terminalTools.mode = 0
       }
     }
   }
