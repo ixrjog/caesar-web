@@ -165,11 +165,13 @@
         this.buildParam.paramMap[key] = value
       },
       handlerBuild () {
+        this.building = true
         if (this.buildId === '') {
           this.$message({
             message: '未选中部署构建',
             type: 'warning'
           })
+          this.building = false
           return
         }
         let result = {}
@@ -181,6 +183,7 @@
             message: result.message,
             type: result.type
           })
+          this.building = false
           return
         }
         let requestBody = {
@@ -190,7 +193,6 @@
           'versionDesc': this.buildParam.versionDesc,
           'paramMap': this.buildParam.paramMap
         }
-        this.building = false
         buildCdJob(requestBody)
           .then(res => {
             if (res.success) {
