@@ -6,10 +6,10 @@
           <div slot="header" class="clearfix">
               <span>
                 <el-tag @click="openUrl(pipeline.jobUrl)">{{ pipeline.jobName }}</el-tag>
-                <span class="buildNumber" @click="openUrl(pipeline.buildUrl)"><i class="el-icon-loading"
-                                                                                 v-show="pipeline.isRunning"></i>
-                  #{{ pipeline.jobBuildNumber }}</span>
-                <span class="ago"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
+                <span class="icon" @click="openUrl(pipeline.buildUrl)">
+                  <i class="el-icon-loading" v-show="pipeline.isRunning"></i>#{{ pipeline.jobBuildNumber }}</span>
+                <span class="icon"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
+                <span class="icon"><i class="fa fa-user-o"></i>{{ pipeline.user.displayName }}</span>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
                   <el-button class="btn" type="text" @click="handlerPipelineOutput(i)">
                    <d2-icon name="television"/>
@@ -17,7 +17,8 @@
                 </el-tooltip>
                 <el-tooltip class="item" effect="light" content="登录节点(管理员专用)" placement="top-start"
                             v-if="pipeline.executors != null">
-                  <el-button class="btn" type="text" @click="handlerOpenExecutor(pipeline)" :disabled="pipeline.executors.length === 0">
+                  <el-button class="btn" type="text" @click="handlerOpenExecutor(pipeline)"
+                             :disabled="pipeline.executors.length === 0">
                     <d2-icon name="terminal"/>
                   </el-button>
                 </el-tooltip>
@@ -181,12 +182,7 @@
     box-sizing: border-box;
   }
 
-  .buildNumber {
-    color: #5b5d66;
-    margin-left: 10px;
-  }
-
-  .ago {
+  .icon {
     color: #5b5d66;
     margin-left: 10px;
   }
