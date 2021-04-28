@@ -11,7 +11,7 @@
     <el-col :span="13">
       <pipeline-output ref="pipelineOutput"></pipeline-output>
     </el-col>
-    <terminalMaster :formStatus="formXtermStatus" ref="xtermDialog"></terminalMaster>
+    <terminal-master :formStatus="formXtermStatus" ref="xtermDialog"></terminal-master>
   </div>
 </template>
 

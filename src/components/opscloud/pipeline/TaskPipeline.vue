@@ -5,11 +5,10 @@
         <el-card shadow="hover" body-style="padding: 2px" class="card">
           <div slot="header" class="clearfix">
               <span>
-                <el-tag @click="openUrl(pipeline.jobUrl)">{{ pipeline.jobName }}</el-tag>
-                <span class="icon" @click="openUrl(pipeline.buildUrl)">
-                  <i class="el-icon-loading" v-show="pipeline.isRunning"></i>#{{ pipeline.jobBuildNumber }}</span>
-                <span class="icon"><i class="fa fa-clock-o"></i>{{ pipeline.ago }}</span>
-                <span class="icon"><i class="fa fa-user-o"></i>{{ pipeline.user.displayName }}</span>
+                <job-tag :job-name="pipeline.jobName" :job-url="pipeline.jobUrl"></job-tag>
+                <build-number-icon :pipeline="pipeline"></build-number-icon>
+                <ago-icon :ago="pipeline.ago"></ago-icon>
+                <user-icon :user="pipeline.user"></user-icon>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
                   <el-button class="btn" type="text" @click="handlerPipelineOutput(i)">
                    <d2-icon name="television"/>
@@ -49,6 +48,10 @@
   import PipelineGraph from 'jenkins-pipeline-graph-vue'
   import PipelineOutput from '@/components/opscloud/pipeline/PipelineOutput'
   import PipelineStep from './PipelineStep'
+  import UserIcon from './child/UserIcon'
+  import AgoIcon from './child/AgoIcon'
+  import BuildNumberIcon from './child/BuildNumberIcon'
+  import JobTag from './child/JobTag'
 
   const layout = {
     nodeSpacingH: 90, // 节点间距
@@ -81,7 +84,11 @@
     components: {
       PipelineGraph,
       PipelineOutput,
-      PipelineStep
+      PipelineStep,
+      JobTag,
+      BuildNumberIcon,
+      AgoIcon,
+      UserIcon
     },
     mounted () {
       this.initSocket()
@@ -147,9 +154,6 @@
         this.socket.onmessage = (message) => {
           this.pipelines = JSON.parse(message.data)
         }
-      },
-      openUrl (url) {
-        util.open(url)
       },
       nodeClick (nodeName, nodeId, i, pipeline) {
         if (nodeName === 'Queue') return
