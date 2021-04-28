@@ -9,16 +9,7 @@
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">
-          <el-tooltip class="item" effect="light" :content="props.row.jobKey" placement="top-start">
-            <span>{{ props.row.name }}</span>
-          </el-tooltip>
-          <span class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-          </span>
+          <job-name :name="props.row.name" :job-key="props.row.jobKey" :href="props.row.href" :tags="props.row.tags"></job-name>
         </template>
       </el-table-column>
       <el-table-column prop="branch" label="首选分支" width="110">
@@ -124,6 +115,7 @@
 
   import { queryCiJobPage } from '@api/application/ci.job.js'
   import { abortBuildCiJob } from '@api/build/job.build.js'
+  import JobName from './child/JobName'
 
   export default {
     name: 'BuildJobTable',
@@ -187,6 +179,7 @@
     beforeDestroy () {
     },
     components: {
+      JobName,
       terminalMaster,
       CiJobDialog,
       CdJobDialog,
