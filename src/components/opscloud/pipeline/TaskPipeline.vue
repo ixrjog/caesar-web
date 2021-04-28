@@ -162,9 +162,10 @@
           buildId: pipeline.buildId,
           nodeId: nodeId
         }
+        let _this = this
         queryPipelineNodeSteps(requestBody)
           .then(res => {
-            this.$refs[`pipelineStep${i}`][0].init(res.body)
+            _this.$refs[`pipelineStep${i}`][0].init(res.body)
           })
       },
       handlerPipelineOutput (i) {
