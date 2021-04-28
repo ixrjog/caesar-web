@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="(pipeline,i) in pipelines" :key="pipeline.id" style="font-size: 12px">
+    <div v-for="pipeline in pipelines" :key="pipeline.id" style="font-size: 12px">
       <template>
         <el-card shadow="hover" body-style="padding: 2px" class="card">
           <div slot="header" class="clearfix">
@@ -10,7 +10,7 @@
                 <ago-icon :ago="pipeline.ago"></ago-icon>
                 <user-icon :user="pipeline.user"></user-icon>
                 <el-tooltip class="item" effect="light" content="展开日志" placement="top-start">
-                  <el-button class="btn" type="text" @click="handlerPipelineOutput(i)">
+                  <el-button class="btn" type="text" @click="handlerPipelineOutput(pipeline.id)">
                    <d2-icon name="television"/>
                   </el-button>
                 </el-tooltip>
@@ -25,13 +25,13 @@
           </div>
           <div :style='{ height: pipeline.chartHeight }'>
             <pipeline-graph
-              :onNodeClick='(nodeName,id)=> {nodeClick(nodeName,id,i,pipeline)}'
+              :onNodeClick='(nodeName,id)=> {nodeClick(nodeName,id,pipeline)}'
               :stages='pipeline.nodes'
               :layout='layout'
             />
           </div>
-          <pipeline-output :buildType="buildType" :buildId="pipeline.id" :ref="`pipelines${i}`"></pipeline-output>
-          <pipeline-step :ref="`pipelineStep${i}`"></pipeline-step>
+          <pipeline-output :buildType="buildType" :buildId="pipeline.id" :ref="`pipelines${pipeline.id}`"></pipeline-output>
+          <pipeline-step :ref="`pipelineStep${pipeline.id}`"></pipeline-step>
         </el-card>
       </template>
     </div>
@@ -155,7 +155,7 @@
           this.pipelines = JSON.parse(message.data)
         }
       },
-      nodeClick (nodeName, nodeId, i, pipeline) {
+      nodeClick (nodeName, nodeId, pipeline) {
         if (nodeName === 'Queue') return
         let requestBody = {
           buildType: pipeline.buildType,
@@ -165,11 +165,11 @@
         let _this = this
         queryPipelineNodeSteps(requestBody)
           .then(res => {
-            _this.$refs[`pipelineStep${i}`][0].init(res.body)
+            _this.$refs[`pipelineStep${pipeline.id}`][0].init(res.body)
           })
       },
-      handlerPipelineOutput (i) {
-        this.$refs[`pipelines${i}`][0].output()
+      handlerPipelineOutput (id) {
+        this.$refs[`pipelines${id}`][0].output()
       },
       handlerOpenExecutor (pipeline) {
         this.$emit('handlerOpenExecutor', pipeline.executors[0])
