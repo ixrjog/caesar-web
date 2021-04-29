@@ -108,20 +108,14 @@
         </el-table-column>
         <el-table-column prop="serverStatus" label="状态" width="80">
           <template slot-scope="scope">
-            <el-tag disable-transitions :type="scope.row.serverStatus | getServerStatusType ">{{
+            <el-tag disable-transitions :type="scope.row.serverStatus | getServerStatusType">{{
               scope.row.serverStatus | getServerStatusText}}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
-            <div class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-            </div>
+            <business-tags :tags="props.row.tags"></business-tags>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="280">
@@ -166,6 +160,7 @@
   import { queryBusinessTag, queryTagPage } from '@api/tag/tag.js'
   import { queryServerGroupPage } from '@api/server/server.group.js'
   import { fuzzyQueryServerPage, deleteServerById } from '@api/server/server.js'
+  import BusinessTags from '../../components/opscloud/common/BusinessTags'
 
   const activeOptions = [{
     value: true,
@@ -246,7 +241,8 @@
     components: {
       ServerDialog,
       TagTransferDialog,
-      terminalMaster
+      terminalMaster,
+      BusinessTags
     },
     filters: {
       getLoginTypeText,

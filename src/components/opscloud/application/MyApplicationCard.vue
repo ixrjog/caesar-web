@@ -24,13 +24,7 @@
             <el-tooltip class="item" effect="light" :content="props.row.comment" placement="top-start">
               <span>{{ props.row.name }}</span>
             </el-tooltip>
-            <span class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-          </span>
+            <business-tags :tags="props.row.tags"></business-tags>
             <el-rate v-model="props.row.userPermission.rate" @change="handlerSetApplicationRate(props.row)"
                      v-if="!queryParam.isAll"></el-rate>
           </template>
@@ -70,6 +64,7 @@
   import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
 
   import { queryMyApplicationPage, updateMyApplicationRate } from '@api/application/application.js'
+  import BusinessTags from '../common/BusinessTags'
 
   export default {
     name: 'MyApplicationTable',
@@ -113,7 +108,8 @@
     },
     components: {
       ApplicationDialog,
-      ApplicationPermissionDialog
+      ApplicationPermissionDialog,
+      BusinessTags
     },
     methods: {
       ...mapActions({

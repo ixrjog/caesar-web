@@ -4,23 +4,21 @@
       <span v-if="href === null || href === ''">{{ name }}</span>
       <el-button type="text" v-if="href !== null && href !== ''" @click="openUrl(href)">{{ name }}</el-button>
     </el-tooltip>
-    <span class="tag-group">
-              <span v-for="item in tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-    </span>
+    <business-tags :tags="tags"></business-tags>
   </div>
 </template>
 
 <script>
 
   import util from '@/libs/util'
+  import BusinessTags from '../../common/BusinessTags'
 
   export default {
     name: 'JobName',
     props: ['name', 'jobKey', 'href', 'tags'],
+    components: {
+      BusinessTags
+    },
     methods: {
       openUrl (url) {
         util.open(url)

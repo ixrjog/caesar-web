@@ -35,13 +35,7 @@
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
-            <div class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-            </div>
+            <business-tags :tags="props.row.tags"></business-tags>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
@@ -73,6 +67,7 @@
   import { queryBusinessTag, queryTagPage } from '@api/tag/tag.js'
   import { queryGitlabInstancePage } from '@api/gitlab/gitlab.instance.js'
   import { queryGitlabProjectPage, delGitlabProjectById, syncGitlabProject } from '@api/gitlab/gitlab.project.js'
+  import BusinessTags from '../../../components/opscloud/common/BusinessTags'
 
   export default {
     name: 'GitlabProjectTable',
@@ -112,7 +107,8 @@
       this.getInstance()
     },
     components: {
-      TagTransferDialog
+      TagTransferDialog,
+      BusinessTags
     },
     methods: {
       ...mapActions({
