@@ -5,7 +5,7 @@
         <h1>{{title}}</h1>
       </div>
       <el-row>
-        <hotTopStatistics></hotTopStatistics>
+        <hot-top-statistics></hot-top-statistics>
       </el-row>
     </template>
   </d2-container>
@@ -14,7 +14,7 @@
 <script>
 
   // Component
-  import hotTopStatistics from '@/components/opscloud/dashboard/HotTopStatistics'
+  import HotTopStatistics from '@/components/opscloud/dashboard/HotTopStatistics'
 
   export default {
     name: 'HotTop',
@@ -27,7 +27,7 @@
     mounted () {
     },
     components: {
-      hotTopStatistics
+      HotTopStatistics
     },
     methods: {}
   }

@@ -28,7 +28,9 @@
         <el-table-column prop="name" label="群组名称"></el-table-column>
         <el-table-column prop="applicationKey" label="绑定应用key">
           <template slot-scope="props">
-            <el-tag disable-transitions type="primary" plain size="mini" v-show="props.row.applicationKey !== null">{{props.row.applicationKey}}</el-tag>
+            <el-tag disable-transitions type="primary" plain size="mini" v-show="props.row.applicationKey !== null">
+              {{props.row.applicationKey}}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="groupVisibility" label="访问" width="180">
@@ -40,13 +42,7 @@
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
-            <div class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-            </div>
+            <business-tags :tags="props.row.tags"></business-tags>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
@@ -62,7 +58,7 @@
                      :page-size="pagination.pageSize">
       </el-pagination>
       <!-- tag编辑-->
-      <TagTransferDialog :formStatus="formTagTransferStatus" ref="tagTransferDialog"
+      <TagTransferDialog :formStatus="formStatus.tagTransfer" ref="tagTransferDialog"
                          @closeDialog="fetchData"></TagTransferDialog>
     </template>
   </d2-container>
@@ -79,6 +75,7 @@
   import { queryGitlabInstancePage } from '@api/gitlab/gitlab.instance.js'
 
   import { queryGitlabGroupPage, delGitlabGroupById, syncGitlabGroup } from '@api/gitlab/gitlab.group.js'
+  import BusinessTags from '../../../components/opscloud/common/BusinessTags'
 
   export default {
     name: 'GitlabGroupTable',
@@ -101,9 +98,11 @@
         },
         instanceOptions: [],
         businessType: 15, // GitlabGroup
-        formTagTransferStatus: {
-          visible: false,
-          title: '编辑服务器标签'
+        formStatus: {
+          tagTransfer: {
+            visible: false,
+            title: '编辑服务器标签'
+          }
         }
       }
     },
@@ -118,7 +117,8 @@
       this.getInstance()
     },
     components: {
-      TagTransferDialog
+      TagTransferDialog,
+      BusinessTags
     },
     methods: {
       ...mapActions({
@@ -157,7 +157,7 @@
           })
       },
       handlerRowTagEdit (row) {
-        this.formTagTransferStatus.visible = true
+        this.formStatus.tagTransfer.visible = true
         let tagTransfer = {
           businessId: row.id,
           businessType: this.businessType,
@@ -174,7 +174,7 @@
               tagTransfer.tagIds.push(res.body[index].id)
             }
           })
-        this.formTagTransferStatus.visible = true
+        this.formStatus.tagTransfer.visible = true
         this.$refs.tagTransferDialog.initData(tagTransfer)
       },
       handlerRowDel (row) {

@@ -13,14 +13,8 @@
               </template>
             </el-table-column>
             <el-table-column label="标签">
-               <template slot-scope="props">
-                <span class="tag-group">
-                  <span v-for="item in props.row.tags" :key="item.id">
-                    <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                      <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                   </el-tooltip>
-                  </span>
-                 </span>
+              <template slot-scope="props">
+                <business-tags :tags="props.row.tags"></business-tags>
               </template>
             </el-table-column>
             <el-table-column label="说明">
@@ -67,9 +61,11 @@
 <script>
 
   import { queryHotTopStatistics } from '@api/dashboard/dashboard.js'
+  import BusinessTags from '../common/BusinessTags'
 
   export default {
     name: 'HotTopStatistics',
+    components: { BusinessTags },
     data () {
       return {
         hotTop: ''
@@ -78,6 +74,9 @@
     filters: {},
     mounted () {
       this.fetchData()
+    },
+    comments: {
+      BusinessTags
     },
     methods: {
       fetchData () {
