@@ -2,18 +2,7 @@
   <el-dialog :title="title" :visible.sync="formStatus.visible" :before-close="closeDialog">
     <div style="margin-bottom: 5px">
       <el-row :gutter="24" style="margin-bottom: 5px">
-        <el-select v-model="userId" filterable clearable
-                   style="display: inline-block; max-width:200px; margin-left: 10px"
-                   remote reserve-keyword placeholder="输入关键词搜索用户" :remote-method="getUser" :loading="searchLoading">
-          <el-option
-            v-for="item in userOptions"
-            :key="item.id"
-            :label="item.username"
-            :value="item.id">
-            <span style="float: left">{{ item.username }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px ;margin-left:  10px">{{ item.displayName }}</span>
-          </el-option>
-        </el-select>
+        <user-id-select :user-options="userOptions" :searchLoading="searchLoading" @getUser="getUser" @selUser="selUser" ref="userIdSelect"></user-id-select>
         <el-button type="success" :disabled="userId === ''" plain size="mini" @click="grantUser()"
                    style="margin-left: 10px">授权
         </el-button>
@@ -32,7 +21,9 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="180">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="mini" @click="handlerRowUpdatePermission(scope.row)">{{scope.row.userPermission.roleName ==='ADMIN' ? '降权': '提权'}}</el-button>
+          <el-button type="primary" plain size="mini" @click="handlerRowUpdatePermission(scope.row)">
+            {{scope.row.userPermission.roleName ==='ADMIN' ? '降权': '提权'}}
+          </el-button>
           <el-button type="danger" plain size="mini" @click="handlerRowRevokeUser(scope.row)">撤销</el-button>
         </template>
       </el-table-column>
@@ -50,7 +41,12 @@
 <script>
   // API
   import { queryApplicationExcludeUserPage, queryApplicationIncludeUserPage } from '@api/user/user.application.js'
-  import { grantUserApplication, revokeUserApplication, updateUserApplicationPermission } from '@api/application/application.js'
+  import {
+    grantUserApplication,
+    revokeUserApplication,
+    updateUserApplicationPermission
+  } from '@api/application/application.js'
+  import UserIdSelect from '../common/UserIdSelect'
 
   export default {
     data () {
@@ -77,6 +73,9 @@
     mixins: [],
     mounted () {
     },
+    components: {
+      UserIdSelect
+    },
     methods: {
       initData (application) {
         // 初始化数据
@@ -85,6 +84,9 @@
         this.pagination.currentPage = 1
         this.getUser('')
         this.fetchData()
+      },
+      selUser (userId) {
+        this.userId = userId
       },
       getUser (queryName) {
         this.searchLoading = true
@@ -97,6 +99,7 @@
         queryApplicationExcludeUserPage(requestBody)
           .then(res => {
             this.userOptions = res.body.data
+            this.$refs.userIdSelect.clearUser()
             this.searchLoading = false
           })
       },

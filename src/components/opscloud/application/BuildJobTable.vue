@@ -9,7 +9,8 @@
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column prop="name" label="任务名称">
         <template slot-scope="props">
-          <job-name :name="props.row.name" :job-key="props.row.jobKey" :href="props.row.href" :tags="props.row.tags"></job-name>
+          <job-name :name="props.row.name" :job-key="props.row.jobKey" :href="props.row.href"
+                    :tags="props.row.tags"></job-name>
         </template>
       </el-table-column>
       <el-table-column prop="branch" label="首选分支" width="110">
