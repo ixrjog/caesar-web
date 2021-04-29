@@ -16,10 +16,8 @@
       </el-table-column>
       <el-table-column prop="url" label="管理url"></el-table-column>
       <el-table-column prop="isActive" label="有效">
-        <template slot-scope="props">
-          <el-tag disable-transitions :type="props.row.isActive ? 'success' : 'info'">{{props.row.isActive ?
-            '有效':'无效'}}
-          </el-tag>
+        <template slot-scope="scope">
+          <active-tag :is-active="scope.row.isActive"></active-tag>
         </template>
       </el-table-column>
       <el-table-column prop="comment" label="描述"></el-table-column>
@@ -54,6 +52,7 @@
     delJenkinsInstanceById,
     setJenkinsInstanceActiveById
   } from '@api/jenkins/jenkins.instance.js'
+  import ActiveTag from '../common/ActiveTag'
 
   export default {
     name: 'JenkinsInstanceTable',
@@ -90,7 +89,8 @@
       this.fetchData()
     },
     components: {
-      JenkinsInstanceDialog
+      JenkinsInstanceDialog,
+      ActiveTag
     },
     methods: {
       ...mapActions({

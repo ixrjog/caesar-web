@@ -96,14 +96,12 @@
         <el-table-column prop="privateIp" label="私网ip"></el-table-column>
         <el-table-column prop="env" label="环境" width="80">
           <template slot-scope="scope">
-            <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
+            <env-tag :env="scope.row.env"></env-tag>
           </template>
         </el-table-column>
         <el-table-column prop="isActive" label="有效" width="80">
           <template slot-scope="scope">
-            <el-tag disable-transitions :type="scope.row.isActive ? 'success' : 'info'">{{scope.row.isActive ?
-              '有效':'无效'}}
-            </el-tag>
+            <active-tag :is-active="scope.row.isActive"></active-tag>
           </template>
         </el-table-column>
         <el-table-column prop="serverStatus" label="状态" width="80">
@@ -136,7 +134,7 @@
       <server-dialog :formStatus="formStatus.server" ref="serverDialog" @closeDialog="fetchData"></server-dialog>
       <!-- tag编辑-->
       <tag-transfer-dialog :formStatus="formStatus.tagTransfer" ref="tagTransferDialog"
-                         @closeDialog="fetchData"></tag-transfer-dialog>
+                           @closeDialog="fetchData"></tag-transfer-dialog>
       <!--      <terminal :formStatus="formXtermStatus" ref="xtermDialog"></terminal>-->
       <terminal-master :formStatus="formStatus.terminal" ref="terminalMaster"></terminal-master>
     </template>
@@ -161,6 +159,8 @@
   import { queryServerGroupPage } from '@api/server/server.group.js'
   import { fuzzyQueryServerPage, deleteServerById } from '@api/server/server.js'
   import BusinessTags from '../../components/opscloud/common/BusinessTags'
+  import EnvTag from '../../components/opscloud/common/EnvTag'
+  import ActiveTag from '../../components/opscloud/common/ActiveTag'
 
   const activeOptions = [{
     value: true,
@@ -242,7 +242,9 @@
       ServerDialog,
       TagTransferDialog,
       terminalMaster,
-      BusinessTags
+      BusinessTags,
+      EnvTag,
+      ActiveTag
     },
     filters: {
       getLoginTypeText,

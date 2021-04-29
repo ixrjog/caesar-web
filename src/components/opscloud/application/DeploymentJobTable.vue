@@ -17,7 +17,7 @@
       </el-table-column>
       <el-table-column prop="env" label="环境" width="80">
         <template slot-scope="scope">
-          <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
+          <env-tag :env="scope.row.env"></env-tag>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="最新构建" width="210">
@@ -83,6 +83,7 @@
   import buildView from '@/components/opscloud/application/BuildView'
 
   import { queryCdJobPage } from '@api/application/cd.job.js'
+  import EnvTag from '../common/EnvTag'
 
   export default {
     name: 'MyCdJobTable',
@@ -147,7 +148,8 @@
       JobEngineDialog,
       javaDeploymentDialog,
       buildOutput,
-      buildView
+      buildView,
+      EnvTag
     },
     methods: {
       ...mapActions({

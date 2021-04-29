@@ -9,9 +9,7 @@
       <el-table-column prop="hostIp" label="注册ip"></el-table-column>
       <el-table-column prop="isActive" label="有效">
         <template slot-scope="props">
-          <el-tag disable-transitions :type="props.row.isActive ? 'success' : 'info'">{{props.row.isActive ?
-            '有效':'无效'}}
-          </el-tag>
+          <active-tag :is-active="props.row.isActive"></active-tag>
         </template>
       </el-table-column>
       <el-table-column prop="comment" label="描述"></el-table-column>
@@ -37,6 +35,7 @@
 
   // API
   import { queryCaesarInstancePage, delCaesarInstanceById, setCaesarInstanceActiveById } from '@api/caesar/caesar.instance.js'
+  import ActiveTag from '../common/ActiveTag'
 
   export default {
     name: 'CaesarInstanceTable',
@@ -67,6 +66,7 @@
       this.fetchData()
     },
     components: {
+      ActiveTag
     },
     methods: {
       ...mapActions({

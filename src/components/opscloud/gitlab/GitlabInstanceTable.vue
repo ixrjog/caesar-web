@@ -20,9 +20,7 @@
       </el-table-column>
       <el-table-column prop="isActive" label="有效">
         <template slot-scope="props">
-          <el-tag disable-transitions :type="props.row.isActive ? 'success' : 'info'">{{props.row.isActive ?
-            '有效':'无效'}}
-          </el-tag>
+          <active-tag :is-active="props.row.isActive"></active-tag>
         </template>
       </el-table-column>
       <el-table-column prop="comment" label="描述"></el-table-column>
@@ -51,6 +49,7 @@
   import GitlabInstanceDialog from '@/components/opscloud/gitlab/GitlabInstanceDialog'
   // API
   import { queryGitlabInstancePage, delGitlabInstanceById } from '@api/gitlab/gitlab.instance.js'
+  import ActiveTag from '../common/ActiveTag'
 
   export default {
     name: 'GitlabInstanceTable',
@@ -87,7 +86,8 @@
       this.fetchData()
     },
     components: {
-      GitlabInstanceDialog
+      GitlabInstanceDialog,
+      ActiveTag
     },
     methods: {
       ...mapActions({

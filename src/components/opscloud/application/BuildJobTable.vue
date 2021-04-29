@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column prop="env" label="环境" width="80">
         <template slot-scope="scope">
-          <el-tag disable-transitions :style="{ color: scope.row.env.color }">{{scope.row.env.envName}}</el-tag>
+          <env-tag :env="scope.row.env"></env-tag>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="最新构建" width="210">
@@ -117,6 +117,7 @@
   import { queryCiJobPage } from '@api/application/ci.job.js'
   import { abortBuildCiJob } from '@api/build/job.build.js'
   import JobName from './child/JobName'
+  import EnvTag from '../common/EnvTag'
 
   export default {
     name: 'BuildJobTable',
@@ -193,7 +194,8 @@
       buildOutput,
       CiJobPermissionDialog,
       SonarPopover,
-      buildView
+      buildView,
+      EnvTag
     },
     methods: {
       ...mapActions({
