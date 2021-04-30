@@ -8,10 +8,10 @@
         <topCard></topCard>
       </el-row>
       <el-row>
-          <taskExecutionGroupByWeek></taskExecutionGroupByWeek>
+        <taskExecutionGroupByWeek></taskExecutionGroupByWeek>
       </el-row>
       <el-row>
-          <taskExecutionGroupByHour></taskExecutionGroupByHour>
+        <taskExecutionGroupByHour></taskExecutionGroupByHour>
       </el-row>
       <el-row :gutter="24">
         <el-col :span="9">
@@ -21,8 +21,8 @@
           <engineChart></engineChart>
         </el-col>
       </el-row>
-      <el-row>
-          <dashboardLatestTasks></dashboardLatestTasks>
+      <el-row :gutter="24">
+        <latestTasks></latestTasks>
       </el-row>
     </template>
   </d2-container>
@@ -33,10 +33,10 @@
   // Component
   import topCard from '@/components/opscloud/dashboard/TopCard'
   import engineChart from '@/components/opscloud/jenkins/EngineChart'
-  import dashboardLatestTasks from '@/components/opscloud/dashboard/DashboardLatestTasks'
   import taskExecutionGroupByHour from '@/components/opscloud/dashboard/TaskExecutionGroupByHour'
   import taskExecutionGroupByWeek from '@/components/opscloud/dashboard/TaskExecutionGroupByWeek'
   import jobTypeStatistics from '@/components/opscloud/dashboard/JobTypeStatistics'
+  import LatestTasks from '../../components/opscloud/dashboard/LatestTasks'
 
   export default {
     name: 'Dashboard',
@@ -50,7 +50,7 @@
     },
     components: {
       topCard,
-      dashboardLatestTasks,
+      LatestTasks,
       taskExecutionGroupByHour,
       taskExecutionGroupByWeek,
       jobTypeStatistics,
@@ -60,14 +60,10 @@
   }
 </script>
 
-<style>
+<style lang="less">
   .el-row {
     margin-left: 0px;
     margin-bottom: 5px;
-
-  &
-  :last-child {
-  }
-
-  }
+    &
+    :last-child { } }
 </style>

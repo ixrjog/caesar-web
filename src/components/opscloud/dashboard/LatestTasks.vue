@@ -26,8 +26,8 @@
           <el-table-column label="状态" width="100">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="scope.row.buildStatus" placement="top-start">
-                <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType "><i
-                  class="el-icon-loading" v-show="!scope.row.finalized"></i>{{scope.row.buildStatus|
+                <el-tag disable-transitions :type="scope.row.buildStatus | getJobBuildStatusType">
+                  <i class="el-icon-loading" v-show="!scope.row.finalized"></i>{{scope.row.buildStatus|
                   getJobBuildStatusText}}
                 </el-tag>
               </el-tooltip>
