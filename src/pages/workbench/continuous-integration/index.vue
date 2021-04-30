@@ -1,6 +1,6 @@
 <template>
   <d2-container>
-    <h1>{{title}}</h1>
+    <h1 v-show="false">{{title}}</h1>
     <el-tabs v-model="activeName">
       <el-tab-pane label="我的应用" name="application">
         <el-row :gutter="10">
