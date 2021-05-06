@@ -206,6 +206,9 @@
     value: 'ANDROID',
     label: 'Android'
   }, {
+      value: 'ANDROID-AAR',
+      label: 'Android-AAR'
+  }, {
     value: 'JAVA',
     label: 'Java'
   }, {
