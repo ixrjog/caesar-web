@@ -29,7 +29,7 @@
           </el-form-item>
           <el-form-item label="代码仓库" :label-width="labelWidth" required>
             <!--            :disabled="!formStatus.operationType"-->
-            <el-select v-model.trim="ciJob.scmMemberId" placeholder="请选择" style="width: 500px"
+            <el-select v-model.trim="ciJob.scmMemberId" placeholder="请选择" style="width: 500px" filterable
                        @change="handlerSelScm">
               <el-option v-for="item in application.scmMembers" :key="item.id" :label="item.scmSshUrl" :value="item.id">
               </el-option>
