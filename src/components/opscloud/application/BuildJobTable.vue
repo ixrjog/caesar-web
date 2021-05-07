@@ -74,6 +74,7 @@
     <h5-build-dialog ref="h5BuildDialog" :formStatus="formStatus.build.h5"></h5-build-dialog>
     <ios-build-dialog ref="iosBuildDialog" :formStatus="formStatus.build.ios"></ios-build-dialog>
     <android-build-dialog ref="androidBuildDialog" :formStatus="formStatus.build.android"></android-build-dialog>
+    <android-aar-build-dialog ref="androidAARBuildDialog" :formStatus="formStatus.build.android_aar"></android-aar-build-dialog>
     <!-- 部署对话框 -->
     <java-deployment-dialog ref="javaDeploymentDialog"
                             :formStatus="formStatus.deployment.java"></java-deployment-dialog>
@@ -97,19 +98,13 @@
   import { mapState, mapActions } from 'vuex'
 
   // Component
-  import terminalMaster from '@/components/opscloud/xterm/TerminalMaster'
+  import TerminalMaster from '@/components/opscloud/xterm/TerminalMaster'
   import CiJobDialog from '@/components/opscloud/application/CiJobDialog'
   import CdJobDialog from '@/components/opscloud/application/CdJobDialog'
   import JobEngineDialog from '@/components/opscloud/application/JobEngineDialog'
-  import buildOutput from '@/components/opscloud/application/BuildOutput'
-  import buildView from '@/components/opscloud/application/BuildView'
-  // build
-  import javaBuildDialog from '@/components/opscloud/build/JavaBuildDialog'
-  import h5BuildDialog from '@/components/opscloud/build/H5BuildDialog'
-  import iosBuildDialog from '@/components/opscloud/build/IOSBuildDialog'
-  import androidBuildDialog from '@/components/opscloud/build/AndroidBuildDialog'
+  import BuildOutput from '@/components/opscloud/application/BuildOutput'
+  import BuildView from '@/components/opscloud/application/BuildView'
   // deployment
-  import javaDeploymentDialog from '@/components/opscloud/build/JavaDeploymentDialog'
 
   import CiJobPermissionDialog from '@/components/opscloud/application/CiJobPermissionDialog'
   import SonarPopover from '@/components/opscloud/build/sonar/SonarPopover'
@@ -118,6 +113,12 @@
   import { abortBuildCiJob } from '@api/build/job.build.js'
   import JobName from './child/JobName'
   import EnvTag from '../common/EnvTag'
+  import JavaBuildDialog from '../build/JavaBuildDialog'
+  import H5BuildDialog from '../build/H5BuildDialog'
+  import AndroidBuildDialog from '../build/AndroidBuildDialog'
+  import IosBuildDialog from '../build/IOSBuildDialog'
+  import AndroidAarBuildDialog from '../build/AndroidAARBuildDialog'
+  import JavaDeploymentDialog from '../build/JavaDeploymentDialog'
 
   export default {
     name: 'BuildJobTable',
@@ -148,7 +149,8 @@
             java: { visible: false },
             h5: { visible: false },
             ios: { visible: false },
-            android: { visible: false }
+            android: { visible: false },
+            android_aar: { visible: false }
           },
           deployment: {
             java: { visible: false },
@@ -182,19 +184,20 @@
     },
     components: {
       JobName,
-      terminalMaster,
+      TerminalMaster,
       CiJobDialog,
       CdJobDialog,
       JobEngineDialog,
-      javaBuildDialog,
-      h5BuildDialog,
-      iosBuildDialog,
-      androidBuildDialog,
-      javaDeploymentDialog,
-      buildOutput,
+      JavaBuildDialog,
+      H5BuildDialog,
+      IosBuildDialog,
+      AndroidBuildDialog,
+      AndroidAarBuildDialog,
+      JavaDeploymentDialog,
+      BuildOutput,
       CiJobPermissionDialog,
       SonarPopover,
-      buildView,
+      BuildView,
       EnvTag
     },
     methods: {
@@ -263,6 +266,10 @@
           case 'ANDROID':
             this.formStatus.build.android.visible = true
             this.$refs.androidBuildDialog.initData(this.application, row)
+            break
+          case 'ANDROID_AAR':
+            this.formStatus.build.android_aar.visible = true
+            this.$refs.androidAARBuildDialog.initData(this.application, row)
             break
           default:
             this.$message.error('构建任务类型配置错误!')

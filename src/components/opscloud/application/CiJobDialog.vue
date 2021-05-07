@@ -206,8 +206,8 @@
     value: 'ANDROID',
     label: 'Android'
   }, {
-      value: 'ANDROID-AAR',
-      label: 'Android-AAR'
+      value: 'ANDROID_AAR',
+      label: 'Android_AAR'
   }, {
     value: 'JAVA',
     label: 'Java'
