@@ -26,10 +26,10 @@
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="SCM项目配置" name="scm" v-if="application.id !== ''">
-        <application-scm-project-tab :application-id="application.id"></application-scm-project-tab>
+        <application-scm-project-tab ref="scmMemberTab" :application-id="application.id"></application-scm-project-tab>
       </el-tab-pane>
       <el-tab-pane label="SCM群组配置" name="scmGroup" v-if="application.id !== ''">
-        <application-scm-group-tab :application-id="application.id"></application-scm-group-tab>
+        <application-scm-group-tab ref="scmGroupTab" :application-id="application.id"></application-scm-group-tab>
       </el-tab-pane>
       <el-tab-pane label="服务器组(可选)" name="serverGroup" v-if="application.id !== ''">
         <el-row style="margin-bottom: 5px; margin-left: 0px" :gutter="24">
@@ -192,7 +192,7 @@
     methods: {
       initData (application) {
         this.application = application
-        if (application.id !== '') {
+        if (this.application.id !== '') {
           if (this.application.engineType === 1) {
             this.getEngine()
           }
@@ -200,6 +200,10 @@
             this.serverGroups = application.serverGroups
           }
         }
+        this.$nextTick(() => {
+          this.$refs.scmGroupTab.init()
+          this.$refs.scmMemberTab.init()
+        })
       },
       handleClick () {
         this.$emit('input', !this.value)

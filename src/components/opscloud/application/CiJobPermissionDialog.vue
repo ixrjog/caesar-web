@@ -91,7 +91,6 @@
         this.userId = ''
         this.pagination.currentPage = 1
         this.getUser('')
-        console.log(ciJob)
         this.fetchData()
       },
       getUser (queryName) {

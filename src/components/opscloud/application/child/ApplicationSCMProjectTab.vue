@@ -88,6 +88,12 @@
       this.getGitlabInstance('')
     },
     methods: {
+      init () {
+        this.gitlab.projectId = ''
+        this.scm.members = []
+        this.getScmMember()
+        this.getGitlabInstance('')
+      },
       getGitlabInstance (queryName) {
         let requestBody = {
           'queryName': queryName,

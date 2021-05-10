@@ -26,6 +26,26 @@
       <el-button size="mini" type="primary" :disabled="gitlab.groupId === ''" @click="handlerScmGroupAdd">添加</el-button>
     </el-row>
     <el-row>
+      <el-table :data="scm.groups" style="width: 100%" v-loading="scm.loading">
+        <el-table-column prop="webUrl" label="webUrl" width="300"></el-table-column>
+        <el-table-column prop="tags" label="标签">
+          <template slot-scope="props">
+            <div class="tag-group">
+              <span v-for="item in props.row.tags" :key="item.id">
+                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
+                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
+                </el-tooltip>
+              </span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="comment" label="描述"></el-table-column>
+        <el-table-column fixed="right" label="操作" width="200">`
+          <template slot-scope="scope">
+            <el-button type="danger" plain size="mini" @click="handlerScmGroupRowRemove(scope.row)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-row>
   </div>
 </template>
@@ -34,6 +54,11 @@
 
   import { queryGitlabInstancePage } from '@api/gitlab/gitlab.instance.js'
   import { queryGitlabGroupPage } from '@api/gitlab/gitlab.group.js'
+  import {
+    queryApplicationSCMGroup,
+    addApplicationSCMGroup,
+    removeApplicationSCMGroup
+  } from '@api/application/application.js'
 
   export default {
     name: 'ApplicationSCMGroupTab',
@@ -51,13 +76,22 @@
           groupId: '',
           instanceOptions: [],
           groupOptions: []
+        },
+        scm: {
+          loading: false,
+          groups: []
         }
       }
     },
     mounted () {
-      this.getGitlabInstance('')
     },
     methods: {
+      init () {
+        this.gitlab.groupId = ''
+        this.scm.groups = []
+        this.getScmGroup()
+        this.getGitlabInstance('')
+      },
       getGitlabInstance (queryName) {
         let requestBody = {
           'queryName': queryName,
@@ -76,13 +110,49 @@
       getGroup (queryName) {
         let requestBody = Object.assign({}, this.queryParam)
         requestBody.queryName = queryName
-
         queryGitlabGroupPage(requestBody)
           .then(res => {
             this.gitlab.groupOptions = res.body.data
           })
       },
+      getScmGroup () {
+        if (this.applicationId === null || this.applicationId === '') return
+        this.scm.loading = true
+        queryApplicationSCMGroup(this.applicationId)
+          .then(res => {
+            if (res.success) {
+              this.scm.groups = res.body
+            } else {
+              this.$message.error(res.msg)
+            }
+            this.scm.loading = false
+          })
+      },
+      handlerScmGroupRowRemove (row) {
+        removeApplicationSCMGroup(row.id)
+          .then(res => {
+            // 返回数据
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.getScmGroup()
+          })
+      },
       handlerScmGroupAdd () {
+        addApplicationSCMGroup(this.applicationId, this.gitlab.groupId)
+          .then(res => {
+            if (res.success) {
+              this.$message({
+                message: '成功',
+                type: 'success'
+              })
+              this.gitlab.groupId = ''
+              this.getScmGroup()
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
       }
     }
   }

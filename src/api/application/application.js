@@ -49,6 +49,27 @@ export function delApplicationById (id) {
   })
 }
 
+export function queryApplicationSCMGroup (applicationId) {
+  return request({
+    url: baseUrl + '/scm/group/query?applicationId=' + applicationId,
+    method: 'get'
+  })
+}
+
+export function addApplicationSCMGroup (applicationId, groupId) {
+  return request({
+    url: baseUrl + '/scm/group/add?applicationId=' + applicationId + '&groupId=' + groupId,
+    method: 'put'
+  })
+}
+
+export function removeApplicationSCMGroup (id) {
+  return request({
+    url: baseUrl + '/scm/group/remove?id=' + id,
+    method: 'delete'
+  })
+}
+
 export function queryApplicationSCMMember (applicationId) {
   return request({
     url: baseUrl + '/scm/member/query?applicationId=' + applicationId,
