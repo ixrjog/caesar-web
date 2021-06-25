@@ -214,7 +214,11 @@
   }, {
     value: 'PYTHON',
     label: 'Python'
-  }]
+  },
+     {
+      value: 'DOCKER',
+      label: 'Docker'
+    }]
 
   export default {
     data () {

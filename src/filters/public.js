@@ -27,3 +27,25 @@ export function getActiveText (value) {
       return '未定义'
   }
 }
+
+export function convertBooleanType (value) {
+  switch (value) {
+    case true:
+      return 'success'
+    case false:
+      return 'warning'
+    default:
+      return 'info'
+  }
+}
+
+export function convertBoolenText (value) {
+  switch (value) {
+    case true:
+      return '是'
+    case false:
+      return '否'
+    default:
+      return '未定义'
+  }
+}

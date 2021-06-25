@@ -30,13 +30,7 @@
         <el-table-column prop="webUrl" label="webUrl" width="300"></el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
-            <div class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-            </div>
+            <env-tag :env="props.row.env"></env-tag>
           </template>
         </el-table-column>
         <el-table-column prop="comment" label="描述"></el-table-column>
@@ -59,6 +53,7 @@
     addApplicationSCMGroup,
     removeApplicationSCMGroup
   } from '@api/application/application.js'
+  import EnvTag from '../../common/EnvTag'
 
   export default {
     name: 'ApplicationSCMGroupTab',
@@ -82,6 +77,9 @@
           groups: []
         }
       }
+    },
+    components: {
+      EnvTag
     },
     mounted () {
     },

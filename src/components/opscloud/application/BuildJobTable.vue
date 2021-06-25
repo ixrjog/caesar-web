@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row style="margin-bottom: 5px" :gutter="24">
-      <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询"></el-input>
+      <el-input v-model.trim="queryParam.queryName" placeholder="输入任务名称查询" @change="fetchData"></el-input>
       <el-checkbox v-model="queryParam.showHide" @change="fetchData">显示隐藏任务</el-checkbox>
       <el-button @click="fetchData" style="margin-left: 5px" :disabled="application === ''">查询</el-button>
       <el-button @click="handlerAdd" style="margin-left: 5px" :disabled="application === ''">新建任务</el-button>
@@ -72,6 +72,7 @@
     <!-- 构建对话框 -->
     <java-build-dialog ref="javaBuildDialog" :formStatus="formStatus.build.java"></java-build-dialog>
     <h5-build-dialog ref="h5BuildDialog" :formStatus="formStatus.build.h5"></h5-build-dialog>
+    <docker-build-dialog  ref="dockerBuildDialog" :formStatus="formStatus.build.docker"></docker-build-dialog>
     <ios-build-dialog ref="iosBuildDialog" :formStatus="formStatus.build.ios"></ios-build-dialog>
     <android-build-dialog ref="androidBuildDialog" :formStatus="formStatus.build.android"></android-build-dialog>
     <android-aar-build-dialog ref="androidAARBuildDialog" :formStatus="formStatus.build.android_aar"></android-aar-build-dialog>
@@ -119,6 +120,7 @@
   import IosBuildDialog from '../build/IOSBuildDialog'
   import AndroidAarBuildDialog from '../build/AndroidAARBuildDialog'
   import JavaDeploymentDialog from '../build/JavaDeploymentDialog'
+  import DockerBuildDialog from '../build/DockerBuildDialog'
 
   export default {
     name: 'BuildJobTable',
@@ -148,6 +150,7 @@
           build: {
             java: { visible: false },
             h5: { visible: false },
+            docker: { visible: false },
             ios: { visible: false },
             android: { visible: false },
             android_aar: { visible: false }
@@ -189,6 +192,7 @@
       CdJobDialog,
       JobEngineDialog,
       JavaBuildDialog,
+      DockerBuildDialog,
       H5BuildDialog,
       IosBuildDialog,
       AndroidBuildDialog,
@@ -254,6 +258,10 @@
           case 'HTML5':
             this.formStatus.build.h5.visible = true
             this.$refs.h5BuildDialog.initData(this.application, row)
+            break
+          case 'DOCKER':
+            this.formStatus.build.docker.visible = true
+            this.$refs.dockerBuildDialog.initData(this.application, row)
             break
           case 'JAVA':
             this.formStatus.build.java.visible = true

@@ -32,13 +32,7 @@
         <el-table-column prop="scmSshUrl" label="sshUrl" width="300"></el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
-            <div class="tag-group">
-              <span v-for="item in props.row.tags" :key="item.id">
-                <el-tooltip class="item" effect="light" :content="item.comment" placement="top-start">
-                  <el-tag style="margin-left: 5px" :style="{ color: item.color }">{{ item.tagKey }}</el-tag>
-                </el-tooltip>
-              </span>
-            </div>
+            <env-tag :env="props.row.env"></env-tag>
           </template>
         </el-table-column>
         <el-table-column prop="comment" label="描述"></el-table-column>
@@ -54,9 +48,12 @@
 
 <script>
 
+  import EnvTag from '../../common/EnvTag'
+
   import { queryGitlabInstancePage } from '@api/gitlab/gitlab.instance.js'
   import { queryGitlabProjectPage } from '@api/gitlab/gitlab.project.js'
-  import { queryApplicationSCMMember,
+  import {
+    queryApplicationSCMMember,
     addApplicationSCMMember, removeApplicationSCMMember
   } from '@api/application/application.js'
 
@@ -82,6 +79,9 @@
           members: []
         }
       }
+    },
+    components: {
+      EnvTag
     },
     mounted () {
       this.getScmMember()

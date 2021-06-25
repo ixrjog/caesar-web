@@ -184,6 +184,15 @@ const frameIn = [
         }
       },
       {
+        path: '/gitlab/event',
+        name: 'gitlab-event',
+        component: () => import('@/pages/gitlab/event'),
+        meta: {
+          auth: true,
+          title: 'Gitlab事件管理'
+        }
+      },
+      {
         path: '/storage/oss',
         name: 'storage-oss',
         component: () => import('@/pages/storage/oss'),
