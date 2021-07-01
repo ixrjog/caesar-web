@@ -57,125 +57,132 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
-  // Component
-  import ApplicationDialog from '@/components/opscloud/application/ApplicationDialog'
-  import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
+// Component
+import ApplicationDialog from '@/components/opscloud/application/ApplicationDialog'
+import ApplicationPermissionDialog from '@/components/opscloud/application/ApplicationPermissionDialog'
 
-  import { queryMyApplicationPage, updateMyApplicationRate } from '@api/application/application.js'
-  import BusinessTags from '../common/BusinessTags'
+import { queryMyApplicationPage, updateMyApplicationRate } from '@api/application/application.js'
+import BusinessTags from '../common/BusinessTags'
 
-  export default {
-    name: 'MyApplicationTable',
-    data () {
-      return {
-        title: '应用管理',
-        tableData: [],
-        options: {
-          stripe: true
-        },
-        loading: false,
-        pagination: {
-          currentPage: 1,
-          pageSize: 10,
-          total: 0
-        },
-        queryParam: {
-          instanceId: '',
-          queryName: '',
-          isAll: false
-        },
-        formStatus: {
-          visible: false,
-          operationType: true,
-          addTitle: '新增应用配置',
-          updateTitle: '更新应用配置'
-        },
-        formPermissionStatus: {
-          visible: false
-        }
-      }
-    },
-    computed: {
-      ...mapState('d2admin/user', [
-        'info'
-      ])
-    },
-    mounted () {
-      this.initPageSize()
+export default {
+  name: 'MyApplicationTable',
+  data () {
+    return {
+      title: '应用管理',
+      tableData: [],
+      options: {
+        stripe: true
+      },
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      },
+      queryParam: {
+        instanceId: '',
+        queryName: '',
+        isAll: false
+      },
+      formStatus: {
+        visible: false,
+        operationType: true,
+        addTitle: '新增应用配置',
+        updateTitle: '更新应用配置'
+      },
+      formPermissionStatus: {
+        visible: false
+      },
+      isSelected: false
+    }
+  },
+  computed: {
+    ...mapState('d2admin/user', [
+      'info'
+    ])
+  },
+  mounted () {
+    this.initPageSize()
+    this.fetchData()
+  },
+  components: {
+    ApplicationDialog,
+    ApplicationPermissionDialog,
+    BusinessTags
+  },
+  methods: {
+    ...mapActions({
+      setPageSize: 'd2admin/user/set'
+    }),
+    handleSizeChange (size) {
+      this.pagination.pageSize = size
+      this.info.pageSize = size
+      this.setPageSize(this.info)
       this.fetchData()
     },
-    components: {
-      ApplicationDialog,
-      ApplicationPermissionDialog,
-      BusinessTags
-    },
-    methods: {
-      ...mapActions({
-        setPageSize: 'd2admin/user/set'
-      }),
-      handleSizeChange (size) {
-        this.pagination.pageSize = size
-        this.info.pageSize = size
-        this.setPageSize(this.info)
-        this.fetchData()
-      },
-      initPageSize () {
-        if (typeof (this.info.pageSize) !== 'undefined') {
-          this.pagination.pageSize = this.info.pageSize
-        }
-      },
-      handlerRowSel (row) {
-        this.$emit('handlerSelApplication', row)
-      },
-      handlerRowEdit (row) {
-        this.formStatus.operationType = false
-        this.formStatus.visible = true
-        this.$refs.applicationDialog.initData(Object.assign({}, row))
-      },
-      handlerRowPermissionEdit (row) {
-        this.formPermissionStatus.visible = true
-        this.$refs.applicationPermissionDialog.initData(Object.assign({}, row))
-      },
-      paginationCurrentChange (currentPage) {
-        this.pagination.currentPage = currentPage
-        this.fetchData()
-      },
-      handlerSetApplicationRate (row) {
-        let requestBody = {
-          'userPermissionId': row.userPermission.id,
-          'rate': row.userPermission.rate
-        }
-        updateMyApplicationRate(requestBody)
-          .then(res => {
-            if (res.success) {
-              this.fetchData()
-            }
-          })
-      },
-      handlerChangeAll () {
-        if (!this.queryParam.isAll) this.queryParam.queryName = ''
-        this.fetchData()
-      },
-      fetchData () {
-        this.loading = true
-        let requestBody = {
-          'queryName': this.queryParam.queryName,
-          'extend': 1,
-          'isAll': this.queryParam.isAll,
-          'page': this.pagination.currentPage,
-          'length': this.pagination.pageSize
-        }
-        queryMyApplicationPage(requestBody)
-          .then(res => {
-            this.tableData = res.body.data
-            this.pagination.total = res.body.totalNum
-            this.loading = false
-          })
+    initPageSize () {
+      if (typeof (this.info.pageSize) !== 'undefined') {
+        this.pagination.pageSize = this.info.pageSize
       }
+    },
+    handlerRowSel (row) {
+      this.isSelected = true
+      this.$emit('handlerSelApplication', row)
+    },
+    handlerRowEdit (row) {
+      this.formStatus.operationType = false
+      this.formStatus.visible = true
+      this.$refs.applicationDialog.initData(Object.assign({}, row))
+    },
+    handlerRowPermissionEdit (row) {
+      this.formPermissionStatus.visible = true
+      this.$refs.applicationPermissionDialog.initData(Object.assign({}, row))
+    },
+    paginationCurrentChange (currentPage) {
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    handlerSetApplicationRate (row) {
+      let requestBody = {
+        'userPermissionId': row.userPermission.id,
+        'rate': row.userPermission.rate
+      }
+      updateMyApplicationRate(requestBody)
+        .then(res => {
+          if (res.success) {
+            this.fetchData()
+          }
+        })
+    },
+    handlerChangeAll () {
+      if (!this.queryParam.isAll) this.queryParam.queryName = ''
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      let requestBody = {
+        'queryName': this.queryParam.queryName,
+        'extend': 1,
+        'isAll': this.queryParam.isAll,
+        'page': this.pagination.currentPage,
+        'length': this.pagination.pageSize
+      }
+      queryMyApplicationPage(requestBody)
+        .then(res => {
+          this.tableData = res.body.data
+          this.pagination.total = res.body.totalNum
+          this.loading = false
+          if (!this.isSelected) {
+            if (this.tableData.length !== 0) {
+              this.handlerRowSel(this.tableData[0])
+            }
+          }
+        })
     }
   }
+}
 </script>
 
 <style scoped>
