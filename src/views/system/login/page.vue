@@ -16,7 +16,7 @@
         flex="dir:top main:justify cross:stretch box:justify">
         <div class="page-login--content-header">
           <p class="page-login--content-header-motto">
-            欢迎来到白衣的运维世界
+            路漫漫其修远兮
           </p>
         </div>
         <div
@@ -167,13 +167,6 @@ export default {
           {
             required: true,
             message: '请输入用户名',
-            trigger: 'blur'
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: '请输入密码',
             trigger: 'blur'
           }
         ],
