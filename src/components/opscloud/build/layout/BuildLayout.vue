@@ -28,7 +28,7 @@
           <!--自定义参数插槽-->
         </slot>
         <el-form-item label="版本名称" :label-width="labelWidth">
-          <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号(Andorid构建:留空自动生成none版本)"></el-input>
+          <el-input v-model="buildParam.versionName" placeholder="留空自动生成版本号(Andorid构建:留空自动生成`0.0.0`版本)"></el-input>
         </el-form-item>
         <el-form-item label="版本说明" :label-width="labelWidth">
           <el-input v-model="buildParam.versionDesc"></el-input>
