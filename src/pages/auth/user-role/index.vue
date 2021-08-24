@@ -45,149 +45,149 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex'
-  import UserRoleDialog from '@/components/opscloud/dialog/UserRoleDialog'
-  // API
-  import { queryRolePage } from '@api/auth/auth.role.js'
-  import { queryUserPage } from '@api/user/user.js'
-  import { queryUserRolePage, deleteUserRoleById, syncUserRole } from '@api/auth/auth.user.role.js'
+import { mapState, mapActions } from 'vuex'
+import UserRoleDialog from '@/components/opscloud/dialog/UserRoleDialog'
+// API
+import { queryRolePage } from '@api/auth/auth.role.js'
+import { queryUserPage } from '@api/user/user.js'
+import { queryUserRolePage, deleteUserRoleById, syncUserRole } from '@api/auth/auth.user.role.js'
 
-  export default {
-    data () {
-      return {
-        userRole: {},
-        formUserRoleStatus: {
-          visible: false,
-          title: '用户角色绑定配置',
-          labelWidth: '100px'
-        },
-        tableData: [],
-        loading: false,
-        pagination: {
-          currentPage: 1,
-          pageSize: 10,
-          total: 0
-        },
-        queryParam: {
-          roleId: '',
-          username: ''
-        },
-        userOptions: [],
-        roleOptions: []
-      }
-    },
-    computed: {
-      ...mapState('d2admin/user', [
-        'info'
-      ])
-    },
-    mounted () {
-      this.initPageSize()
+export default {
+  data () {
+    return {
+      userRole: {},
+      formUserRoleStatus: {
+        visible: false,
+        title: '用户角色绑定配置',
+        labelWidth: '100px'
+      },
+      tableData: [],
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      },
+      queryParam: {
+        roleId: '',
+        username: ''
+      },
+      userOptions: [],
+      roleOptions: []
+    }
+  },
+  computed: {
+    ...mapState('d2admin/user', [
+      'info'
+    ])
+  },
+  mounted () {
+    this.initPageSize()
+    this.fetchData()
+  },
+  components: {
+    UserRoleDialog
+  },
+  methods: {
+    ...mapActions({
+      setPageSize: 'd2admin/user/set'
+    }),
+    handleSizeChange (size) {
+      this.pagination.pageSize = size
+      this.info.pageSize = size
+      this.setPageSize(this.info)
       this.fetchData()
     },
-    components: {
-      UserRoleDialog
-    },
-    methods: {
-      ...mapActions({
-        setPageSize: 'd2admin/user/set'
-      }),
-      handleSizeChange (size) {
-        this.pagination.pageSize = size
-        this.info.pageSize = size
-        this.setPageSize(this.info)
-        this.fetchData()
-      },
-      initPageSize () {
-        if (typeof (this.info.pageSize) !== 'undefined') {
-          this.pagination.pageSize = this.info.pageSize
-        }
-      },
-      getRole (roleName) {
-        queryRolePage(roleName, '', 1, 10)
-          .then(res => {
-            this.roleOptions = res.body.data
-          })
-      },
-      getUser (username) {
-        queryUserPage(username, '', 1, 20)
-          .then(res => {
-            this.userOptions = res.body.data
-          })
-      },
-      handleClick () {
-        this.$emit('input', !this.value)
-      },
-      handleDialogCancel (done) {
-        this.$message({
-          message: '取消保存',
-          type: 'warning'
-        })
-        done()
-      },
-      delItem (row) {
-        this.$confirm('此操作将删除当前配置?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteUserRoleById(row.id).then(res => {
-            this.fetchData()
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-      },
-      addItem () {
-        this.formUserRoleStatus.visible = true
-        this.userRole = {
-          id: '',
-          username: '',
-          roleId: ''
-        }
-      },
-      handlerSyncUserRole () {
-        syncUserRole()
-          .then(res => {
-            this.$message({
-              type: 'success',
-              message: '后台同步中'
-            })
-          })
-      },
-      paginationCurrentChange (currentPage) {
-        this.pagination.currentPage = currentPage
-        this.fetchData()
-      },
-      fetchData () {
-        this.loading = true
-        queryUserRolePage(this.queryParam.username, this.queryParam.roleId, this.pagination.currentPage, this.pagination.pageSize)
-          .then(res => {
-            this.tableData = res.body.data
-            this.pagination.total = res.body.totalNum
-            this.loading = false
-          })
+    initPageSize () {
+      if (typeof (this.info.pageSize) !== 'undefined') {
+        this.pagination.pageSize = this.info.pageSize
       }
+    },
+    getRole (roleName) {
+      queryRolePage(roleName, '', 1, 10)
+        .then(res => {
+          this.roleOptions = res.body.data
+        })
+    },
+    getUser (username) {
+      queryUserPage(username, '', 1, 20)
+        .then(res => {
+          this.userOptions = res.body.data
+        })
+    },
+    handleClick () {
+      this.$emit('input', !this.value)
+    },
+    handleDialogCancel (done) {
+      this.$message({
+        message: '取消保存',
+        type: 'warning'
+      })
+      done()
+    },
+    delItem (row) {
+      this.$confirm('此操作将删除当前配置?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteUserRoleById(row.id).then(res => {
+          this.fetchData()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    addItem () {
+      this.formUserRoleStatus.visible = true
+      this.userRole = {
+        id: '',
+        username: '',
+        roleId: ''
+      }
+    },
+    handlerSyncUserRole () {
+      syncUserRole()
+        .then(res => {
+          this.$message({
+            type: 'success',
+            message: '后台同步中'
+          })
+        })
+    },
+    paginationCurrentChange (currentPage) {
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      this.loading = true
+      queryUserRolePage(this.queryParam.username, this.queryParam.roleId, this.pagination.currentPage, this.pagination.pageSize)
+        .then(res => {
+          this.tableData = res.body.data
+          this.pagination.total = res.body.totalNum
+          this.loading = false
+        })
     }
   }
+}
 </script>
 
 <style scoped>
-  .input-search-bar {
-    display: inline-block;
-    max-width: 200px;
-    margin-left: 10px;
-  }
+.input-search-bar {
+  display: inline-block;
+  max-width: 200px;
+  margin-left: 10px;
+}
 
-  .search-bar {
-    margin-left: 5px;
-  }
+.search-bar {
+  margin-left: 5px;
+}
 
 </style>

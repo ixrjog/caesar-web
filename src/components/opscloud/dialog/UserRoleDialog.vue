@@ -10,6 +10,8 @@
             :key="item.id"
             :label="item.username"
             :value="item.username">
+            <span style="float: left">{{ item.username }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 10px">{{ item.displayName }}</span>
           </el-option>
         </el-select>
       </el-form-item>
@@ -36,56 +38,56 @@
 
 <script>
 
-  // API
-  import { queryRolePage } from '@api/auth/auth.role.js'
-  import { queryUserPage } from '@api/user/user.js'
-  import { addUserRole } from '@api/auth/auth.user.role.js'
+// API
+import { queryRolePage } from '@api/auth/auth.role.js'
+import { queryUserPage } from '@api/user/user.js'
+import { addUserRole } from '@api/auth/auth.user.role.js'
 
-  export default {
-    data () {
-      return {
-        loading: false,
-        userOptions: [],
-        roleOptions: []
-      }
+export default {
+  data () {
+    return {
+      loading: false,
+      userOptions: [],
+      roleOptions: []
+    }
+  },
+  name: 'user-dialog',
+  props: ['formStatus', 'formData'],
+  mounted () {
+    this.getRole('')
+    this.getUser('')
+  },
+  methods: {
+    getRole (roleName) {
+      queryRolePage(roleName, '', 1, 10)
+        .then(res => {
+          this.roleOptions = res.body.data
+        })
     },
-    name: 'user-dialog',
-    props: ['formStatus', 'formData'],
-    mounted () {
-      this.getRole('')
-      this.getUser('')
+    getUser (username) {
+      queryUserPage(username, '', 1, 20)
+        .then(res => {
+          this.userOptions = res.body.data
+        })
     },
-    methods: {
-      getRole (roleName) {
-        queryRolePage(roleName, '', 1, 10)
+    handleClick () {
+      this.$emit('input', !this.value)
+    },
+    saveInfo () {
+      setTimeout(() => {
+        let requestBody = Object.assign({}, this.formData)
+        addUserRole(requestBody)
           .then(res => {
-            this.roleOptions = res.body.data
-          })
-      },
-      getUser (username) {
-        queryUserPage(username, '', 1, 20)
-          .then(res => {
-            this.userOptions = res.body.data
-          })
-      },
-      handleClick () {
-        this.$emit('input', !this.value)
-      },
-      saveInfo () {
-        setTimeout(() => {
-          let requestBody = Object.assign({}, this.formData)
-          addUserRole(requestBody)
-            .then(res => {
-              // 返回数据
-              this.$message({
-                message: '成功',
-                type: 'success'
-              })
-              this.formStatus.visible = false
-              this.$emit('closeUserRoleDialog')
+            // 返回数据
+            this.$message({
+              message: '成功',
+              type: 'success'
             })
-        }, 600)
-      }
+            this.formStatus.visible = false
+            this.$emit('closeUserRoleDialog')
+          })
+      }, 600)
     }
   }
+}
 </script>
