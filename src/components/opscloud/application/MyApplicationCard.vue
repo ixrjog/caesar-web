@@ -32,7 +32,7 @@
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
             <el-dropdown split-button type="primary" plain @click="handlerRowSel(scope.row)">
-              <i class="el-icon-search"></i>
+              <i class="el-icon-aim"></i>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item icon="fa fa-user"><span @click="handlerRowPermissionEdit(scope.row)">权限配置</span>
                 </el-dropdown-item>
