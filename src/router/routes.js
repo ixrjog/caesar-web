@@ -202,6 +202,15 @@ const frameIn = [
         }
       },
       {
+        path: '/storage/cr',
+        name: 'storage-cr',
+        component: () => import('@/pages/storage/cr'),
+        meta: {
+          auth: true,
+          title: '存储-容器镜像'
+        }
+      },
+      {
         path: '/application',
         name: 'application',
         component: () => import('@/pages/application'),

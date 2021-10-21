@@ -11,10 +11,25 @@
         <el-button @click="handlerSync" style="margin-left: 5px">同步</el-button>
       </el-row>
       <el-table :data="tableData" style="width: 100%" v-loading="loading">
-        <el-table-column prop="name" label="名称">
+        <el-table-column prop="regionId" label="regionId"></el-table-column>
+        <el-table-column prop="instanceId" label="实例Id"></el-table-column>
+        <el-table-column prop="instanceName" label="实例名称"></el-table-column>
+        <el-table-column label="接入点" width="400">
+          <template slot-scope="scope">
+            <el-row style="margin-bottom: 5px">
+              <el-tag size="small" style="margin-right: 5px">公网</el-tag>
+              <span>{{ scope.row.internetEndpoint }}</span>
+            </el-row>
+            <el-row style="margin-bottom: 5px">
+              <el-tag size="small" style="margin-right: 5px">私网</el-tag>
+              <span>{{ scope.row.intranetEndpoint }}</span>
+            </el-row>
+            <el-row style="margin-bottom: 5px">
+              <el-tag size="small" style="margin-right: 5px">VPC</el-tag>
+              <span>{{ scope.row.vpcEndpoint }}</span>
+            </el-row>
+          </template>
         </el-table-column>
-        <el-table-column prop="extranetEndpoint" label="公网地址"></el-table-column>
-        <el-table-column prop="intranetEndpoint" label="内网地址"></el-table-column>
         <el-table-column prop="serverStatus" label="有效">
           <template slot-scope="scope">
             <el-tag class="filters" :type="scope.row.isActive | getActiveType" size="small">
@@ -22,7 +37,6 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="comment" label="描述"></el-table-column>
         <el-table-column prop="tags" label="标签">
           <template slot-scope="props">
             <div class="tag-group">
@@ -63,16 +77,20 @@ import { mapState, mapActions } from 'vuex'
 import TagTransferDialog from '@/components/opscloud/dialog/TagTransferDialog'
 // Filters
 import { getActiveType, getActiveText } from '@/filters/public.js'
-
 // API
 import { queryBusinessTag, queryTagPage } from '@api/tag/tag.js'
-import { queryBucketPage, delBucketById, syncBucket, setBucketActiveById } from '@api/aliyun/aliyun.oss.bucket.js'
+import {
+  deleteInstanceById,
+  queryCRInstancePage,
+  setInstanceActive,
+  syncCRInstance
+} from '@api/aliyun/aliyun.cr.instance'
 
 export default {
-  name: 'OssTable',
+  name: 'AliyunCRTable',
   data () {
     return {
-      title: '阿里云对象存储管理',
+      title: '阿里云镜像管理',
       tableData: [],
       options: {
         stripe: true
@@ -88,7 +106,7 @@ export default {
         queryName: ''
       },
       instanceOptions: [],
-      businessType: 12,
+      businessType: 15,
       formTagTransferStatus: {
         visible: false,
         title: '编辑对象存储标签'
@@ -127,7 +145,7 @@ export default {
       }
     },
     handlerSync () {
-      syncBucket()
+      syncCRInstance()
         .then(res => {
           this.$message({
             type: 'success',
@@ -136,7 +154,7 @@ export default {
         })
     },
     handlerRowSetActive (row) {
-      setBucketActiveById(row.id).then(res => {
+      setInstanceActive(row.id).then(res => {
         this.fetchData()
         this.$message({
           type: 'success',
@@ -171,7 +189,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delBucketById(row.id).then(res => {
+        deleteInstanceById(row.id).then(res => {
           this.fetchData()
           this.$message({
             type: 'success',
@@ -197,7 +215,7 @@ export default {
         'page': this.pagination.currentPage,
         'length': this.pagination.pageSize
       }
-      queryBucketPage(requestBody)
+      queryCRInstancePage(requestBody)
         .then(res => {
           this.tableData = res.body.data
           this.pagination.total = res.body.totalNum
