@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <el-row style="margin-bottom: 5px" :gutter="24">
-        <el-input v-model="queryParam.queryName" placeholder="输入关键字模糊查询"
+        <el-input v-model.trim="queryParam.queryName" placeholder="输入关键字模糊查询" @change="fetchData"
                   class="input"/>
         <el-tooltip class="item" effect="light" content="管理员可查看所有应用" placement="top-start">
           <el-checkbox v-model="queryParam.isAll" @change="handlerChangeAll">显示全部</el-checkbox>
