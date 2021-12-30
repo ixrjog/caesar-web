@@ -64,9 +64,9 @@
             <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
                          :endTime="scope.row.endTime"></build-times>
             <!--              版本-->
-            <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+            <build-version :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
                            :isRollback="scope.row.isRollback"
-                           :buildStatus="scope.row.buildStatus"></build-verison>
+                           :buildStatus="scope.row.buildStatus"></build-version>
             <!--              commit-->
             <build-commit :commit="scope.row.commitDetails"></build-commit>
             <!--              变更详情-->
@@ -102,7 +102,7 @@
   // Summary
   import buildUser from '@/components/opscloud/build/summary/BuildUser'
   import buildTimes from '@/components/opscloud/build/summary/BuildTimes'
-  import buildVerison from '@/components/opscloud/build/summary/BuildVersion'
+  import buildVersion from '@/components/opscloud/build/summary/BuildVersion'
   import buildCommit from '@/components/opscloud/build/summary/BuildCommit'
   import buildChanges from '@/components/opscloud/build/summary/BuildChanges'
   import buildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
@@ -155,7 +155,7 @@
       buildStatus,
       buildUser,
       buildTimes,
-      buildVerison,
+      buildVersion,
       buildCommit,
       buildChanges,
       buildArtifacts,

@@ -3,8 +3,7 @@
     <el-button-group style="float: right">
       <el-tooltip class="item" effect="light" content="回滚当前任务版本" placement="top"
                   v-if="build.supportRollback && build.finalized && build.buildStatus === 'SUCCESS'">
-        <el-button type="primary" icon="fa fa-undo"
-                   :loading="rollbacking"
+        <el-button type="primary" icon="fa fa-undo" :loading="rollbacking" v-if="!build.isRollback && JSON.stringify(build.artifacts) !== '[]'"
                    @click="handlerRollback()"></el-button>
       </el-tooltip>
       <el-button type="primary" icon="fa fa-stop" v-if="!build.finalized"

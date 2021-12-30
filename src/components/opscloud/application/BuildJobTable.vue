@@ -21,7 +21,7 @@
       </el-table-column>
       <el-table-column prop="sonarQube" label="代码质量" width="210">
         <template slot-scope="scope">
-          <div v-if="scope.row.enableSonar && JSON.stringify(scope.row.sonarQube.measures) != '{}'">
+          <div v-if="scope.row.enableSonar && JSON.stringify(scope.row.sonarQube.measures) !== '{}'">
             <sonar-popover :sonarQube="scope.row.sonarQube"></sonar-popover>
           </div>
         </template>

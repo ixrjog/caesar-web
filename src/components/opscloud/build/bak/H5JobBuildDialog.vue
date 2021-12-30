@@ -51,8 +51,8 @@
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" inline class="table-expand">
-                <el-form-item label="工作引擎">{{props.row.jobEngine.jenkinsInstance.name}}</el-form-item>
-                <el-form-item label="引擎构建编号">{{props.row.engineBuildNumber}}</el-form-item>
+                <el-form-item label="工作引擎">{{ props.row.jobEngine.jenkinsInstance.name }}</el-form-item>
+                <el-form-item label="引擎构建编号">{{ props.row.engineBuildNumber }}</el-form-item>
               </el-form>
             </template>
           </el-table-column>
@@ -75,9 +75,9 @@
                            :endTime="scope.row.endTime"></build-times>
 
               <!--              版本-->
-              <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+              <build-version :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
                              :isRollback="scope.row.isRollback"
-                             :buildStatus="scope.row.buildStatus"></build-verison>
+                             :buildStatus="scope.row.buildStatus"></build-version>
               <!--              commit-->
               <build-commit :commit="scope.row.commitDetails"></build-commit>
               <!--              变更详情-->
@@ -114,182 +114,181 @@
 
 <script>
 
-  // Component
-  import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
-  import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
-  import BuildUser from '@/components/opscloud/build/summary/BuildUser'
-  import BuildTimes from '@/components/opscloud/build/summary/BuildTimes'
-  import BuildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
-  import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
-  import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
-  import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
-  import BuildStatus from '@/components/opscloud/build/summary/BuildStatus'
-  import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
-  import BuildBranch from '@/components/opscloud/build/summary/BuildBranch'
+// Component
+import ExecuteCommit from '@/components/opscloud/build/execute/ExecuteCommit'
+import BuildCommit from '@/components/opscloud/build/summary/BuildCommit'
+import BuildUser from '@/components/opscloud/build/summary/BuildUser'
+import BuildTimes from '@/components/opscloud/build/summary/BuildTimes'
+import BuildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
+import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
+import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
+import BuildVersion from '@/components/opscloud/build/summary/BuildVersion'
+import BuildStatus from '@/components/opscloud/build/summary/BuildStatus'
+import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
+import BuildBranch from '@/components/opscloud/build/summary/BuildBranch'
 
 
-  import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
-  import {
-    queryApplicationSCMMemberBranch,
-    queryApplicationSCMMemberBranchCommit
-  } from '@api/application/application.js'
+import { queryCiJobBuildPage, buildCiJob } from '@api/build/job.build.js'
+import {
+  queryApplicationSCMMemberBranch,
+  queryApplicationSCMMemberBranchCommit
+} from '@api/application/application.js'
 
-  export default {
-    data () {
-      return {
-        title: 'HTML5构建',
-        activeName: 'build',
-        application: '',
-        ciJob: '',
-        labelWidth: '150px',
-        options: {
-          stripe: true
-        },
-        queryParam: {
-          queryName: ''
-        },
-        branchOptions: [],
-        branchesLoading: false,
-        tableData: [],
-        loading: false,
-        pagination: {
-          currentPage: 1,
-          pageSize: 5,
-          total: 0
-        },
-        building: false,
-        commitLoading: false,
-        commit: '',
-        operation: {
-          showOpen: true
-        },
-        timer: null // 查询定时器
-      }
-    },
-    name: 'JobH5BuildDialog',
-    props: ['formStatus'],
-    components: {
-      ExecuteCommit,
-      BuildCommit,
-      BuildUser,
-      BuildTimes,
-      BuildArtifacts,
-      BuildExecutors,
-      BuildChanges,
-      BuildVerison,
-      BuildOperation,
-      BuildStatus,
-      BuildBranch
-    },
-    filters: {
-    },
-    computed: {},
-    mounted () {
-    },
-    beforeDestroy () {
+export default {
+  data () {
+    return {
+      title: 'HTML5构建',
+      activeName: 'build',
+      application: '',
+      ciJob: '',
+      labelWidth: '150px',
+      options: {
+        stripe: true
+      },
+      queryParam: {
+        queryName: ''
+      },
+      branchOptions: [],
+      branchesLoading: false,
+      tableData: [],
+      loading: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 5,
+        total: 0
+      },
+      building: false,
+      commitLoading: false,
+      commit: '',
+      operation: {
+        showOpen: true
+      },
+      timer: null // 查询定时器
+    }
+  },
+  name: 'JobH5BuildDialog',
+  props: ['formStatus'],
+  components: {
+    ExecuteCommit,
+    BuildCommit,
+    BuildUser,
+    BuildTimes,
+    BuildArtifacts,
+    BuildExecutors,
+    BuildChanges,
+    BuildVersion,
+    BuildOperation,
+    BuildStatus,
+    BuildBranch
+  },
+  filters: {},
+  computed: {},
+  mounted () {
+  },
+  beforeDestroy () {
+    clearInterval(this.timer) // 销毁定时器
+  },
+  methods: {
+    closeDialog () {
       clearInterval(this.timer) // 销毁定时器
+      this.formStatus.visible = false
+      this.$emit('closeDialog')
     },
-    methods: {
-      closeDialog () {
-        clearInterval(this.timer) // 销毁定时器
-        this.formStatus.visible = false
-        this.$emit('closeDialog')
-      },
-      setTimer () {
-        if (this.timer !== null) return
-        this.timer = setInterval(() => {
-          if (!this.formStatus.visible) return
-          this.fetchData()
-          // console.log('开始定时...每10秒执行一次')
-        }, 5000)
-      },
-      initData (application, ciJob) {
-        this.activeName = 'build'
-        this.application = application
-        this.ciJob = ciJob
-        this.commit = ''
-        this.getBranches()
-        this.setTimer()
+    setTimer () {
+      if (this.timer !== null) return
+      this.timer = setInterval(() => {
+        if (!this.formStatus.visible) return
         this.fetchData()
-      },
-      getBranches () {
-        this.branchesLoading = true
-        let requestBody = {
-          'scmMemberId': this.ciJob.scmMemberId,
-          'enableTag': this.ciJob.enableTag
-        }
-        queryApplicationSCMMemberBranch(requestBody)
-          .then(res => {
-            this.branchOptions = res.body.options
-            this.branchesLoading = false
-          })
-      },
-      getCommit () {
-        this.commitLoading = true
-        let requestBody = {
-          'scmMemberId': this.ciJob.scmMemberId,
-          'branch': this.ciJob.branch
-        }
-        queryApplicationSCMMemberBranchCommit(requestBody)
-          .then(res => {
-            this.commit = res.body
-            this.commitLoading = false
-          })
-      },
-      handlerBuild () {
-        this.building = true
-        let requestBody = {
-          'ciJobId': this.ciJob.id,
-          'branch': this.ciJob.branch,
-          'versionName': '',
-          'versionDesc': '',
-          'paramMap': {}
-        }
-        buildCiJob(requestBody)
-          .then(res => {
-            if (res.success) {
-              this.$message({
-                type: 'success',
-                message: '任务执行中!'
-              })
-            } else {
-              this.$message.error(res.msg)
-            }
-            this.building = false
-          })
-      },
-      paginationCurrentChange (currentPage) {
-        this.pagination.currentPage = currentPage
-        this.fetchData()
-      },
-      fetchData () {
-        if (this.tableData.length === 0) {
-          this.loading = true
-        }
-        let requestBody = {
-          'ciJobId': this.ciJob.id,
-          'queryName': this.queryParam.queryName,
-          'extend': 1,
-          'page': this.pagination.currentPage,
-          'length': this.pagination.pageSize
-        }
-        queryCiJobBuildPage(requestBody)
-          .then(res => {
-            this.tableData = res.body.data
-            this.pagination.total = res.body.totalNum
-            this.loading = false
-          })
+        // console.log('开始定时...每10秒执行一次')
+      }, 5000)
+    },
+    initData (application, ciJob) {
+      this.activeName = 'build'
+      this.application = application
+      this.ciJob = ciJob
+      this.commit = ''
+      this.getBranches()
+      this.setTimer()
+      this.fetchData()
+    },
+    getBranches () {
+      this.branchesLoading = true
+      let requestBody = {
+        'scmMemberId': this.ciJob.scmMemberId,
+        'enableTag': this.ciJob.enableTag
       }
+      queryApplicationSCMMemberBranch(requestBody)
+        .then(res => {
+          this.branchOptions = res.body.options
+          this.branchesLoading = false
+        })
+    },
+    getCommit () {
+      this.commitLoading = true
+      let requestBody = {
+        'scmMemberId': this.ciJob.scmMemberId,
+        'branch': this.ciJob.branch
+      }
+      queryApplicationSCMMemberBranchCommit(requestBody)
+        .then(res => {
+          this.commit = res.body
+          this.commitLoading = false
+        })
+    },
+    handlerBuild () {
+      this.building = true
+      let requestBody = {
+        'ciJobId': this.ciJob.id,
+        'branch': this.ciJob.branch,
+        'versionName': '',
+        'versionDesc': '',
+        'paramMap': {}
+      }
+      buildCiJob(requestBody)
+        .then(res => {
+          if (res.success) {
+            this.$message({
+              type: 'success',
+              message: '任务执行中!'
+            })
+          } else {
+            this.$message.error(res.msg)
+          }
+          this.building = false
+        })
+    },
+    paginationCurrentChange (currentPage) {
+      this.pagination.currentPage = currentPage
+      this.fetchData()
+    },
+    fetchData () {
+      if (this.tableData.length === 0) {
+        this.loading = true
+      }
+      let requestBody = {
+        'ciJobId': this.ciJob.id,
+        'queryName': this.queryParam.queryName,
+        'extend': 1,
+        'page': this.pagination.currentPage,
+        'length': this.pagination.pageSize
+      }
+      queryCiJobBuildPage(requestBody)
+        .then(res => {
+          this.tableData = res.body.data
+          this.pagination.total = res.body.totalNum
+          this.loading = false
+        })
     }
   }
+}
 </script>
 
 <style>
-  .el-divider--horizontal {
-    display: block;
-    height: 1px;
-    width: 100%;
-    margin: 10px 0;
-  }
+.el-divider--horizontal {
+  display: block;
+  height: 1px;
+  width: 100%;
+  margin: 10px 0;
+}
 
 </style>

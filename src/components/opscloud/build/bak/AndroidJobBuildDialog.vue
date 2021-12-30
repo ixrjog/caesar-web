@@ -100,8 +100,8 @@
               <build-times :buildTime="scope.row.buildTime" :startTime="scope.row.startTime"
                            :endTime="scope.row.endTime"></build-times>
               <!--              版本-->
-              <build-verison :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
-                             :buildStatus="scope.row.buildStatus"></build-verison>
+              <build-version :versionName="scope.row.versionName" :versionDesc="scope.row.versionDesc"
+                             :buildStatus="scope.row.buildStatus"></build-version>
               <!--              commit-->
               <build-commit :commit="scope.row.commitDetails"></build-commit>
               <!--              变更详情-->
@@ -142,7 +142,7 @@
   import BuildArtifacts from '@/components/opscloud/build/summary/BuildArtifacts'
   import BuildExecutors from '@/components/opscloud/build/summary/BuildExecutors'
   import BuildChanges from '@/components/opscloud/build/summary/BuildChanges'
-  import BuildVerison from '@/components/opscloud/build/summary/BuildVersion'
+  import BuildVersion from '@/components/opscloud/build/summary/BuildVersion'
   import BuildStatus from '@/components/opscloud/build/summary/BuildStatus'
   import BuildBranch from '@/components/opscloud/build/summary/BuildBranch'
   import BuildOperation from '@/components/opscloud/build/operation/BuildOperation'
@@ -227,7 +227,7 @@
       BuildArtifacts,
       BuildExecutors,
       BuildChanges,
-      BuildVerison,
+      BuildVersion,
       BuildOperation,
       BuildStatus,
       BuildBranch
